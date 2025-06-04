@@ -3,8 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Timer, Target, CircleDot, Brain } from "lucide-react";
 import { PreShotRoutineBuilder } from "@/components/pre-shot-routine-builder";
-import { MentalSkillsXCheck } from "@/components/mental-skills-xcheck";
-import { ControlCircles } from "@/components/control-circles";
+import { SimpleR2BTools } from "@/components/simple-r2b-tools";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function Tools() {
@@ -124,7 +123,7 @@ export default function Tools() {
                   </CardContent>
                 </Card>
                 
-                <MentalSkillsXCheck userId={userId} />
+                <SimpleR2BTools userId={userId} />
               </div>
             </TabsContent>
 
@@ -160,7 +159,7 @@ export default function Tools() {
                   </CardContent>
                 </Card>
                 
-                <ControlCircles userId={userId} />
+                <SimpleR2BTools userId={userId} />
               </div>
             </TabsContent>
 

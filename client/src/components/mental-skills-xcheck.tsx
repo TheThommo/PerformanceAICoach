@@ -144,7 +144,7 @@ export function MentalSkillsXCheck({ userId }: MentalSkillsXCheckProps) {
                   <FormItem>
                     <FormLabel>Context (Round, Tournament, Practice)</FormLabel>
                     <FormControl>
-                      <Input placeholder="e.g., Tournament Round 1" {...field} />
+                      <Input placeholder="e.g., Tournament Round 1" {...field} value={field.value || ""} />
                     </FormControl>
                   </FormItem>
                 )}
