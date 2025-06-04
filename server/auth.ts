@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import session from 'express-session';
 import { Request, Response, NextFunction } from 'express';
 import { storage } from './storage';
-import { generateAIProfile } from './openai';
+import { generateAIProfile } from './gemini';
 
 declare module 'express-session' {
   interface SessionData {

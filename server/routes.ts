@@ -4,7 +4,7 @@ import session from "express-session";
 import Stripe from "stripe";
 import { storage } from "./storage";
 import { insertAssessmentSchema, insertChatSessionSchema, insertUserProgressSchema, insertPreShotRoutineSchema, insertMentalSkillsXCheckSchema, insertControlCircleSchema } from "@shared/schema";
-import { getCoachingResponse, analyzeAssessmentResults, generatePersonalizedPlan } from "./openai";
+import { getCoachingResponse, analyzeAssessmentResults, generatePersonalizedPlan } from "./gemini";
 import { sessionConfig, requireAuth, requirePremium, requireAdmin, requireCoach, registerUser, loginUser, AuthRequest } from "./auth";
 
 if (!process.env.STRIPE_SECRET_KEY) {
