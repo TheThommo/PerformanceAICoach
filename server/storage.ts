@@ -1,11 +1,15 @@
 import { 
   users, assessments, chatSessions, userProgress, techniques, scenarios,
-  preShotRoutines, mentalSkillsXChecks, controlCircles,
+  preShotRoutines, mentalSkillsXChecks, controlCircles, userCoachingProfiles,
+  aiRecommendations, coachingInsights, userEngagementMetrics,
   type User, type InsertUser, type Assessment, type InsertAssessment,
   type ChatSession, type InsertChatSession, type UserProgress, type InsertUserProgress,
   type Technique, type InsertTechnique, type Scenario, type InsertScenario,
   type PreShotRoutine, type InsertPreShotRoutine, type MentalSkillsXCheck, 
-  type InsertMentalSkillsXCheck, type ControlCircle, type InsertControlCircle
+  type InsertMentalSkillsXCheck, type ControlCircle, type InsertControlCircle,
+  type UserCoachingProfile, type InsertUserCoachingProfile, type AiRecommendation,
+  type InsertAiRecommendation, type CoachingInsight, type InsertCoachingInsight,
+  type UserEngagementMetric, type InsertUserEngagementMetric
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
@@ -59,6 +63,24 @@ export interface IStorage {
   createControlCircle(circle: InsertControlCircle): Promise<ControlCircle>;
   getUserControlCircles(userId: number): Promise<ControlCircle[]>;
   getLatestControlCircle(userId: number): Promise<ControlCircle | undefined>;
+
+  // AI Recommendation Engine operations
+  createUserCoachingProfile(profile: InsertUserCoachingProfile): Promise<UserCoachingProfile>;
+  getUserCoachingProfile(userId: number): Promise<UserCoachingProfile | undefined>;
+  updateUserCoachingProfile(userId: number, updates: Partial<UserCoachingProfile>): Promise<UserCoachingProfile>;
+  
+  createAiRecommendation(recommendation: InsertAiRecommendation): Promise<AiRecommendation>;
+  getUserRecommendations(userId: number, isActive?: boolean): Promise<AiRecommendation[]>;
+  updateRecommendationFeedback(id: number, feedback: number, comments?: string): Promise<AiRecommendation>;
+  markRecommendationApplied(id: number, effectivenessMeasure?: number): Promise<AiRecommendation>;
+  
+  createCoachingInsight(insight: InsertCoachingInsight): Promise<CoachingInsight>;
+  getUserInsights(userId: number, isAcknowledged?: boolean): Promise<CoachingInsight[]>;
+  acknowledgeInsight(id: number): Promise<CoachingInsight>;
+  
+  createEngagementMetric(metric: InsertUserEngagementMetric): Promise<UserEngagementMetric>;
+  getUserEngagementMetrics(userId: number, days?: number): Promise<UserEngagementMetric[]>;
+  updateEngagementMetric(userId: number, date: string, updates: Partial<UserEngagementMetric>): Promise<UserEngagementMetric>;
 }
 
 export class MemStorage implements IStorage {
@@ -71,6 +93,10 @@ export class MemStorage implements IStorage {
   private preShotRoutines: Map<number, PreShotRoutine>;
   private mentalSkillsXChecks: Map<number, MentalSkillsXCheck>;
   private controlCircles: Map<number, ControlCircle>;
+  private userCoachingProfiles: Map<number, UserCoachingProfile>;
+  private aiRecommendations: Map<number, AiRecommendation>;
+  private coachingInsights: Map<number, CoachingInsight>;
+  private userEngagementMetrics: Map<number, UserEngagementMetric>;
   private currentId: number;
 
   private initialized = false;
@@ -85,6 +111,10 @@ export class MemStorage implements IStorage {
     this.preShotRoutines = new Map();
     this.mentalSkillsXChecks = new Map();
     this.controlCircles = new Map();
+    this.userCoachingProfiles = new Map();
+    this.aiRecommendations = new Map();
+    this.coachingInsights = new Map();
+    this.userEngagementMetrics = new Map();
     this.currentId = 1;
     this.seedData().catch(console.error);
   }

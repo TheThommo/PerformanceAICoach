@@ -245,3 +245,107 @@ export const insertNotificationSchema = createInsertSchema(notifications).omit({
 
 export type Notification = typeof notifications.$inferSelect;
 export type InsertNotification = z.infer<typeof insertNotificationSchema>;
+
+// AI Recommendation Engine Tables
+export const userCoachingProfiles = pgTable("user_coaching_profiles", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().unique(),
+  learningStyle: text("learning_style"), // "visual", "auditory", "kinesthetic", "analytical"
+  preferredSessionLength: integer("preferred_session_length").default(15), // minutes
+  stressPatterns: jsonb("stress_patterns"), // array of triggers and responses
+  goalPreferences: jsonb("goal_preferences"), // short-term vs long-term focus areas
+  responseToFeedback: text("response_to_feedback"), // "direct", "gentle", "motivational", "technical"
+  peakPerformanceFactors: jsonb("peak_performance_factors"), // conditions when user performs best
+  commonStruggles: jsonb("common_struggles"), // recurring mental game challenges
+  motivationalTriggers: jsonb("motivational_triggers"), // what drives user engagement
+  techniqueMastery: jsonb("technique_mastery"), // mastery levels for different techniques
+  personalityProfile: text("personality_profile"), // "analytical", "emotional", "competitive", "collaborative"
+  coachingHistory: jsonb("coaching_history"), // summary of past coaching effectiveness
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const aiRecommendations = pgTable("ai_recommendations", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  recommendationType: text("recommendation_type").notNull(), // "technique", "scenario", "routine", "assessment"
+  targetId: integer("target_id"), // ID of recommended item (technique, scenario, etc.)
+  priority: integer("priority").notNull(), // 1-10 scale
+  reasoning: text("reasoning").notNull(), // AI explanation for recommendation
+  confidenceScore: integer("confidence_score").notNull(), // 0-100
+  personalizedMessage: text("personalized_message"), // custom message for user
+  expectedOutcome: text("expected_outcome"), // predicted benefit
+  recommendationData: jsonb("recommendation_data"), // additional structured data
+  isActive: boolean("is_active").default(true),
+  userFeedback: integer("user_feedback"), // 1-5 rating from user
+  feedbackComments: text("feedback_comments"),
+  wasApplied: boolean("was_applied").default(false),
+  effectivenessMeasure: integer("effectiveness_measure"), // post-application rating
+  createdAt: timestamp("created_at").defaultNow(),
+  expiresAt: timestamp("expires_at"), // when recommendation becomes stale
+});
+
+export const coachingInsights = pgTable("coaching_insights", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  insightType: text("insight_type").notNull(), // "pattern", "improvement", "risk", "opportunity"
+  category: text("category").notNull(), // "performance", "engagement", "technique_usage", "progress"
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  dataPoints: jsonb("data_points"), // supporting evidence/metrics
+  actionableSteps: jsonb("actionable_steps"), // specific next steps
+  severity: text("severity"), // "low", "medium", "high" for risks
+  impact: text("impact"), // "minor", "moderate", "significant"
+  timeframe: text("timeframe"), // "immediate", "short_term", "long_term"
+  relatedTechniques: jsonb("related_techniques"), // technique IDs
+  isAcknowledged: boolean("is_acknowledged").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const userEngagementMetrics = pgTable("user_engagement_metrics", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  date: date("date").notNull(),
+  chatMessages: integer("chat_messages").default(0),
+  assessmentsTaken: integer("assessments_taken").default(0),
+  techniquesUsed: integer("techniques_used").default(0),
+  sessionDuration: integer("session_duration").default(0), // minutes
+  toolsAccessed: jsonb("tools_accessed"), // array of tool names
+  recommendationsViewed: integer("recommendations_viewed").default(0),
+  recommendationsApplied: integer("recommendations_applied").default(0),
+  engagementScore: integer("engagement_score").default(0), // calculated 0-100
+  streakCount: integer("streak_count").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Schema definitions for new tables
+export const insertUserCoachingProfileSchema = createInsertSchema(userCoachingProfiles).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertAiRecommendationSchema = createInsertSchema(aiRecommendations).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertCoachingInsightSchema = createInsertSchema(coachingInsights).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertUserEngagementMetricSchema = createInsertSchema(userEngagementMetrics).omit({
+  id: true,
+  createdAt: true,
+});
+
+// Type exports for new tables
+export type UserCoachingProfile = typeof userCoachingProfiles.$inferSelect;
+export type InsertUserCoachingProfile = z.infer<typeof insertUserCoachingProfileSchema>;
+export type AiRecommendation = typeof aiRecommendations.$inferSelect;
+export type InsertAiRecommendation = z.infer<typeof insertAiRecommendationSchema>;
+export type CoachingInsight = typeof coachingInsights.$inferSelect;
+export type InsertCoachingInsight = z.infer<typeof insertCoachingInsightSchema>;
+export type UserEngagementMetric = typeof userEngagementMetrics.$inferSelect;
+export type InsertUserEngagementMetric = z.infer<typeof insertUserEngagementMetricSchema>;
