@@ -10,9 +10,14 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function Landing() {
   const [showSignUp, setShowSignUp] = useState(false);
+  const [showSignIn, setShowSignIn] = useState(false);
 
   if (showSignUp) {
     return <SignUpForm onBack={() => setShowSignUp(false)} />;
+  }
+
+  if (showSignIn) {
+    return <SignInForm onBack={() => setShowSignIn(false)} />;
   }
 
   return (
@@ -31,7 +36,7 @@ export default function Landing() {
               </div>
             </div>
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" className="text-gray-600">
+              <Button variant="ghost" onClick={() => setShowSignIn(true)} className="text-gray-600">
                 Sign In
               </Button>
               <Button onClick={() => setShowSignUp(true)} className="bg-blue-600 hover:bg-blue-700">
@@ -616,5 +621,125 @@ function SignUpFormFields({ onBack }: { onBack: () => void }) {
         </p>
       </div>
     </form>
+  );
+}
+
+function SignInForm({ onBack }: { onBack: () => void }) {
+  const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  });
+
+  const loginMutation = useMutation({
+    mutationFn: async (data: { email: string; password: string }) => {
+      return await apiRequest("POST", "/api/auth/login", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      toast({
+        title: "Welcome back!",
+        description: "You have successfully signed in.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Sign In Failed",
+        description: error.message || "Invalid email or password",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    loginMutation.mutate(formData);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-red-50 flex items-center justify-center px-4">
+      <Card className="w-full max-w-md">
+        <CardHeader className="text-center">
+          <div className="flex items-center justify-center space-x-3 mb-4">
+            <div className="w-12 h-12 gradient-red-blue rounded-full flex items-center justify-center">
+              <Brain className="text-white" size={24} />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Red2Blue</h1>
+              <p className="text-sm text-gray-500">AI Mental Coach</p>
+            </div>
+          </div>
+          <CardTitle>Welcome Back</CardTitle>
+          <CardDescription>Sign in to continue your mental performance journey</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email Address
+              </label>
+              <input
+                type="email"
+                required
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your email"
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
+              <input
+                type="password"
+                required
+                value={formData.password}
+                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Enter your password"
+              />
+            </div>
+
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h4 className="font-semibold text-blue-900 mb-2">Admin Access Credentials:</h4>
+              <div className="text-sm space-y-1">
+                <p><strong>Email:</strong> admin@red2blue.com</p>
+                <p><strong>Password:</strong> admin123</p>
+              </div>
+              <p className="text-xs text-blue-700 mt-2">Use these credentials for full platform access including coach dashboard</p>
+            </div>
+
+            <div className="flex space-x-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onBack}
+                className="flex-1"
+              >
+                Back
+              </Button>
+              <Button
+                type="submit"
+                disabled={loginMutation.isPending}
+                className="flex-1 bg-blue-600 hover:bg-blue-700"
+              >
+                {loginMutation.isPending ? "Signing In..." : "Sign In"}
+              </Button>
+            </div>
+
+            <div className="text-center">
+              <p className="text-sm text-gray-600">
+                Don't have an account?{" "}
+                <button type="button" onClick={onBack} className="text-blue-600 hover:text-blue-700 font-medium">
+                  Sign up here
+                </button>
+              </p>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

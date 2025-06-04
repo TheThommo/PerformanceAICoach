@@ -84,10 +84,36 @@ export class MemStorage implements IStorage {
     this.mentalSkillsXChecks = new Map();
     this.controlCircles = new Map();
     this.currentId = 1;
-    this.seedData();
+    this.seedData().catch(console.error);
   }
 
-  private seedData() {
+  private async seedData() {
+    // Seed admin user
+    const { hashPassword } = await import('./auth');
+    const adminPassword = await hashPassword('admin123');
+    
+    const adminUser: User = {
+      id: 1,
+      username: 'admin',
+      email: 'admin@red2blue.com',
+      passwordHash: adminPassword,
+      firstName: 'System',
+      lastName: 'Administrator',
+      dateOfBirth: '1980-01-01',
+      golfExperience: 'professional',
+      currentHandicap: 0,
+      goals: 'Platform administration and coaching oversight',
+      preferredName: 'Admin',
+      subscriptionTier: 'ultimate',
+      role: 'admin',
+      profileGenerated: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    
+    this.users.set(1, adminUser);
+    this.currentId = 2;
+
     // Seed default techniques
     const defaultTechniques: InsertTechnique[] = [
       {
