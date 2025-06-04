@@ -61,6 +61,30 @@ export const requirePremium = async (req: AuthRequest, res: Response, next: Next
   next();
 };
 
+export const requireAdmin = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'Authentication required' });
+  }
+
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Admin access required' });
+  }
+
+  next();
+};
+
+export const requireCoach = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'Authentication required' });
+  }
+
+  if (req.user.role !== 'coach' && req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Coach access required' });
+  }
+
+  next();
+};
+
 export async function hashPassword(password: string): Promise<string> {
   const saltRounds = 10;
   return bcrypt.hash(password, saltRounds);

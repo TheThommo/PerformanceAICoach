@@ -5,7 +5,7 @@ import Stripe from "stripe";
 import { storage } from "./storage";
 import { insertAssessmentSchema, insertChatSessionSchema, insertUserProgressSchema, insertPreShotRoutineSchema, insertMentalSkillsXCheckSchema, insertControlCircleSchema } from "@shared/schema";
 import { getCoachingResponse, analyzeAssessmentResults, generatePersonalizedPlan } from "./openai";
-import { sessionConfig, requireAuth, requirePremium, registerUser, loginUser, AuthRequest } from "./auth";
+import { sessionConfig, requireAuth, requirePremium, requireAdmin, requireCoach, registerUser, loginUser, AuthRequest } from "./auth";
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
@@ -628,8 +628,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Coach dashboard routes
-  app.get("/api/coach/students", async (req, res) => {
+  // Coach dashboard routes - Admin/Coach only
+  app.get("/api/coach/students", requireCoach, async (req, res) => {
     try {
       const allUsers = await storage.getAllUsers();
       const studentSummaries = await Promise.all(
@@ -677,7 +677,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/coach/student-detail/:userId", async (req, res) => {
+  app.get("/api/coach/student-detail/:userId", requireCoach, async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
       const assessments = await storage.getUserAssessments(userId);
