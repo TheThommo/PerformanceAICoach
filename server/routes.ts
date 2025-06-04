@@ -275,6 +275,101 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Coach dashboard routes
+  app.get("/api/coach/students", async (req, res) => {
+    try {
+      const allUsers = await storage.getAllUsers();
+      const studentSummaries = await Promise.all(
+        allUsers.map(async (user) => {
+          const assessments = await storage.getUserAssessments(user.id);
+          const latestAssessment = assessments[0];
+          
+          // Calculate risk level based on latest scores
+          let riskLevel = 'low';
+          if (latestAssessment) {
+            const avgScore = (latestAssessment.intensityScore + latestAssessment.decisionMakingScore + 
+                           latestAssessment.diversionsScore + latestAssessment.executionScore) / 4;
+            if (avgScore < 60) riskLevel = 'high';
+            else if (avgScore < 75) riskLevel = 'medium';
+          }
+
+          // Calculate trend direction
+          let trends = { direction: 'stable', change: 0 };
+          if (assessments.length >= 2) {
+            const recent = assessments[0].totalScore;
+            const previous = assessments[1].totalScore;
+            const change = recent - previous;
+            trends = {
+              direction: change > 5 ? 'improving' : change < -5 ? 'declining' : 'stable',
+              change
+            };
+          }
+
+          return {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            lastAssessment: latestAssessment,
+            assessmentCount: assessments.length,
+            lastActivity: latestAssessment?.createdAt || user.createdAt,
+            riskLevel,
+            trends
+          };
+        })
+      );
+
+      res.json(studentSummaries);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch students", error: (error as Error).message });
+    }
+  });
+
+  app.get("/api/coach/student-detail/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const assessments = await storage.getUserAssessments(userId);
+      const progress = await storage.getUserProgress(userId, 30);
+      const xchecks = await storage.getUserMentalSkillsXChecks(userId);
+      const circles = await storage.getUserControlCircles(userId);
+      const routines = await storage.getUserPreShotRoutines(userId);
+
+      // Format assessment history for chart
+      const assessmentHistory = assessments.slice(0, 10).reverse().map(a => ({
+        date: new Date(a.createdAt).toLocaleDateString(),
+        totalScore: a.totalScore,
+        intensity: a.intensityScore,
+        decisionMaking: a.decisionMakingScore,
+        diversions: a.diversionsScore,
+        execution: a.executionScore
+      }));
+
+      // Tool usage summary
+      const toolUsage = [
+        { name: "Mental Skills X-Check", lastUsed: xchecks[0]?.createdAt ? new Date(xchecks[0].createdAt).toLocaleDateString() : "Never" },
+        { name: "Control Circles", lastUsed: circles[0]?.createdAt ? new Date(circles[0].createdAt).toLocaleDateString() : "Never" },
+        { name: "Pre-Shot Routine", lastUsed: routines[0]?.createdAt ? new Date(routines[0].createdAt).toLocaleDateString() : "Never" }
+      ];
+
+      // Generate coaching recommendations based on latest assessment
+      const recommendations = [];
+      if (assessments[0]) {
+        const latest = assessments[0];
+        if (latest.intensityScore < 70) recommendations.push("Focus on intensity management techniques - practice breathing exercises");
+        if (latest.decisionMakingScore < 70) recommendations.push("Work on decision-making clarity - use visualization drills");
+        if (latest.diversionsScore < 70) recommendations.push("Improve focus and attention - practice mindfulness meditation");
+        if (latest.executionScore < 70) recommendations.push("Build execution confidence - work on pre-shot routine consistency");
+      }
+
+      res.json({
+        assessmentHistory,
+        toolUsage,
+        recommendations: recommendations.length > 0 ? recommendations : ["Continue current training program - performance is strong"]
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch student details", error: (error as Error).message });
+    }
+  });
+
   // Personalized plan generation
   app.post("/api/generate-plan/:userId", async (req, res) => {
     try {

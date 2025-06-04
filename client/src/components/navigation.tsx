@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Brain, Bell, Menu, X, Home, BarChart3, MessageCircle, Zap, Wrench } from "lucide-react";
+import { Brain, Bell, Menu, X, Home, BarChart3, MessageCircle, Zap, Wrench, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -13,6 +13,7 @@ export function Navigation() {
     { href: "/assessment", label: "Assessment", icon: BarChart3 },
     { href: "/techniques", label: "Techniques", icon: Zap },
     { href: "/tools", label: "R2B Tools", icon: Wrench },
+    { href: "/coach", label: "Coach Dashboard", icon: Users },
   ];
 
   return (

@@ -8,6 +8,7 @@ import Dashboard from "@/pages/dashboard";
 import Assessment from "@/pages/assessment";
 import Techniques from "@/pages/techniques";
 import Tools from "@/pages/tools";
+import CoachDashboard from "@/pages/coach-dashboard";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -19,6 +20,7 @@ function Router() {
         <Route path="/assessment" component={Assessment} />
         <Route path="/techniques" component={Techniques} />
         <Route path="/tools" component={Tools} />
+        <Route path="/coach" component={CoachDashboard} />
         <Route component={NotFound} />
       </Switch>
     </div>
