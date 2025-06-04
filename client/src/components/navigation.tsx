@@ -1,0 +1,170 @@
+import { useState } from "react";
+import { Link, useLocation } from "wouter";
+import { Brain, Bell, Menu, X, Home, BarChart3, MessageCircle, Zap } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+
+export function Navigation() {
+  const [location] = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const navItems = [
+    { href: "/", label: "Dashboard", icon: Home },
+    { href: "/assessment", label: "Assessment", icon: BarChart3 },
+    { href: "/techniques", label: "Techniques", icon: Zap },
+  ];
+
+  return (
+    <>
+      {/* Desktop Navigation */}
+      <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            
+            {/* Logo */}
+            <Link href="/" className="flex items-center space-x-3">
+              <div className="w-10 h-10 gradient-red-blue rounded-full flex items-center justify-center">
+                <Brain className="text-white" size={20} />
+              </div>
+              <div>
+                <h1 className="text-xl font-bold text-gray-900">Red2Blue</h1>
+                <p className="text-xs text-gray-500">AI Mental Coach</p>
+              </div>
+            </Link>
+
+            {/* Desktop Navigation Items */}
+            <div className="hidden md:flex items-center space-x-8">
+              {navItems.map((item) => {
+                const isActive = location === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
+                      isActive
+                        ? "bg-blue-primary text-white"
+                        : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                    }`}
+                  >
+                    <item.icon size={18} />
+                    <span className="font-medium">{item.label}</span>
+                  </Link>
+                );
+              })}
+            </div>
+
+            {/* Right Side Actions */}
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <Bell size={20} />
+              </Button>
+              
+              {/* User Avatar */}
+              <div className="w-8 h-8 bg-blue-primary rounded-full flex items-center justify-center">
+                <span className="text-white text-sm font-medium">T</span>
+              </div>
+
+              {/* Mobile Menu Trigger */}
+              <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+                <SheetTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="md:hidden p-2"
+                  >
+                    <Menu size={20} />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-72">
+                  <div className="flex flex-col h-full">
+                    
+                    {/* Mobile Header */}
+                    <div className="flex items-center justify-between pb-6 border-b">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 gradient-red-blue rounded-full flex items-center justify-center">
+                          <Brain className="text-white" size={20} />
+                        </div>
+                        <div>
+                          <h1 className="text-lg font-bold text-gray-900">Red2Blue</h1>
+                          <p className="text-xs text-gray-500">AI Mental Coach</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Mobile Navigation Items */}
+                    <div className="flex-1 py-6">
+                      <div className="space-y-2">
+                        {navItems.map((item) => {
+                          const isActive = location === item.href;
+                          return (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              onClick={() => setMobileMenuOpen(false)}
+                              className={`flex items-center space-x-3 w-full px-4 py-3 rounded-lg transition-colors ${
+                                isActive
+                                  ? "bg-blue-primary text-white"
+                                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                              }`}
+                            >
+                              <item.icon size={20} />
+                              <span className="font-medium">{item.label}</span>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Mobile Footer */}
+                    <div className="border-t pt-6">
+                      <div className="flex items-center space-x-3 px-4 py-3">
+                        <div className="w-10 h-10 bg-blue-primary rounded-full flex items-center justify-center">
+                          <span className="text-white text-sm font-medium">T</span>
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">Thommo</p>
+                          <p className="text-sm text-gray-500">Your AI Coach</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden z-40">
+        <div className="grid grid-cols-4 gap-1">
+          {navItems.map((item) => {
+            const isActive = location === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex flex-col items-center py-3 px-2 transition-colors ${
+                  isActive ? "text-blue-primary" : "text-gray-400 hover:text-gray-600"
+                }`}
+              >
+                <item.icon size={20} className="mb-1" />
+                <span className="text-xs font-medium">{item.label}</span>
+              </Link>
+            );
+          })}
+          
+          {/* AI Coach Quick Access */}
+          <button className="flex flex-col items-center py-3 px-2 text-gray-400 hover:text-gray-600 transition-colors">
+            <MessageCircle size={20} className="mb-1" />
+            <span className="text-xs font-medium">Coach</span>
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
