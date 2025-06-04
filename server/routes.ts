@@ -761,6 +761,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Debug endpoint to check storage state
+  app.get("/api/debug/users", async (req, res) => {
+    try {
+      const users = await storage.getAllUsers();
+      const userInfo = users.map(user => ({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        passwordExists: !!user.password
+      }));
+      res.json({ users: userInfo, count: users.length });
+    } catch (error: any) {
+      res.status(500).json({ message: "Failed to get users", error: error.message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

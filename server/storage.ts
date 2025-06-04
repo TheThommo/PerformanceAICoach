@@ -86,7 +86,7 @@ export class MemStorage implements IStorage {
     this.mentalSkillsXChecks = new Map();
     this.controlCircles = new Map();
     this.currentId = 1;
-    this.seedData();
+    this.seedData().catch(console.error);
   }
 
   private async ensureInitialized() {
@@ -726,4 +726,4 @@ export class DatabaseStorage implements IStorage {
   }
 }
 
-export const storage = new DatabaseStorage();
+export const storage = new MemStorage();
