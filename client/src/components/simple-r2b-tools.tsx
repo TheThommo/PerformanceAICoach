@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { CheckCircle2, Target, RefreshCw, CircleDot } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { AssessmentResults } from "@/components/assessment-results";
 
 interface SimpleR2BToolsProps {
   userId: number;
@@ -16,6 +17,7 @@ interface SimpleR2BToolsProps {
 
 export function SimpleR2BTools({ userId, tool = "mental-skills" }: SimpleR2BToolsProps) {
   const { toast } = useToast();
+  const [completedAssessment, setCompletedAssessment] = useState<any>(null);
   const [formData, setFormData] = useState({
     context: "",
     reflections: "",
@@ -35,7 +37,8 @@ export function SimpleR2BTools({ userId, tool = "mental-skills" }: SimpleR2BTool
     mutationFn: async (data: any) => {
       return apiRequest('POST', '/api/mental-skills-xcheck', data);
     },
-    onSuccess: () => {
+    onSuccess: (response, variables) => {
+      setCompletedAssessment(variables);
       toast({
         title: "X-Check Complete!",
         description: "Your Mental Skills assessment has been saved successfully.",
@@ -54,7 +57,8 @@ export function SimpleR2BTools({ userId, tool = "mental-skills" }: SimpleR2BTool
     mutationFn: async (data: any) => {
       return apiRequest('POST', '/api/control-circles', data);
     },
-    onSuccess: () => {
+    onSuccess: (response, variables) => {
+      setCompletedAssessment(variables);
       toast({
         title: "Exercise Complete!",
         description: "Your Control Circles exercise has been saved successfully.",
@@ -162,6 +166,10 @@ export function SimpleR2BTools({ userId, tool = "mental-skills" }: SimpleR2BTool
             )}
           </Button>
         </CardContent>
+        
+        {completedAssessment && (
+          <AssessmentResults type="mental-skills" data={completedAssessment} />
+        )}
       </Card>
     );
   }
@@ -241,6 +249,10 @@ export function SimpleR2BTools({ userId, tool = "mental-skills" }: SimpleR2BTool
           )}
         </Button>
       </CardContent>
+      
+      {completedAssessment && (
+        <AssessmentResults type="control-circles" data={completedAssessment} />
+      )}
     </Card>
   );
 }
