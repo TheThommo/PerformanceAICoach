@@ -123,7 +123,7 @@ export default function Tools() {
                   </CardContent>
                 </Card>
                 
-                <SimpleR2BTools userId={userId} />
+                <SimpleR2BTools userId={userId} tool="mental-skills" />
               </div>
             </TabsContent>
 
@@ -159,7 +159,7 @@ export default function Tools() {
                   </CardContent>
                 </Card>
                 
-                <SimpleR2BTools userId={userId} />
+                <SimpleR2BTools userId={userId} tool="control-circles" />
               </div>
             </TabsContent>
 
