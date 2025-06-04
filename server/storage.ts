@@ -178,7 +178,12 @@ export class MemStorage implements IStorage {
     };
 
     const routineId = this.currentId++;
-    this.preShotRoutines.set(routineId, { ...defaultRoutine, id: routineId, createdAt: new Date() });
+    this.preShotRoutines.set(routineId, { 
+      ...defaultRoutine, 
+      id: routineId, 
+      isActive: defaultRoutine.isActive || false,
+      createdAt: new Date() 
+    });
   }
 
   async getUser(id: number): Promise<User | undefined> {
@@ -259,7 +264,11 @@ export class MemStorage implements IStorage {
 
   async createUserProgress(insertProgress: InsertUserProgress): Promise<UserProgress> {
     const id = this.currentId++;
-    const progress: UserProgress = { ...insertProgress, id };
+    const progress: UserProgress = { 
+      ...insertProgress, 
+      id,
+      techniquesUsed: insertProgress.techniquesUsed || null
+    };
     this.userProgress.set(id, progress);
     return progress;
   }
@@ -283,7 +292,11 @@ export class MemStorage implements IStorage {
 
   async createTechnique(insertTechnique: InsertTechnique): Promise<Technique> {
     const id = this.currentId++;
-    const technique: Technique = { ...insertTechnique, id };
+    const technique: Technique = { 
+      ...insertTechnique, 
+      id,
+      duration: insertTechnique.duration || null
+    };
     this.techniques.set(id, technique);
     return technique;
   }
@@ -298,9 +311,109 @@ export class MemStorage implements IStorage {
 
   async createScenario(insertScenario: InsertScenario): Promise<Scenario> {
     const id = this.currentId++;
-    const scenario: Scenario = { ...insertScenario, id };
+    const scenario: Scenario = { 
+      ...insertScenario, 
+      id,
+      redHeadTriggers: insertScenario.redHeadTriggers || null,
+      blueHeadTechniques: insertScenario.blueHeadTechniques || null
+    };
     this.scenarios.set(id, scenario);
     return scenario;
+  }
+
+  // Pre-shot routine operations
+  async createPreShotRoutine(insertRoutine: InsertPreShotRoutine): Promise<PreShotRoutine> {
+    const id = this.currentId++;
+    const routine: PreShotRoutine = { 
+      ...insertRoutine, 
+      id,
+      isActive: insertRoutine.isActive || false,
+      createdAt: new Date()
+    };
+    this.preShotRoutines.set(id, routine);
+    return routine;
+  }
+
+  async getUserPreShotRoutines(userId: number): Promise<PreShotRoutine[]> {
+    return Array.from(this.preShotRoutines.values()).filter(routine => routine.userId === userId);
+  }
+
+  async getActivePreShotRoutine(userId: number): Promise<PreShotRoutine | undefined> {
+    return Array.from(this.preShotRoutines.values()).find(routine => 
+      routine.userId === userId && routine.isActive
+    );
+  }
+
+  async updatePreShotRoutine(id: number, updates: Partial<PreShotRoutine>): Promise<PreShotRoutine> {
+    const existing = this.preShotRoutines.get(id);
+    if (!existing) throw new Error("Pre-shot routine not found");
+    
+    const updated: PreShotRoutine = { ...existing, ...updates };
+    this.preShotRoutines.set(id, updated);
+    return updated;
+  }
+
+  // Mental Skills X-Check operations
+  async createMentalSkillsXCheck(insertXCheck: InsertMentalSkillsXCheck): Promise<MentalSkillsXCheck> {
+    const id = this.currentId++;
+    const xcheck: MentalSkillsXCheck = { 
+      ...insertXCheck, 
+      id,
+      whatDidWell: insertXCheck.whatDidWell || null,
+      whatCouldDoBetter: insertXCheck.whatCouldDoBetter || null,
+      actionPlan: insertXCheck.actionPlan || null,
+      context: insertXCheck.context || null,
+      createdAt: new Date()
+    };
+    this.mentalSkillsXChecks.set(id, xcheck);
+    return xcheck;
+  }
+
+  async getUserMentalSkillsXChecks(userId: number): Promise<MentalSkillsXCheck[]> {
+    return Array.from(this.mentalSkillsXChecks.values())
+      .filter(xcheck => xcheck.userId === userId)
+      .sort((a, b) => {
+        const aDate = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bDate = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bDate - aDate;
+      });
+  }
+
+  async getLatestMentalSkillsXCheck(userId: number): Promise<MentalSkillsXCheck | undefined> {
+    const checks = await this.getUserMentalSkillsXChecks(userId);
+    return checks[0];
+  }
+
+  // Control Circle operations
+  async createControlCircle(insertCircle: InsertControlCircle): Promise<ControlCircle> {
+    const id = this.currentId++;
+    const circle: ControlCircle = { 
+      ...insertCircle, 
+      id,
+      context: insertCircle.context || null,
+      reflections: insertCircle.reflections || null,
+      cantControl: insertCircle.cantControl || null,
+      canInfluence: insertCircle.canInfluence || null,
+      canControl: insertCircle.canControl || null,
+      createdAt: new Date()
+    };
+    this.controlCircles.set(id, circle);
+    return circle;
+  }
+
+  async getUserControlCircles(userId: number): Promise<ControlCircle[]> {
+    return Array.from(this.controlCircles.values())
+      .filter(circle => circle.userId === userId)
+      .sort((a, b) => {
+        const aDate = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bDate = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bDate - aDate;
+      });
+  }
+
+  async getLatestControlCircle(userId: number): Promise<ControlCircle | undefined> {
+    const circles = await this.getUserControlCircles(userId);
+    return circles[0];
   }
 }
 
