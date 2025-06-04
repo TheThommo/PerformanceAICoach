@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, jsonb, date } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -108,6 +108,40 @@ export const controlCircles = pgTable("control_circles", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Daily check-ins and leaderboard
+export const dailyCheckIns = pgTable("daily_check_ins", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  date: date("date").notNull(),
+  completed: boolean("completed").default(false),
+  points: integer("points").default(10),
+  streakCount: integer("streak_count").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Progress tracking for techniques
+export const techniqueProgress = pgTable("technique_progress", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  techniqueId: integer("technique_id").notNull(),
+  practiceCount: integer("practice_count").default(0),
+  masteryLevel: text("mastery_level").$type<"beginner" | "intermediate" | "advanced" | "expert">().default("beginner"),
+  lastPracticed: timestamp("last_practiced").defaultNow(),
+  totalTimeSpent: integer("total_time_spent").default(0), // in minutes
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Calendar reminders
+export const calendarReminders = pgTable("calendar_reminders", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  provider: text("provider").$type<"outlook" | "google" | "icloud">().notNull(),
+  reminderTime: text("reminder_time").notNull(), // HH:MM format
+  timezone: text("timezone").default("UTC"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -151,6 +185,21 @@ export const insertControlCircleSchema = createInsertSchema(controlCircles).omit
   createdAt: true,
 });
 
+export const insertDailyCheckInSchema = createInsertSchema(dailyCheckIns).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertTechniqueProgressSchema = createInsertSchema(techniqueProgress).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertCalendarReminderSchema = createInsertSchema(calendarReminders).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type Assessment = typeof assessments.$inferSelect;
@@ -169,3 +218,9 @@ export type MentalSkillsXCheck = typeof mentalSkillsXChecks.$inferSelect;
 export type InsertMentalSkillsXCheck = z.infer<typeof insertMentalSkillsXCheckSchema>;
 export type ControlCircle = typeof controlCircles.$inferSelect;
 export type InsertControlCircle = z.infer<typeof insertControlCircleSchema>;
+export type DailyCheckIn = typeof dailyCheckIns.$inferSelect;
+export type InsertDailyCheckIn = z.infer<typeof insertDailyCheckInSchema>;
+export type TechniqueProgress = typeof techniqueProgress.$inferSelect;
+export type InsertTechniqueProgress = z.infer<typeof insertTechniqueProgressSchema>;
+export type CalendarReminder = typeof calendarReminders.$inferSelect;
+export type InsertCalendarReminder = z.infer<typeof insertCalendarReminderSchema>;
