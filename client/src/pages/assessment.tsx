@@ -237,13 +237,16 @@ export default function Assessment() {
       parseInt(data.executionQ1) + parseInt(data.executionQ2) + parseInt(data.executionQ3)
     ) / 3);
 
-    mutation.mutate({
-      userId: mockUserId,
+    const submitData = {
+      userId: 2, // Using authenticated user ID
       intensityScore,
       decisionMakingScore,
       diversionsScore,
       executionScore,
-    });
+    };
+
+    console.log('Submitting assessment data:', submitData);
+    mutation.mutate(submitData);
   };
 
   const handleNext = () => {
