@@ -3,18 +3,27 @@ import { Link, useLocation } from "wouter";
 import { Brain, Bell, Menu, X, Home, BarChart3, MessageCircle, Zap, Wrench, Users, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useAuth } from "@/hooks/useAuth";
 
 export function Navigation() {
   const [location] = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user } = useAuth();
 
-  const navItems = [
+  const baseNavItems = [
     { href: "/", label: "Dashboard", icon: Home },
     { href: "/assessment", label: "Assessment", icon: BarChart3 },
     { href: "/techniques", label: "Techniques", icon: Zap },
     { href: "/tools", label: "R2B Tools", icon: Wrench },
     { href: "/community", label: "Community", icon: Trophy },
-    { href: "/coach", label: "Coach Dashboard", icon: Users },
+  ];
+
+  // Add admin/coach-only items
+  const navItems = [
+    ...baseNavItems,
+    ...(user?.role === 'admin' || user?.role === 'coach' 
+      ? [{ href: "/coach", label: "Coach Dashboard", icon: Users }] 
+      : [])
   ];
 
   return (

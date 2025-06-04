@@ -225,8 +225,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Community leaderboard and check-in routes
-  app.get("/api/leaderboard", async (req, res) => {
+  app.get("/api/leaderboard", requireAuth, async (req, res) => {
     try {
+      const currentUser = (req as AuthRequest).user;
+      
       // For now, return mock data with 15 test clients (12 Premium, 3 Ultimate)
       const mockLeaderboard = [
         { id: 101, username: "Tiger_Elite", points: 2850, streak: 45, tier: "ultimate", lastCheckIn: "2024-06-04", rank: 1 },
@@ -246,7 +248,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         { id: 115, username: "ElitePerformer", points: 910, streak: 1, tier: "premium", lastCheckIn: "2024-06-04", rank: 15 }
       ];
       
-      res.json(mockLeaderboard);
+      // Filter leaderboard based on user's subscription tier
+      const filteredLeaderboard = mockLeaderboard.map(entry => {
+        // Free users can only see anonymous usernames and basic stats
+        if (currentUser.subscriptionTier === 'free') {
+          return {
+            id: entry.id,
+            username: `Player #${entry.rank}`, // Anonymous for free users
+            points: entry.points,
+            streak: entry.streak,
+            tier: 'hidden', // Hide tier information for free users
+            lastCheckIn: entry.lastCheckIn,
+            rank: entry.rank
+          };
+        }
+        
+        // Premium/Ultimate users can see full leaderboard
+        return entry;
+      });
+      
+      res.json(filteredLeaderboard);
     } catch (error: any) {
       console.error('Leaderboard error:', error);
       res.status(500).json({ message: 'Failed to fetch leaderboard' });

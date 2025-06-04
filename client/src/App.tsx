@@ -45,7 +45,10 @@ function Router() {
         <Route path="/community">
           {() => <Community userId={user?.id || 1} />}
         </Route>
-        <Route path="/coach" component={CoachDashboard} />
+        {/* Admin/Coach only routes */}
+        {(user?.role === 'admin' || user?.role === 'coach') && (
+          <Route path="/coach" component={CoachDashboard} />
+        )}
         <Route component={NotFound} />
       </Switch>
     </div>
