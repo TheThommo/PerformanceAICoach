@@ -136,8 +136,8 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Floating Chat Component */}
-      <LandingChat />
+      {/* Floating Chat Component - Temporarily disabled for debugging */}
+      {/* <LandingChat /> */}
 
       {/* Features Section */}
       <section className="py-16 bg-white">
