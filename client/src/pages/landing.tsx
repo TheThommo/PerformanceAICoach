@@ -48,40 +48,73 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="pt-20 pb-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
+      {/* AI Chat Hero Section */}
+      <section className="pt-12 pb-16 bg-gradient-to-br from-blue-50 via-white to-red-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
             <Badge variant="secondary" className="mb-4">
               AI-Powered Mental Performance
             </Badge>
-            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
-              Transform Your
+            <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+              Meet Thommo - Your
               <span className="bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">
-                {" "}Mental Game
+                {" "}AI Mental Coach
               </span>
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              Elite mental performance coaching powered by AI. Master the Red2Blue methodology 
-              with personalized assessments, real-time coaching, and proven techniques used by champions.
+              Get instant Red2Blue coaching. Ask about handling pressure, improving focus, or any mental game challenge.
             </p>
-            
-            {/* Thommo Avatar */}
-            <div className="flex justify-center mb-8">
-              <div className="relative">
-                <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-2xl">
-                  <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center">
-                    <Brain className="w-12 h-12 text-blue-600" />
-                  </div>
+          </div>
+
+          {/* Featured AI Chat Window */}
+          <div className="bg-white rounded-2xl shadow-2xl border-2 border-blue-100 max-w-4xl mx-auto mb-12">
+            <div className="bg-gradient-to-r from-blue-600 to-red-600 text-white p-6 rounded-t-2xl">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                  <Brain size={24} />
                 </div>
-                <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white flex items-center justify-center">
-                  <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
+                <div>
+                  <h3 className="text-xl font-bold">Thommo AI Coach</h3>
+                  <p className="text-blue-100">Red2Blue Mental Performance Expert</p>
+                </div>
+                <div className="ml-auto flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                  <span className="text-sm">Online</span>
                 </div>
               </div>
             </div>
             
+            <div className="p-6 space-y-4">
+              {/* Sample conversation */}
+              <div className="bg-gray-100 p-4 rounded-lg max-w-[80%]">
+                <p className="text-gray-800">Hi! I'm Thommo, your Red2Blue mental performance coach. Ask me about handling pressure, improving focus, or any mental game challenge you're facing on the course.</p>
+              </div>
+              
+              <div className="bg-blue-600 text-white p-4 rounded-lg max-w-[80%] ml-auto">
+                <p>I get nervous on the first tee. My heart races and I overthink every aspect of my swing. How can I stay calm?</p>
+              </div>
+              
+              <div className="bg-gray-100 p-4 rounded-lg max-w-[80%]">
+                <p className="text-gray-800">Let's tackle those first-tee nerves. Try box breathing: breathe in for 4 counts, hold for 4, out for 4, hold for 4. This calms your nervous system instantly. Before your shot, stick to your pre-shot routine religiously. Focus on your process, not the outcome.</p>
+              </div>
+              
+              <div className="flex items-center space-x-3 pt-4 border-t">
+                <input 
+                  type="text" 
+                  placeholder="Try: 'I missed a short putt and got frustrated' or 'How do I handle pressure?'" 
+                  className="flex-1 p-3 border rounded-lg bg-gray-50"
+                  disabled
+                />
+                <Button className="bg-blue-600 hover:bg-blue-700 px-6">
+                  Try Now
+                </Button>
+              </div>
+            </div>
+          </div>
+          
+          <div className="text-center">
             <p className="text-lg text-gray-700 mb-8">
-              Meet <strong>Thommo</strong> - Your AI Mental Performance Coach
+              <strong>Start chatting instantly</strong> or sign up for full access to personalized coaching
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -99,6 +132,9 @@ export default function Landing() {
           </div>
         </div>
       </section>
+
+      {/* Floating Chat Component */}
+      <LandingChat />
 
       {/* Features Section */}
       <section className="py-16 bg-white">
