@@ -73,6 +73,8 @@ export class MemStorage implements IStorage {
   private controlCircles: Map<number, ControlCircle>;
   private currentId: number;
 
+  private initialized = false;
+
   constructor() {
     this.users = new Map();
     this.assessments = new Map();
@@ -84,39 +86,48 @@ export class MemStorage implements IStorage {
     this.mentalSkillsXChecks = new Map();
     this.controlCircles = new Map();
     this.currentId = 1;
-    this.seedData().catch(console.error);
+    this.seedData();
+  }
+
+  private async ensureInitialized() {
+    if (!this.initialized) {
+      await this.seedData();
+    }
   }
 
   private async seedData() {
-    // Seed admin user
-    const { hashPassword } = await import('./auth');
-    const adminPassword = await hashPassword('mindsetskills101');
+    if (this.initialized) return;
     
-    const adminUser: User = {
-      id: 1,
-      username: 'mark',
-      email: 'mark@cero-international.com',
-      password: adminPassword,
-      dateOfBirth: new Date('1980-01-01'),
-      dexterity: 'right',
-      gender: 'male',
-      golfHandicap: 5,
-      bio: 'System Administrator and Golf Mental Performance Expert',
-      aiGeneratedProfile: null,
-      profileImageUrl: null,
-      isSubscribed: true,
-      subscriptionTier: 'ultimate',
-      role: 'admin',
-      stripeCustomerId: null,
-      stripeSubscriptionId: null,
-      subscriptionStartDate: new Date(),
-      subscriptionEndDate: null,
-      createdAt: new Date(),
-      updatedAt: new Date()
-    };
-    
-    this.users.set(1, adminUser);
-    this.currentId = 2;
+    try {
+      // Seed admin user
+      const { hashPassword } = await import('./auth');
+      const adminPassword = await hashPassword('mindsetskills101');
+      
+      const adminUser: User = {
+        id: 1,
+        username: 'mark',
+        email: 'mark@cero-international.com',
+        password: adminPassword,
+        dateOfBirth: new Date('1980-01-01'),
+        dexterity: 'right',
+        gender: 'male',
+        golfHandicap: 5,
+        bio: 'System Administrator and Golf Mental Performance Expert',
+        aiGeneratedProfile: null,
+        profileImageUrl: null,
+        isSubscribed: true,
+        subscriptionTier: 'ultimate',
+        role: 'admin',
+        stripeCustomerId: null,
+        stripeSubscriptionId: null,
+        subscriptionStartDate: new Date(),
+        subscriptionEndDate: null,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      
+      this.users.set(1, adminUser);
+      this.currentId = 2;
 
     // Seed default techniques
     const defaultTechniques: InsertTechnique[] = [
@@ -219,6 +230,12 @@ export class MemStorage implements IStorage {
       isActive: defaultRoutine.isActive || false,
       createdAt: new Date() 
     });
+    
+    this.initialized = true;
+    console.log('Storage initialized with admin user:', this.users.get(1)?.email);
+    } catch (error) {
+      console.error('Failed to seed data:', error);
+    }
   }
 
   async getUser(id: number): Promise<User | undefined> {
@@ -230,6 +247,7 @@ export class MemStorage implements IStorage {
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
+    await this.ensureInitialized();
     return Array.from(this.users.values()).find(user => user.email === email);
   }
 
