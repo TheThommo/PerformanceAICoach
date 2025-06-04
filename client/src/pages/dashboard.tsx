@@ -8,6 +8,7 @@ import { AIChat } from "@/components/ai-chat";
 import { AssessmentCard } from "@/components/assessment-card";
 import { TechniqueCard } from "@/components/technique-card";
 import { ProgressChart } from "@/components/progress-chart";
+import { MoodTracker } from "@/components/mood-tracker";
 import { Link } from "wouter";
 
 const mockUserId = 1; // In a real app, this would come from authentication
@@ -272,17 +273,9 @@ export default function Dashboard() {
             ))}
           </div>
 
-          {/* Emergency Button */}
-          <div className="mt-8 p-6 bg-gradient-to-r from-red-light to-orange-50 rounded-xl border border-red-200">
-            <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-semibold text-red-primary mb-1">Feeling Red Head Stress?</h4>
-                <p className="text-sm text-red-600">Get immediate relief with our fastest technique</p>
-              </div>
-              <Button className="bg-red-primary hover:bg-red-600 text-white shadow-lg">
-                ⚡ Quick Relief
-              </Button>
-            </div>
+          {/* Daily Mood Tracker */}
+          <div className="mt-8">
+            <MoodTracker userId={mockUserId} />
           </div>
         </CardContent>
       </Card>

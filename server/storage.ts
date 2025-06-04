@@ -1083,6 +1083,97 @@ export class DatabaseStorage implements IStorage {
       .limit(1);
     return circle || undefined;
   }
+
+  // Daily Mood operations
+  async createDailyMood(insertMood: InsertDailyMood): Promise<DailyMood> {
+    const [mood] = await db
+      .insert(dailyMoods)
+      .values(insertMood)
+      .returning();
+    return mood;
+  }
+
+  async getDailyMood(userId: number, date: string): Promise<DailyMood | undefined> {
+    const [mood] = await db
+      .select()
+      .from(dailyMoods)
+      .where(eq(dailyMoods.userId, userId) && eq(dailyMoods.date, date))
+      .limit(1);
+    return mood || undefined;
+  }
+
+  async updateDailyMood(id: number, updates: Partial<DailyMood>): Promise<DailyMood> {
+    const [mood] = await db
+      .update(dailyMoods)
+      .set(updates)
+      .where(eq(dailyMoods.id, id))
+      .returning();
+    return mood;
+  }
+
+  async getUserMoods(userId: number, days: number = 30): Promise<DailyMood[]> {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    
+    return await db
+      .select()
+      .from(dailyMoods)
+      .where(eq(dailyMoods.userId, userId))
+      .orderBy(desc(dailyMoods.date));
+  }
+
+  // Placeholder methods for missing interface requirements
+  async createUserCoachingProfile(profile: InsertUserCoachingProfile): Promise<UserCoachingProfile> {
+    throw new Error('Method not implemented in DatabaseStorage');
+  }
+
+  async getUserCoachingProfile(userId: number): Promise<UserCoachingProfile | undefined> {
+    throw new Error('Method not implemented in DatabaseStorage');
+  }
+
+  async updateUserCoachingProfile(userId: number, updates: Partial<UserCoachingProfile>): Promise<UserCoachingProfile> {
+    throw new Error('Method not implemented in DatabaseStorage');
+  }
+
+  async createAiRecommendation(recommendation: InsertAiRecommendation): Promise<AiRecommendation> {
+    throw new Error('Method not implemented in DatabaseStorage');
+  }
+
+  async getUserRecommendations(userId: number, isActive?: boolean): Promise<AiRecommendation[]> {
+    throw new Error('Method not implemented in DatabaseStorage');
+  }
+
+  async updateRecommendationFeedback(id: number, feedback: number, comments?: string): Promise<AiRecommendation> {
+    throw new Error('Method not implemented in DatabaseStorage');
+  }
+
+  async markRecommendationApplied(id: number, effectivenessMeasure?: number): Promise<AiRecommendation> {
+    throw new Error('Method not implemented in DatabaseStorage');
+  }
+
+  async createCoachingInsight(insight: InsertCoachingInsight): Promise<CoachingInsight> {
+    throw new Error('Method not implemented in DatabaseStorage');
+  }
+
+  async getUserInsights(userId: number, isAcknowledged?: boolean): Promise<CoachingInsight[]> {
+    throw new Error('Method not implemented in DatabaseStorage');
+  }
+
+  async acknowledgeInsight(id: number): Promise<CoachingInsight> {
+    throw new Error('Method not implemented in DatabaseStorage');
+  }
+
+  async createEngagementMetric(metric: InsertUserEngagementMetric): Promise<UserEngagementMetric> {
+    throw new Error('Method not implemented in DatabaseStorage');
+  }
+
+  async getUserEngagementMetrics(userId: number, days?: number): Promise<UserEngagementMetric[]> {
+    throw new Error('Method not implemented in DatabaseStorage');
+  }
+
+  async updateEngagementMetric(userId: number, date: string, updates: Partial<UserEngagementMetric>): Promise<UserEngagementMetric> {
+    throw new Error('Method not implemented in DatabaseStorage');
+  }
 }
 
 export const storage = new MemStorage();
