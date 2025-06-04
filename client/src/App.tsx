@@ -7,6 +7,7 @@ import { Navigation } from "@/components/navigation";
 import Dashboard from "@/pages/dashboard";
 import Assessment from "@/pages/assessment";
 import Techniques from "@/pages/techniques";
+import Tools from "@/pages/tools";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -17,6 +18,7 @@ function Router() {
         <Route path="/" component={Dashboard} />
         <Route path="/assessment" component={Assessment} />
         <Route path="/techniques" component={Techniques} />
+        <Route path="/tools" component={Tools} />
         <Route component={NotFound} />
       </Switch>
     </div>

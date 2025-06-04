@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertAssessmentSchema, insertChatSessionSchema, insertUserProgressSchema } from "@shared/schema";
+import { insertAssessmentSchema, insertChatSessionSchema, insertUserProgressSchema, insertPreShotRoutineSchema, insertMentalSkillsXCheckSchema, insertControlCircleSchema } from "@shared/schema";
 import { getCoachingResponse, analyzeAssessmentResults, generatePersonalizedPlan } from "./openai";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -170,6 +170,108 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(scenarios);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch scenarios", error: (error as Error).message });
+    }
+  });
+
+  // Pre-shot routine routes
+  app.post("/api/pre-shot-routines", async (req, res) => {
+    try {
+      const data = insertPreShotRoutineSchema.parse(req.body);
+      const routine = await storage.createPreShotRoutine(data);
+      res.status(201).json(routine);
+    } catch (error) {
+      res.status(400).json({ message: "Failed to create pre-shot routine", error: (error as Error).message });
+    }
+  });
+
+  app.get("/api/pre-shot-routines/active/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const routine = await storage.getActivePreShotRoutine(userId);
+      if (!routine) {
+        return res.status(404).json({ message: "No active routine found" });
+      }
+      res.json(routine);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch active routine", error: (error as Error).message });
+    }
+  });
+
+  app.get("/api/pre-shot-routines/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const routines = await storage.getUserPreShotRoutines(userId);
+      res.json(routines);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch user routines", error: (error as Error).message });
+    }
+  });
+
+  // Mental Skills X-Check routes
+  app.post("/api/mental-skills-xcheck", async (req, res) => {
+    try {
+      const data = insertMentalSkillsXCheckSchema.parse(req.body);
+      const xcheck = await storage.createMentalSkillsXCheck(data);
+      res.status(201).json(xcheck);
+    } catch (error) {
+      res.status(400).json({ message: "Failed to create mental skills x-check", error: (error as Error).message });
+    }
+  });
+
+  app.get("/api/mental-skills-xcheck/latest/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const xcheck = await storage.getLatestMentalSkillsXCheck(userId);
+      if (!xcheck) {
+        return res.status(404).json({ message: "No x-check found" });
+      }
+      res.json(xcheck);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch latest x-check", error: (error as Error).message });
+    }
+  });
+
+  app.get("/api/mental-skills-xcheck/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const xchecks = await storage.getUserMentalSkillsXChecks(userId);
+      res.json(xchecks);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch user x-checks", error: (error as Error).message });
+    }
+  });
+
+  // Control Circles routes
+  app.post("/api/control-circles", async (req, res) => {
+    try {
+      const data = insertControlCircleSchema.parse(req.body);
+      const circle = await storage.createControlCircle(data);
+      res.status(201).json(circle);
+    } catch (error) {
+      res.status(400).json({ message: "Failed to create control circle", error: (error as Error).message });
+    }
+  });
+
+  app.get("/api/control-circles/latest/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const circle = await storage.getLatestControlCircle(userId);
+      if (!circle) {
+        return res.status(404).json({ message: "No control circle found" });
+      }
+      res.json(circle);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch latest control circle", error: (error as Error).message });
+    }
+  });
+
+  app.get("/api/control-circles/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const circles = await storage.getUserControlCircles(userId);
+      res.json(circles);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch user control circles", error: (error as Error).message });
     }
   });
 
