@@ -32,12 +32,14 @@ export function LandingChat() {
   const [isExpanded, setIsExpanded] = useState(false);
   const [freeMessageUsed, setFreeMessageUsed] = useState(false);
 
-  // Check authentication status
+  // Check authentication status only when chat is opened
   const { data: user, isLoading } = useQuery({
     queryKey: ["/api/auth/me"],
+    enabled: isExpanded, // Only query when chat is opened
     retry: false,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
+    refetchInterval: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
