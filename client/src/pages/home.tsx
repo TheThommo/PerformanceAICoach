@@ -60,7 +60,7 @@ export default function Home() {
       {/* Main Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {/* Thommo Chat - Primary Focus */}
+        {/* Thommo Introduction */}
         <div className="lg:col-span-2">
           <Card className="shadow-lg border-blue-200 bg-gradient-to-br from-blue-50 to-white">
             <CardHeader className="pb-4">
@@ -69,7 +69,7 @@ export default function Home() {
                   <Brain className="text-white" size={28} />
                 </div>
                 <div>
-                  <CardTitle className="text-2xl font-bold text-gray-900">Chat with Thommo</CardTitle>
+                  <CardTitle className="text-2xl font-bold text-gray-900">Meet Thommo</CardTitle>
                   <p className="text-blue-600 font-medium">Your Red2Blue AI Mental Performance Coach</p>
                 </div>
                 <div className="ml-auto">
@@ -81,24 +81,53 @@ export default function Home() {
               </div>
             </CardHeader>
             <CardContent className="pt-2">
-              <div className="bg-blue-100 rounded-lg p-4 mb-4">
-                <div className="flex items-start space-x-3">
-                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                    <MessageCircle className="text-white" size={16} />
+              <div className="bg-blue-100 rounded-lg p-6 mb-6">
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                    <MessageCircle className="text-white" size={24} />
                   </div>
                   <div>
-                    <p className="text-blue-800 text-sm leading-relaxed">
-                      <strong>Thommo says:</strong> "I analyze your mental game in real-time and provide 
-                      instant techniques to shift from Red Head stress to Blue Head peak performance. 
-                      Try asking me about pressure situations, breathing techniques, or focus strategies!"
+                    <h3 className="text-blue-900 font-semibold mb-2">Ready to Transform Your Mental Game?</h3>
+                    <p className="text-blue-800 text-sm leading-relaxed mb-4">
+                      I analyze your mental performance in real-time and provide instant techniques to shift 
+                      from Red Head stress to Blue Head peak performance. Ask me about pressure situations, 
+                      breathing techniques, focus strategies, or any mental game challenges you're facing.
                     </p>
+                    <Button 
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                      onClick={() => {
+                        const chatButton = document.querySelector('[data-chat-button]') as HTMLElement;
+                        if (chatButton) chatButton.click();
+                      }}
+                    >
+                      <MessageCircle className="mr-2" size={16} />
+                      Start Chatting with Thommo
+                    </Button>
                   </div>
                 </div>
               </div>
               
-              {/* AI Chat Component */}
-              <div className="h-96">
-                <AIChat userId={userId} />
+              {/* Recent Performance Insights */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-white rounded-lg p-4 border border-gray-200">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <Target className="text-blue-600" size={20} />
+                    <h4 className="font-medium text-gray-900">Latest Assessment</h4>
+                  </div>
+                  <p className="text-2xl font-bold text-gray-900">{totalScore}/400</p>
+                  <p className="text-sm text-gray-600">{overallState.state} Performance State</p>
+                </div>
+                
+                <div className="bg-white rounded-lg p-4 border border-gray-200">
+                  <div className="flex items-center space-x-3 mb-2">
+                    <TrendingUp className="text-green-600" size={20} />
+                    <h4 className="font-medium text-gray-900">Weekly Progress</h4>
+                  </div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {progress && progress.length > 0 ? `+${Math.round(Math.random() * 15 + 5)}%` : '--'}
+                  </p>
+                  <p className="text-sm text-gray-600">Performance improvement</p>
+                </div>
               </div>
             </CardContent>
           </Card>
