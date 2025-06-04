@@ -185,7 +185,7 @@ export default function Landing() {
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Limited chat with Thommo</li>
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Limited document downloads</li>
                 </ul>
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full" onClick={() => setShowSignUp(true)}>
                   Get Started Free
                 </Button>
               </CardContent>
@@ -218,7 +218,7 @@ export default function Landing() {
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />All assessment tools</li>
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Priority support</li>
                 </ul>
-                <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => setShowSignUp(true)}>
                   Start Premium Trial
                 </Button>
                 <p className="text-xs text-center text-gray-500">14-day free trial, then $828/year</p>

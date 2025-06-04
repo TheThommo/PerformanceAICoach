@@ -207,6 +207,16 @@ export class MemStorage implements IStorage {
     return Array.from(this.users.values());
   }
 
+  async updateUser(id: number, updates: Partial<User>): Promise<User> {
+    const existingUser = this.users.get(id);
+    if (!existingUser) {
+      throw new Error('User not found');
+    }
+    const updatedUser = { ...existingUser, ...updates };
+    this.users.set(id, updatedUser);
+    return updatedUser;
+  }
+
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = this.currentId++;
     const user: User = { 
@@ -456,6 +466,15 @@ export class DatabaseStorage implements IStorage {
   async getUserByEmail(email: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.email, email));
     return user || undefined;
+  }
+
+  async updateUser(id: number, updates: Partial<User>): Promise<User> {
+    const [user] = await db
+      .update(users)
+      .set(updates)
+      .where(eq(users.id, id))
+      .returning();
+    return user;
   }
 
   async createAssessment(insertAssessment: InsertAssessment): Promise<Assessment> {
