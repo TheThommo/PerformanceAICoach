@@ -250,7 +250,7 @@ export default function Landing() {
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Custom training programs</li>
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />VIP support channel</li>
                 </ul>
-                <Button className="w-full bg-purple-600 hover:bg-purple-700">
+                <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={() => setShowSignUp(true)}>
                   Start Ultimate Trial
                 </Button>
                 <p className="text-xs text-center text-gray-500">14-day free trial, then $1,908/year</p>
