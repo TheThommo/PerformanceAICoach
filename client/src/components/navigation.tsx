@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Brain, Bell, Menu, X, Home, BarChart3, MessageCircle, Zap, Wrench, Users } from "lucide-react";
+import { Brain, Bell, Menu, X, Home, BarChart3, MessageCircle, Zap, Wrench, Users, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 

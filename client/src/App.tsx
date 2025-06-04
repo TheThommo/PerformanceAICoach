@@ -10,6 +10,7 @@ import Dashboard from "@/pages/dashboard";
 import Assessment from "@/pages/assessment";
 import Techniques from "@/pages/techniques";
 import Tools from "@/pages/tools";
+import Community from "@/pages/community";
 import CoachDashboard from "@/pages/coach-dashboard";
 import NotFound from "@/pages/not-found";
 
@@ -41,6 +42,9 @@ function Router() {
         <Route path="/assessment" component={Assessment} />
         <Route path="/techniques" component={Techniques} />
         <Route path="/tools" component={Tools} />
+        <Route path="/community">
+          {() => <Community userId={user?.id || 1} />}
+        </Route>
         <Route path="/coach" component={CoachDashboard} />
         <Route component={NotFound} />
       </Switch>

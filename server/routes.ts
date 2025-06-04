@@ -210,6 +210,141 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     });
   });
+
+  // Community leaderboard and check-in routes
+  app.get("/api/leaderboard", async (req, res) => {
+    try {
+      // For now, return mock data with 15 test clients (12 Premium, 3 Ultimate)
+      const mockLeaderboard = [
+        { id: 101, username: "Tiger_Elite", points: 2850, streak: 45, tier: "ultimate", lastCheckIn: "2024-06-04", rank: 1 },
+        { id: 102, username: "PGA_Champion", points: 2620, streak: 38, tier: "premium", lastCheckIn: "2024-06-04", rank: 2 },
+        { id: 103, username: "MindsetMaster", points: 2480, streak: 42, tier: "ultimate", lastCheckIn: "2024-06-03", rank: 3 },
+        { id: 104, username: "FocusFlow", points: 2350, streak: 35, tier: "premium", lastCheckIn: "2024-06-04", rank: 4 },
+        { id: 105, username: "PressureProof", points: 2210, streak: 28, tier: "premium", lastCheckIn: "2024-06-04", rank: 5 },
+        { id: 106, username: "ZoneWarrior", points: 2080, streak: 31, tier: "premium", lastCheckIn: "2024-06-03", rank: 6 },
+        { id: 107, username: "ClutchPlayer", points: 1950, streak: 25, tier: "ultimate", lastCheckIn: "2024-06-04", rank: 7 },
+        { id: 108, username: "MentalTough", points: 1820, streak: 22, tier: "premium", lastCheckIn: "2024-06-04", rank: 8 },
+        { id: 109, username: "VisualizePro", points: 1690, streak: 19, tier: "premium", lastCheckIn: "2024-06-03", rank: 9 },
+        { id: 110, username: "ConfidenceKing", points: 1560, streak: 16, tier: "premium", lastCheckIn: "2024-06-04", rank: 10 },
+        { id: 111, username: "BreatheMaster", points: 1430, streak: 13, tier: "premium", lastCheckIn: "2024-06-04", rank: 11 },
+        { id: 112, username: "FlowState", points: 1300, streak: 10, tier: "premium", lastCheckIn: "2024-06-03", rank: 12 },
+        { id: 113, username: "WinnerMindset", points: 1170, streak: 7, tier: "premium", lastCheckIn: "2024-06-04", rank: 13 },
+        { id: 114, username: "ChampionFocus", points: 1040, streak: 4, tier: "premium", lastCheckIn: "2024-06-04", rank: 14 },
+        { id: 115, username: "ElitePerformer", points: 910, streak: 1, tier: "premium", lastCheckIn: "2024-06-04", rank: 15 }
+      ];
+      
+      res.json(mockLeaderboard);
+    } catch (error: any) {
+      console.error('Leaderboard error:', error);
+      res.status(500).json({ message: 'Failed to fetch leaderboard' });
+    }
+  });
+
+  app.get("/api/check-in/today/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const today = new Date().toISOString().split('T')[0];
+      
+      // Mock response for today's check-in status
+      const mockCheckIn = {
+        completedToday: Math.random() > 0.7, // 30% chance already completed
+        streakCount: Math.floor(Math.random() * 20) + 1,
+        totalPoints: Math.floor(Math.random() * 1000) + 100
+      };
+      
+      res.json(mockCheckIn);
+    } catch (error: any) {
+      console.error('Check-in status error:', error);
+      res.status(500).json({ message: 'Failed to fetch check-in status' });
+    }
+  });
+
+  app.post("/api/check-in", async (req, res) => {
+    try {
+      const { userId } = req.body;
+      
+      // Mock successful check-in
+      const result = {
+        success: true,
+        pointsEarned: 10,
+        newStreak: Math.floor(Math.random() * 20) + 2,
+        totalPoints: Math.floor(Math.random() * 1000) + 110
+      };
+      
+      res.json(result);
+    } catch (error: any) {
+      console.error('Check-in error:', error);
+      res.status(500).json({ message: 'Failed to complete check-in' });
+    }
+  });
+
+  app.get("/api/progress/techniques/:userId", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      
+      // Mock technique progress data
+      const mockProgress = [
+        {
+          id: 1,
+          techniqueId: 1,
+          techniqueName: "Box Breathing",
+          category: "focus",
+          practiceCount: 15,
+          masteryLevel: "intermediate",
+          totalTimeSpent: 75,
+          lastPracticed: "2024-06-03",
+          streakDays: 5
+        },
+        {
+          id: 2,
+          techniqueId: 2,
+          techniqueName: "Visualization Training",
+          category: "visualization",
+          practiceCount: 8,
+          masteryLevel: "beginner",
+          totalTimeSpent: 40,
+          lastPracticed: "2024-06-02",
+          streakDays: 2
+        },
+        {
+          id: 3,
+          techniqueId: 3,
+          techniqueName: "Pressure Response",
+          category: "pressure",
+          practiceCount: 22,
+          masteryLevel: "advanced",
+          totalTimeSpent: 110,
+          lastPracticed: "2024-06-04",
+          streakDays: 8
+        }
+      ];
+      
+      res.json(mockProgress);
+    } catch (error: any) {
+      console.error('Progress fetch error:', error);
+      res.status(500).json({ message: 'Failed to fetch technique progress' });
+    }
+  });
+
+  app.post("/api/progress/practice-session", async (req, res) => {
+    try {
+      const { userId, techniqueId, duration } = req.body;
+      
+      // Mock successful practice session
+      const result = {
+        success: true,
+        sessionCompleted: true,
+        timeAdded: duration,
+        practiceCountIncremented: true,
+        streakMaintained: true
+      };
+      
+      res.json(result);
+    } catch (error: any) {
+      console.error('Practice session error:', error);
+      res.status(500).json({ message: 'Failed to record practice session' });
+    }
+  });
   
   // Assessment routes
   app.post("/api/assessments", async (req, res) => {
