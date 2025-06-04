@@ -537,6 +537,10 @@ export class MemStorage implements IStorage {
     );
   }
 
+  async getPreShotRoutineById(id: number): Promise<PreShotRoutine | undefined> {
+    return this.preShotRoutines.get(id);
+  }
+
   async updatePreShotRoutine(id: number, updates: Partial<PreShotRoutine>): Promise<PreShotRoutine> {
     const existing = this.preShotRoutines.get(id);
     if (!existing) throw new Error("Pre-shot routine not found");
@@ -544,6 +548,13 @@ export class MemStorage implements IStorage {
     const updated: PreShotRoutine = { ...existing, ...updates };
     this.preShotRoutines.set(id, updated);
     return updated;
+  }
+
+  async deletePreShotRoutine(id: number): Promise<void> {
+    if (!this.preShotRoutines.has(id)) {
+      throw new Error("Pre-shot routine not found");
+    }
+    this.preShotRoutines.delete(id);
   }
 
   // Mental Skills X-Check operations

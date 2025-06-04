@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Timer, Target, CircleDot, Brain } from "lucide-react";
-import { PreShotRoutineComponent } from "@/components/pre-shot-routine";
+import { PreShotRoutineBuilder } from "@/components/pre-shot-routine-builder";
 import { MentalSkillsXCheck } from "@/components/mental-skills-xcheck";
 import { ControlCircles } from "@/components/control-circles";
 import { useAuth } from "@/hooks/useAuth";
@@ -87,7 +87,7 @@ export default function Tools() {
                   </CardContent>
                 </Card>
                 
-                <PreShotRoutineComponent userId={userId} />
+                <PreShotRoutineBuilder userId={userId} />
               </div>
             </TabsContent>
 
