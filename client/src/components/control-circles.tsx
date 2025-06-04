@@ -63,9 +63,8 @@ export function ControlCircles({ userId }: ControlCirclesProps) {
   const createCircleMutation = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
       const payload = {
-        userId: data.userId,
-        context: data.context,
-        reflections: data.reflections,
+        context: data.context || null,
+        reflections: data.reflections || null,
         cantControl: data.cantControlItems.filter(item => item.trim() !== ""),
         canInfluence: data.canInfluenceItems.filter(item => item.trim() !== ""),
         canControl: data.canControlItems.filter(item => item.trim() !== "")

@@ -69,15 +69,14 @@ export function MentalSkillsXCheck({ userId }: MentalSkillsXCheckProps) {
   const createXCheckMutation = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
       const payload = {
-        userId: data.userId,
         intensityScores: [data.intensity1, data.intensity2, data.intensity3],
         decisionMakingScores: [data.decisionMaking1, data.decisionMaking2, data.decisionMaking3],
         diversionsScores: [data.diversions1, data.diversions2, data.diversions3],
         executionScores: [data.execution1, data.execution2, data.execution3],
-        context: data.context,
-        whatDidWell: data.whatDidWell,
-        whatCouldDoBetter: data.whatCouldDoBetter,
-        actionPlan: data.actionPlan
+        context: data.context || null,
+        whatDidWell: data.whatDidWell || null,
+        whatCouldDoBetter: data.whatCouldDoBetter || null,
+        actionPlan: data.actionPlan || null
       };
       return apiRequest('POST', '/api/mental-skills-xcheck', payload);
     },

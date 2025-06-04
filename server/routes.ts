@@ -632,9 +632,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Mental Skills X-Check routes
-  app.post("/api/mental-skills-xcheck", async (req, res) => {
+  app.post("/api/mental-skills-xcheck", requireAuth, async (req: AuthRequest, res) => {
     try {
-      const data = insertMentalSkillsXCheckSchema.parse(req.body);
+      const data = insertMentalSkillsXCheckSchema.parse({
+        ...req.body,
+        userId: req.userId
+      });
       const xcheck = await storage.createMentalSkillsXCheck(data);
       res.status(201).json(xcheck);
     } catch (error) {
@@ -666,9 +669,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Control Circles routes
-  app.post("/api/control-circles", async (req, res) => {
+  app.post("/api/control-circles", requireAuth, async (req: AuthRequest, res) => {
     try {
-      const data = insertControlCircleSchema.parse(req.body);
+      const data = insertControlCircleSchema.parse({
+        ...req.body,
+        userId: req.userId
+      });
       const circle = await storage.createControlCircle(data);
       res.status(201).json(circle);
     } catch (error) {
