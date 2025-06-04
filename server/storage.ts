@@ -608,6 +608,187 @@ export class MemStorage implements IStorage {
     const circles = await this.getUserControlCircles(userId);
     return circles[0];
   }
+
+  // AI Recommendation Engine implementation
+  async createUserCoachingProfile(insertProfile: InsertUserCoachingProfile): Promise<UserCoachingProfile> {
+    await this.ensureInitialized();
+    const id = this.currentId++;
+    const profile: UserCoachingProfile = { 
+      id,
+      ...insertProfile,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.userCoachingProfiles.set(id, profile);
+    return profile;
+  }
+
+  async getUserCoachingProfile(userId: number): Promise<UserCoachingProfile | undefined> {
+    await this.ensureInitialized();
+    return Array.from(this.userCoachingProfiles.values())
+      .find(profile => profile.userId === userId);
+  }
+
+  async updateUserCoachingProfile(userId: number, updates: Partial<UserCoachingProfile>): Promise<UserCoachingProfile> {
+    await this.ensureInitialized();
+    const existing = await this.getUserCoachingProfile(userId);
+    if (!existing) {
+      throw new Error('User coaching profile not found');
+    }
+    const updated: UserCoachingProfile = { 
+      ...existing, 
+      ...updates, 
+      updatedAt: new Date() 
+    };
+    this.userCoachingProfiles.set(existing.id, updated);
+    return updated;
+  }
+
+  async createAiRecommendation(insertRecommendation: InsertAiRecommendation): Promise<AiRecommendation> {
+    await this.ensureInitialized();
+    const id = this.currentId++;
+    const recommendation: AiRecommendation = { 
+      id,
+      ...insertRecommendation,
+      createdAt: new Date()
+    };
+    this.aiRecommendations.set(id, recommendation);
+    return recommendation;
+  }
+
+  async getUserRecommendations(userId: number, isActive?: boolean): Promise<AiRecommendation[]> {
+    await this.ensureInitialized();
+    return Array.from(this.aiRecommendations.values())
+      .filter(rec => {
+        if (rec.userId !== userId) return false;
+        if (isActive !== undefined && rec.isActive !== isActive) return false;
+        return true;
+      })
+      .sort((a, b) => {
+        const aDate = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bDate = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bDate - aDate;
+      });
+  }
+
+  async updateRecommendationFeedback(id: number, feedback: number, comments?: string): Promise<AiRecommendation> {
+    await this.ensureInitialized();
+    const existing = this.aiRecommendations.get(id);
+    if (!existing) {
+      throw new Error('Recommendation not found');
+    }
+    const updated: AiRecommendation = { 
+      ...existing, 
+      userFeedback: feedback,
+      feedbackComments: comments || existing.feedbackComments
+    };
+    this.aiRecommendations.set(id, updated);
+    return updated;
+  }
+
+  async markRecommendationApplied(id: number, effectivenessMeasure?: number): Promise<AiRecommendation> {
+    await this.ensureInitialized();
+    const existing = this.aiRecommendations.get(id);
+    if (!existing) {
+      throw new Error('Recommendation not found');
+    }
+    const updated: AiRecommendation = { 
+      ...existing, 
+      wasApplied: true,
+      effectivenessMeasure: effectivenessMeasure || existing.effectivenessMeasure
+    };
+    this.aiRecommendations.set(id, updated);
+    return updated;
+  }
+
+  async createCoachingInsight(insertInsight: InsertCoachingInsight): Promise<CoachingInsight> {
+    await this.ensureInitialized();
+    const id = this.currentId++;
+    const insight: CoachingInsight = { 
+      id,
+      ...insertInsight,
+      createdAt: new Date()
+    };
+    this.coachingInsights.set(id, insight);
+    return insight;
+  }
+
+  async getUserInsights(userId: number, isAcknowledged?: boolean): Promise<CoachingInsight[]> {
+    await this.ensureInitialized();
+    return Array.from(this.coachingInsights.values())
+      .filter(insight => {
+        if (insight.userId !== userId) return false;
+        if (isAcknowledged !== undefined && insight.isAcknowledged !== isAcknowledged) return false;
+        return true;
+      })
+      .sort((a, b) => {
+        const aDate = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bDate = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bDate - aDate;
+      });
+  }
+
+  async acknowledgeInsight(id: number): Promise<CoachingInsight> {
+    await this.ensureInitialized();
+    const existing = this.coachingInsights.get(id);
+    if (!existing) {
+      throw new Error('Insight not found');
+    }
+    const updated: CoachingInsight = { 
+      ...existing, 
+      isAcknowledged: true
+    };
+    this.coachingInsights.set(id, updated);
+    return updated;
+  }
+
+  async createEngagementMetric(insertMetric: InsertUserEngagementMetric): Promise<UserEngagementMetric> {
+    await this.ensureInitialized();
+    const id = this.currentId++;
+    const metric: UserEngagementMetric = { 
+      id,
+      ...insertMetric,
+      createdAt: new Date()
+    };
+    this.userEngagementMetrics.set(id, metric);
+    return metric;
+  }
+
+  async getUserEngagementMetrics(userId: number, days: number = 30): Promise<UserEngagementMetric[]> {
+    await this.ensureInitialized();
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    
+    return Array.from(this.userEngagementMetrics.values())
+      .filter(metric => {
+        if (metric.userId !== userId) return false;
+        const metricDate = new Date(metric.date);
+        return metricDate >= cutoffDate;
+      })
+      .sort((a, b) => {
+        const aDate = new Date(a.date).getTime();
+        const bDate = new Date(b.date).getTime();
+        return bDate - aDate;
+      });
+  }
+
+  async updateEngagementMetric(userId: number, date: string, updates: Partial<UserEngagementMetric>): Promise<UserEngagementMetric> {
+    await this.ensureInitialized();
+    const existing = Array.from(this.userEngagementMetrics.values())
+      .find(metric => metric.userId === userId && metric.date === date);
+    
+    if (existing) {
+      const updated: UserEngagementMetric = { ...existing, ...updates };
+      this.userEngagementMetrics.set(existing.id, updated);
+      return updated;
+    } else {
+      return await this.createEngagementMetric({
+        userId,
+        date,
+        ...updates
+      } as InsertUserEngagementMetric);
+    }
+  }
 }
 
 export class DatabaseStorage implements IStorage {

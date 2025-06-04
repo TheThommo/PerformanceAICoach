@@ -6,6 +6,7 @@ import { storage } from "./storage";
 import { insertAssessmentSchema, insertChatSessionSchema, insertUserProgressSchema, insertPreShotRoutineSchema, insertMentalSkillsXCheckSchema, insertControlCircleSchema } from "@shared/schema";
 import { getCoachingResponse, analyzeAssessmentResults, generatePersonalizedPlan } from "./gemini";
 import { sessionConfig, requireAuth, requirePremium, requireAdmin, requireCoach, registerUser, loginUser, AuthRequest } from "./auth";
+import { recommendationEngine } from "./recommendationEngine";
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
@@ -807,6 +808,199 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(plan);
     } catch (error) {
       res.status(500).json({ message: "Failed to generate plan", error: (error as Error).message });
+    }
+  });
+
+  // AI Recommendation Engine Routes
+  app.get("/api/recommendations/:userId", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      
+      // Generate fresh personalized recommendations
+      const recommendations = await recommendationEngine.generatePersonalizedRecommendations(userId);
+      
+      res.json({ recommendations });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to generate recommendations", error: (error as Error).message });
+    }
+  });
+
+  app.get("/api/recommendations/:userId/stored", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const isActive = req.query.active === 'true' ? true : req.query.active === 'false' ? false : undefined;
+      
+      const recommendations = await storage.getUserRecommendations(userId, isActive);
+      
+      res.json({ recommendations });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get stored recommendations", error: (error as Error).message });
+    }
+  });
+
+  app.post("/api/recommendations/:id/feedback", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { feedback, comments, effectivenessMeasure } = req.body;
+      
+      if (feedback !== undefined) {
+        await storage.updateRecommendationFeedback(id, feedback, comments);
+      }
+      
+      if (effectivenessMeasure !== undefined) {
+        await storage.markRecommendationApplied(id, effectivenessMeasure);
+      }
+      
+      await recommendationEngine.trackRecommendationEffectiveness(id, feedback, comments);
+      
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update recommendation feedback", error: (error as Error).message });
+    }
+  });
+
+  app.get("/api/chat/:sessionId/followup", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const sessionId = parseInt(req.params.sessionId);
+      const userId = req.userId!;
+      
+      const followUpQuestions = await recommendationEngine.generateChatFollowUp(userId, sessionId);
+      
+      res.json({ followUpQuestions });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to generate follow-up questions", error: (error as Error).message });
+    }
+  });
+
+  app.get("/api/insights/:userId", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const isAcknowledged = req.query.acknowledged === 'true' ? true : req.query.acknowledged === 'false' ? false : undefined;
+      
+      const insights = await storage.getUserInsights(userId, isAcknowledged);
+      
+      res.json({ insights });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get insights", error: (error as Error).message });
+    }
+  });
+
+  app.post("/api/insights/:id/acknowledge", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      
+      await storage.acknowledgeInsight(id);
+      
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to acknowledge insight", error: (error as Error).message });
+    }
+  });
+
+  app.get("/api/coaching-profile/:userId", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      
+      const profile = await storage.getUserCoachingProfile(userId);
+      
+      res.json({ profile });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get coaching profile", error: (error as Error).message });
+    }
+  });
+
+  app.post("/api/coaching-profile/:userId", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const profileData = req.body;
+      
+      const existingProfile = await storage.getUserCoachingProfile(userId);
+      
+      let profile;
+      if (existingProfile) {
+        profile = await storage.updateUserCoachingProfile(userId, profileData);
+      } else {
+        profile = await storage.createUserCoachingProfile({ userId, ...profileData });
+      }
+      
+      res.json({ profile });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update coaching profile", error: (error as Error).message });
+    }
+  });
+
+  app.get("/api/engagement/:userId", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const days = parseInt(req.query.days as string) || 30;
+      
+      const metrics = await storage.getUserEngagementMetrics(userId, days);
+      
+      res.json({ metrics });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get engagement metrics", error: (error as Error).message });
+    }
+  });
+
+  // Enhanced chat endpoint with engagement tracking
+  app.post("/api/chat", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const { userId, message, sessionId } = req.body;
+      
+      if (!userId || !message) {
+        return res.status(400).json({ message: "userId and message are required" });
+      }
+
+      let session;
+      
+      if (sessionId) {
+        session = await storage.getChatSession(sessionId);
+        if (!session) {
+          return res.status(404).json({ message: "Chat session not found" });
+        }
+      } else {
+        session = await storage.createChatSession({
+          userId,
+          messages: []
+        });
+      }
+
+      const messages = session.messages as any[] || [];
+      const userMessage = {
+        role: "user",
+        content: message,
+        timestamp: new Date().toISOString()
+      };
+
+      const aiResponse = await getCoachingResponse(message, userId);
+      const assistantMessage = {
+        role: "assistant", 
+        content: aiResponse.message,
+        timestamp: new Date().toISOString(),
+        suggestions: aiResponse.suggestions,
+        urgencyLevel: aiResponse.urgencyLevel
+      };
+
+      const updatedMessages = [...messages, userMessage, assistantMessage];
+      await storage.updateChatSession(session.id, updatedMessages);
+
+      // Track engagement metrics
+      const today = new Date().toISOString().split('T')[0];
+      try {
+        await storage.updateEngagementMetric(userId, today, {
+          chatMessages: 1,
+          sessionDuration: 5 // approximate
+        });
+      } catch (engagementError) {
+        console.warn("Failed to update engagement metrics:", engagementError);
+      }
+
+      res.json({ 
+        session: { ...session, messages: updatedMessages },
+        response: aiResponse 
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to process chat message", error: (error as Error).message });
     }
   });
 
