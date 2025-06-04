@@ -127,7 +127,59 @@ export class MemStorage implements IStorage {
       };
       
       this.users.set(1, adminUser);
-      this.currentId = 2;
+      
+      // Add test users for coach dashboard demonstration
+      const testUser1Password = await hashPassword('password123');
+      const testUser1: User = {
+        id: 2,
+        username: 'test1',
+        email: 'test1@example.com',
+        password: testUser1Password,
+        dateOfBirth: new Date('1990-05-15'),
+        dexterity: 'right',
+        gender: 'male',
+        golfHandicap: 12,
+        bio: 'Aspiring golfer working on mental game',
+        aiGeneratedProfile: null,
+        profileImageUrl: null,
+        isSubscribed: true,
+        subscriptionTier: 'premium',
+        role: 'student',
+        stripeCustomerId: null,
+        stripeSubscriptionId: null,
+        subscriptionStartDate: new Date(),
+        subscriptionEndDate: null,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      
+      const thommoPassword = await hashPassword('password123');
+      const thommoUser: User = {
+        id: 3,
+        username: 'thethommo',
+        email: 'thommo@example.com',
+        password: thommoPassword,
+        dateOfBirth: new Date('1985-03-20'),
+        dexterity: 'left',
+        gender: 'male',
+        golfHandicap: 8,
+        bio: 'Advanced golfer focusing on competitive mental performance',
+        aiGeneratedProfile: null,
+        profileImageUrl: null,
+        isSubscribed: true,
+        subscriptionTier: 'ultimate',
+        role: 'student',
+        stripeCustomerId: null,
+        stripeSubscriptionId: null,
+        subscriptionStartDate: new Date(),
+        subscriptionEndDate: null,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      
+      this.users.set(2, testUser1);
+      this.users.set(3, thommoUser);
+      this.currentId = 4;
 
     // Seed default techniques
     const defaultTechniques: InsertTechnique[] = [
@@ -230,6 +282,46 @@ export class MemStorage implements IStorage {
       isActive: defaultRoutine.isActive || false,
       createdAt: new Date() 
     });
+
+    // Add sample assessments for test users
+    const testAssessment1: Assessment = {
+      id: this.currentId++,
+      userId: 2, // test1 user
+      intensityScore: 65,
+      decisionMakingScore: 72,
+      diversionsScore: 58,
+      executionScore: 68,
+      totalScore: 66,
+      responses: {
+        intensity: ["3", "4", "3", "3", "4"],
+        decisionMaking: ["4", "3", "4", "4", "3"],
+        diversions: ["2", "3", "3", "3", "3"],
+        execution: ["3", "4", "3", "4", "3"]
+      },
+      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+      updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
+    };
+
+    const testAssessment2: Assessment = {
+      id: this.currentId++,
+      userId: 3, // thethommo user
+      intensityScore: 82,
+      decisionMakingScore: 78,
+      diversionsScore: 85,
+      executionScore: 80,
+      totalScore: 81,
+      responses: {
+        intensity: ["4", "4", "4", "5", "4"],
+        decisionMaking: ["4", "4", "3", "4", "4"],
+        diversions: ["4", "5", "4", "4", "4"],
+        execution: ["4", "4", "4", "4", "4"]
+      },
+      createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
+      updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)
+    };
+
+    this.assessments.set(testAssessment1.id, testAssessment1);
+    this.assessments.set(testAssessment2.id, testAssessment2);
     
     this.initialized = true;
     console.log('Storage initialized with admin user:', this.users.get(1)?.email);
