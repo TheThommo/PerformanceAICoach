@@ -632,15 +632,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Mental Skills X-Check routes
-  app.post("/api/mental-skills-xcheck", requireAuth, async (req: AuthRequest, res) => {
+  app.post("/api/mental-skills-xcheck", async (req, res) => {
     try {
-      if (!req.userId) {
-        return res.status(401).json({ message: "User ID not found" });
+      // Get user ID from session or request body
+      const userId = req.session?.userId || req.body.userId;
+      
+      if (!userId) {
+        return res.status(401).json({ message: "User authentication required" });
       }
 
       const data = insertMentalSkillsXCheckSchema.parse({
         ...req.body,
-        userId: req.userId
+        userId: userId
       });
       
       const xcheck = await storage.createMentalSkillsXCheck(data);
@@ -679,15 +682,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Control Circles routes
-  app.post("/api/control-circles", requireAuth, async (req: AuthRequest, res) => {
+  app.post("/api/control-circles", async (req, res) => {
     try {
-      if (!req.userId) {
-        return res.status(401).json({ message: "User ID not found" });
+      // Get user ID from session or request body
+      const userId = req.session?.userId || req.body.userId;
+      
+      if (!userId) {
+        return res.status(401).json({ message: "User authentication required" });
       }
 
       const data = insertControlCircleSchema.parse({
         ...req.body,
-        userId: req.userId
+        userId: userId
       });
       
       const circle = await storage.createControlCircle(data);

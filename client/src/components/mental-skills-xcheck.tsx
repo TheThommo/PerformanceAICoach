@@ -69,6 +69,7 @@ export function MentalSkillsXCheck({ userId }: MentalSkillsXCheckProps) {
   const createXCheckMutation = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
       const payload = {
+        userId: userId,
         intensityScores: [data.intensity1, data.intensity2, data.intensity3],
         decisionMakingScores: [data.decisionMaking1, data.decisionMaking2, data.decisionMaking3],
         diversionsScores: [data.diversions1, data.diversions2, data.diversions3],
