@@ -80,10 +80,15 @@ export async function registerUser(userData: {
   golfHandicap?: number;
   bio?: string;
 }) {
-  // Check if user already exists
-  const existingUser = await storage.getUserByUsername(userData.username);
-  if (existingUser) {
+  // Check if user already exists by username or email
+  const existingUserByUsername = await storage.getUserByUsername(userData.username);
+  if (existingUserByUsername) {
     throw new Error('Username already exists');
+  }
+
+  const existingUserByEmail = await storage.getUserByEmail(userData.email);
+  if (existingUserByEmail) {
+    throw new Error('Email already exists');
   }
 
   // Hash password

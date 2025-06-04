@@ -21,13 +21,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication routes
   app.post("/api/auth/register", async (req, res) => {
     try {
+      console.log('Registration data:', req.body);
       const user = await registerUser(req.body);
+      
+      // Set session
       req.session.userId = user.id;
       
-      // Remove password from response
-      const { password, ...userWithoutPassword } = user;
-      res.json(userWithoutPassword);
+      // Save session explicitly
+      req.session.save((err) => {
+        if (err) {
+          console.error('Session save error:', err);
+          return res.status(500).json({ message: 'Session creation failed' });
+        }
+        
+        // Remove password from response
+        const { password, ...userWithoutPassword } = user;
+        console.log('User registered successfully:', userWithoutPassword.id);
+        res.json(userWithoutPassword);
+      });
     } catch (error: any) {
+      console.error('Registration error:', error.message);
       res.status(400).json({ message: error.message });
     }
   });
