@@ -34,13 +34,13 @@ export default function CoachDashboard() {
 
   const { data: students, isLoading } = useQuery({
     queryKey: ['/api/coach/students'],
-    queryFn: () => fetch('/api/coach/students').then(res => res.json()) as Promise<StudentSummary[]>
+    queryFn: () => fetch('/api/coach/students', { credentials: 'include' }).then(res => res.json()) as Promise<StudentSummary[]>
   });
 
   const { data: studentDetail } = useQuery({
     queryKey: ['/api/coach/student-detail', selectedStudent],
     queryFn: () => selectedStudent 
-      ? fetch(`/api/coach/student-detail/${selectedStudent}`).then(res => res.json())
+      ? fetch(`/api/coach/student-detail/${selectedStudent}`, { credentials: 'include' }).then(res => res.json())
       : null,
     enabled: !!selectedStudent
   });
@@ -84,10 +84,11 @@ export default function CoachDashboard() {
     );
   }
 
-  const highRiskStudents = students?.filter(s => s.riskLevel === 'high') || [];
-  const decliningStudents = students?.filter(s => s.trends.direction === 'declining') || [];
-  const recentAssessments = students?.filter(s => s.lastAssessment && 
-    new Date(s.lastActivity) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)) || [];
+  const studentsArray = Array.isArray(students) ? students : [];
+  const highRiskStudents = studentsArray.filter(s => s.riskLevel === 'high');
+  const decliningStudents = studentsArray.filter(s => s.trends.direction === 'declining');
+  const recentAssessments = studentsArray.filter(s => s.lastAssessment && 
+    new Date(s.lastActivity) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">

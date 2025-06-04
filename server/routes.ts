@@ -650,7 +650,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Coach dashboard routes - Admin/Coach only
-  app.get("/api/coach/students", requireCoach, async (req, res) => {
+  app.get("/api/coach/students", requireAuth, requireCoach, async (req, res) => {
     try {
       const allUsers = await storage.getAllUsers();
       const studentSummaries = await Promise.all(
@@ -698,7 +698,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/coach/student-detail/:userId", requireCoach, async (req, res) => {
+  app.get("/api/coach/student-detail/:userId", requireAuth, requireCoach, async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
       const assessments = await storage.getUserAssessments(userId);
