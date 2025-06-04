@@ -148,6 +148,63 @@ Focus on practical, golf-specific insights and simple language.`;
   }
 }
 
+export async function generateAIProfile(
+  bio: string,
+  userInfo: {
+    username: string;
+    dexterity?: string;
+    gender?: string;
+    golfHandicap?: number;
+  }
+): Promise<string> {
+  const prompt = `
+    As Thommo, an expert Red2Blue mental performance coach, analyze this student's background and create a comprehensive, professional profile that will enhance their coaching experience.
+
+    Student Information:
+    - Username: ${userInfo.username}
+    - Dexterity: ${userInfo.dexterity || 'Not specified'}
+    - Gender: ${userInfo.gender || 'Not specified'}
+    - Golf Handicap: ${userInfo.golfHandicap !== undefined ? userInfo.golfHandicap : 'Not specified'}
+
+    Student's Bio:
+    "${bio}"
+
+    Create a smart, uniform description that includes:
+    1. Athletic background assessment
+    2. Mental performance strengths and potential challenges
+    3. Recommended focus areas for Red2Blue training
+    4. Personalized coaching approach suggestions
+    5. Goal-setting recommendations
+
+    Keep the profile professional, encouraging, and actionable. Focus on mental performance aspects that will help tailor their coaching experience.
+
+    Respond with a well-structured profile in paragraph format.
+  `;
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+      messages: [
+        {
+          role: "system",
+          content: "You are Thommo, an expert Red2Blue mental performance coach specializing in creating personalized athlete profiles."
+        },
+        {
+          role: "user",
+          content: prompt
+        }
+      ],
+      temperature: 0.7,
+      max_tokens: 1000,
+    });
+
+    return response.choices[0].message.content || "";
+  } catch (error) {
+    console.error("OpenAI API error:", error);
+    throw new Error("Failed to generate AI profile");
+  }
+}
+
 export async function generatePersonalizedPlan(
   userAssessments: any[],
   userProgress: any[],

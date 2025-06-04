@@ -1,0 +1,140 @@
+import bcrypt from 'bcrypt';
+import session from 'express-session';
+import { Request, Response, NextFunction } from 'express';
+import { storage } from './storage';
+import { generateAIProfile } from './openai';
+
+declare module 'express-session' {
+  interface SessionData {
+    userId?: number;
+  }
+}
+
+export const sessionConfig = {
+  secret: process.env.SESSION_SECRET || 'your-secret-key-here',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // Set to true if using HTTPS
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+  },
+};
+
+export interface AuthRequest extends Request {
+  userId?: number;
+  user?: any;
+}
+
+export const requireAuth = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (!req.session.userId) {
+    return res.status(401).json({ message: 'Authentication required' });
+  }
+
+  try {
+    const user = await storage.getUser(req.session.userId);
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' });
+    }
+
+    req.userId = user.id;
+    req.user = user;
+    next();
+  } catch (error) {
+    return res.status(500).json({ message: 'Authentication error' });
+  }
+};
+
+export const requirePremium = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'Authentication required' });
+  }
+
+  if (!req.user.isSubscribed || req.user.subscriptionTier !== 'premium') {
+    return res.status(403).json({ 
+      message: 'Premium subscription required',
+      upgradeRequired: true,
+      currentTier: req.user.subscriptionTier || 'free'
+    });
+  }
+
+  next();
+};
+
+export async function hashPassword(password: string): Promise<string> {
+  const saltRounds = 10;
+  return bcrypt.hash(password, saltRounds);
+}
+
+export async function verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
+  return bcrypt.compare(password, hashedPassword);
+}
+
+export async function registerUser(userData: {
+  username: string;
+  email: string;
+  password: string;
+  dateOfBirth?: string;
+  dexterity?: string;
+  gender?: string;
+  golfHandicap?: number;
+  bio?: string;
+}) {
+  // Check if user already exists
+  const existingUser = await storage.getUserByUsername(userData.username);
+  if (existingUser) {
+    throw new Error('Username already exists');
+  }
+
+  // Hash password
+  const hashedPassword = await hashPassword(userData.password);
+
+  // Generate AI profile from bio if provided
+  let aiGeneratedProfile = null;
+  if (userData.bio) {
+    try {
+      aiGeneratedProfile = await generateAIProfile(userData.bio, {
+        username: userData.username,
+        dexterity: userData.dexterity,
+        gender: userData.gender,
+        golfHandicap: userData.golfHandicap
+      });
+    } catch (error) {
+      console.error('Failed to generate AI profile:', error);
+      // Continue without AI profile if generation fails
+    }
+  }
+
+  // Create user
+  const newUser = await storage.createUser({
+    username: userData.username,
+    email: userData.email,
+    password: hashedPassword,
+    dateOfBirth: userData.dateOfBirth ? new Date(userData.dateOfBirth) : null,
+    dexterity: userData.dexterity || null,
+    gender: userData.gender || null,
+    golfHandicap: userData.golfHandicap || null,
+    bio: userData.bio || null,
+    aiGeneratedProfile,
+    isSubscribed: false,
+    subscriptionTier: 'free'
+  });
+
+  return newUser;
+}
+
+export async function loginUser(email: string, password: string) {
+  const user = await storage.getUserByEmail(email);
+  if (!user) {
+    throw new Error('Invalid email or password');
+  }
+
+  const isValid = await verifyPassword(password, user.password);
+  if (!isValid) {
+    throw new Error('Invalid email or password');
+  }
+
+  // Remove password from response
+  const { password: _, ...userWithoutPassword } = user;
+  return userWithoutPassword;
+}
