@@ -13,6 +13,7 @@ export function Navigation() {
     { href: "/assessment", label: "Assessment", icon: BarChart3 },
     { href: "/techniques", label: "Techniques", icon: Zap },
     { href: "/tools", label: "R2B Tools", icon: Wrench },
+    { href: "/community", label: "Community", icon: Trophy },
     { href: "/coach", label: "Coach Dashboard", icon: Users },
   ];
 
