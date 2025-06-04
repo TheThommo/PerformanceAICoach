@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { Link } from "wouter";
+import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Brain, Target, TrendingUp, Users, Shield, Check, Star } from "lucide-react";
+import { apiRequest, queryClient } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function Landing() {
   const [showSignUp, setShowSignUp] = useState(false);
@@ -384,6 +387,8 @@ function SignUpForm({ onBack }: { onBack: () => void }) {
 }
 
 function SignUpFormFields({ onBack }: { onBack: () => void }) {
+  const { toast } = useToast();
+  
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -396,10 +401,55 @@ function SignUpFormFields({ onBack }: { onBack: () => void }) {
     bio: ''
   });
 
+  const registerMutation = useMutation({
+    mutationFn: async (data: typeof formData) => {
+      const response = await apiRequest("POST", "/api/auth/register", data);
+      return response.json();
+    },
+    onSuccess: (user) => {
+      // Invalidate auth queries to refresh user state
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      // Show success message
+      toast({
+        title: "Account Created Successfully!",
+        description: `Welcome to Red2Blue, ${user.username}! Your AI profile is being generated.`,
+      });
+      // Redirect will happen automatically via useAuth hook
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Registration Failed",
+        description: error.message || "An error occurred during registration",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Implement registration logic with AI profile generation
+    
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        title: "Password Mismatch",
+        description: "Passwords do not match. Please try again.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate required fields
+    if (!formData.username || !formData.email || !formData.password) {
+      toast({
+        title: "Missing Information",
+        description: "Please fill in all required fields.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     console.log('Registration data:', formData);
+    registerMutation.mutate(formData);
   };
 
   return (
@@ -550,9 +600,10 @@ function SignUpFormFields({ onBack }: { onBack: () => void }) {
         </Button>
         <Button
           type="submit"
+          disabled={registerMutation.isPending}
           className="flex-1 bg-blue-600 hover:bg-blue-700"
         >
-          Create Account & Generate AI Profile
+          {registerMutation.isPending ? "Creating Account..." : "Create Account & Generate AI Profile"}
         </Button>
       </div>
 
