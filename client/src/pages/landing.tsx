@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Brain, Target, TrendingUp, Users, Shield, Check, Star } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
+import { LandingChat } from "@/components/landing-chat";
 
 export default function Landing() {
   const [showSignUp, setShowSignUp] = useState(false);
