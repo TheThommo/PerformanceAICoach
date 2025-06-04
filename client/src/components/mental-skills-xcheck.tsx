@@ -107,7 +107,8 @@ export function MentalSkillsXCheck({ userId }: MentalSkillsXCheckProps) {
     return "destructive";
   };
 
-  const calculateAverage = (scores: number[]) => {
+  const calculateAverage = (scores: number[] | unknown) => {
+    if (!Array.isArray(scores) || scores.length === 0) return 0;
     return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
   };
 
