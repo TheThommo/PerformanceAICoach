@@ -335,7 +335,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Format assessment history for chart
       const assessmentHistory = assessments.slice(0, 10).reverse().map(a => ({
-        date: new Date(a.createdAt).toLocaleDateString(),
+        date: a.createdAt ? new Date(a.createdAt).toLocaleDateString() : new Date().toLocaleDateString(),
         totalScore: a.totalScore,
         intensity: a.intensityScore,
         decisionMaking: a.decisionMakingScore,

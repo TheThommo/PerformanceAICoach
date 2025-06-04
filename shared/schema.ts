@@ -6,8 +6,22 @@ export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
   password: text("password").notNull(),
-  email: text("email"),
+  email: text("email").notNull().unique(),
+  dateOfBirth: timestamp("date_of_birth"),
+  dexterity: text("dexterity"), // "left" or "right"
+  gender: text("gender"), // "male" or "female"
+  golfHandicap: integer("golf_handicap"),
+  bio: text("bio"),
+  aiGeneratedProfile: text("ai_generated_profile"),
+  profileImageUrl: text("profile_image_url"),
+  isSubscribed: boolean("is_subscribed").default(false),
+  subscriptionTier: text("subscription_tier").default("free"), // "free", "premium"
+  stripeCustomerId: text("stripe_customer_id"),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  subscriptionStartDate: timestamp("subscription_start_date"),
+  subscriptionEndDate: timestamp("subscription_end_date"),
   createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
 });
 
 export const assessments = pgTable("assessments", {
