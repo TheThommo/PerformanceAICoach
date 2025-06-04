@@ -22,7 +22,11 @@ export function PreShotRoutineComponent({ userId }: PreShotRoutineProps) {
 
   const { data: activeRoutine, isLoading } = useQuery({
     queryKey: ['/api/pre-shot-routines/active', userId],
-    queryFn: () => fetch(`/api/pre-shot-routines/active/${userId}`).then(res => res.json()) as Promise<PreShotRoutine>
+    queryFn: () => fetch(`/api/pre-shot-routines/active/${userId}`).then(res => {
+      if (!res.ok) return null;
+      return res.json();
+    }) as Promise<PreShotRoutine | null>,
+    retry: false
   });
 
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
@@ -113,8 +117,24 @@ export function PreShotRoutineComponent({ userId }: PreShotRoutineProps) {
     );
   }
 
+  if (!activeRoutine.steps || !Array.isArray(activeRoutine.steps) || activeRoutine.steps.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <div className="flex items-center space-x-2">
+            <Timer className="h-5 w-5" />
+            <CardTitle>Pre-Shot Routine</CardTitle>
+          </div>
+          <CardDescription>
+            Routine configuration incomplete. No steps available.
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
   const steps = activeRoutine.steps as any[];
-  const currentStepData = steps[currentStep];
+  const currentStepData = steps[currentStep] || steps[0];
 
   return (
     <Card>
