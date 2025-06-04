@@ -225,3 +225,23 @@ export type TechniqueProgress = typeof techniqueProgress.$inferSelect;
 export type InsertTechniqueProgress = z.infer<typeof insertTechniqueProgressSchema>;
 export type CalendarReminder = typeof calendarReminders.$inferSelect;
 export type InsertCalendarReminder = z.infer<typeof insertCalendarReminderSchema>;
+
+// Notifications table for coach check-ins and system alerts
+export const notifications = pgTable("notifications", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  type: text("type").notNull(), // 'check-in-scheduled', 'assessment-reminder', 'coach-message'
+  title: text("title").notNull(),
+  message: text("message").notNull(),
+  isRead: boolean("is_read").default(false),
+  scheduledDate: timestamp("scheduled_date"),
+  createdAt: timestamp("created_at").defaultNow()
+});
+
+export const insertNotificationSchema = createInsertSchema(notifications).omit({
+  id: true,
+  createdAt: true,
+});
+
+export type Notification = typeof notifications.$inferSelect;
+export type InsertNotification = z.infer<typeof insertNotificationSchema>;

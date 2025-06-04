@@ -286,11 +286,63 @@ export default function CoachDashboard() {
 
                         {/* Quick Actions */}
                         <div className="flex space-x-2">
-                          <Button size="sm" className="flex items-center space-x-2">
+                          <Button 
+                            size="sm" 
+                            className="flex items-center space-x-2"
+                            onClick={() => {
+                              const selectedStudentData = studentsArray.find(s => s.id === selectedStudent);
+                              if (selectedStudentData) {
+                                const subject = `Red2Blue Coaching Follow-up - ${selectedStudentData.username}`;
+                                const body = `Hi ${selectedStudentData.username},
+
+I wanted to follow up on your recent mental performance assessment and training progress.
+
+Based on your latest results:
+- Total Score: ${selectedStudentData.lastAssessment?.totalScore || 'No assessment'}%
+- Risk Level: ${selectedStudentData.riskLevel}
+- Performance Trend: ${selectedStudentData.trends.direction}
+
+I'd like to schedule a coaching session to discuss your progress and work on specific techniques to enhance your mental game.
+
+Please reply with your availability for a 30-minute session this week.
+
+Best regards,
+Your Red2Blue Coach`;
+                                
+                                window.location.href = `mailto:${selectedStudentData.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                              }
+                            }}
+                          >
                             <MessageSquare className="h-4 w-4" />
                             <span>Send Message</span>
                           </Button>
-                          <Button size="sm" variant="outline">
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => {
+                              const selectedStudentData = studentsArray.find(s => s.id === selectedStudent);
+                              if (selectedStudentData) {
+                                // Create notification for user
+                                const notification = {
+                                  userId: selectedStudentData.id,
+                                  type: 'check-in-scheduled',
+                                  title: 'Check-in Scheduled',
+                                  message: `Your coach has scheduled a check-in session. Please prepare your recent practice notes and any questions about your mental performance training.`,
+                                  scheduledDate: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // Tomorrow
+                                };
+                                
+                                // Send notification to backend
+                                fetch('/api/notifications', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  credentials: 'include',
+                                  body: JSON.stringify(notification)
+                                });
+                                
+                                alert(`Check-in scheduled for ${selectedStudentData.username}. They will be notified when they next log in.`);
+                              }
+                            }}
+                          >
                             Schedule Check-in
                           </Button>
                         </div>

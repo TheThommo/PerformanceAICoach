@@ -312,6 +312,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Notifications API endpoints
+  app.post("/api/notifications", requireAuth, async (req, res) => {
+    try {
+      const { userId, type, title, message, scheduledDate } = req.body;
+      
+      // Store notification (currently in memory for demo)
+      const notification = {
+        id: Date.now(),
+        userId,
+        type,
+        title,
+        message,
+        isRead: false,
+        scheduledDate: scheduledDate ? new Date(scheduledDate) : null,
+        createdAt: new Date()
+      };
+      
+      res.status(201).json({ success: true, notification });
+    } catch (error: any) {
+      console.error('Notification creation error:', error);
+      res.status(500).json({ message: 'Failed to create notification' });
+    }
+  });
+
+  app.get("/api/notifications/:userId", requireAuth, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      
+      // Mock notifications for demo
+      const notifications = [
+        {
+          id: 1,
+          userId,
+          type: 'check-in-scheduled',
+          title: 'Check-in Scheduled',
+          message: 'Your coach has scheduled a check-in session for tomorrow.',
+          isRead: false,
+          scheduledDate: new Date(Date.now() + 24 * 60 * 60 * 1000),
+          createdAt: new Date()
+        }
+      ];
+      
+      res.json(notifications);
+    } catch (error: any) {
+      console.error('Notifications fetch error:', error);
+      res.status(500).json({ message: 'Failed to fetch notifications' });
+    }
+  });
+
   app.get("/api/progress/techniques/:userId", async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
