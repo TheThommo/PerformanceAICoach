@@ -107,13 +107,7 @@ export default function Landing() {
                 />
                 <Button 
                   className="bg-blue-600 hover:bg-blue-700 px-6"
-                  onClick={() => {
-                    // Directly trigger chat opening
-                    const chatButton = document.querySelector('[data-chat-button]') as HTMLElement;
-                    if (chatButton) {
-                      chatButton.click();
-                    }
-                  }}
+                  onClick={() => setShowSignUp(true)}
                 >
                   Try Now
                 </Button>
