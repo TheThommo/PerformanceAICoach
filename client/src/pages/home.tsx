@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { AIChat } from "@/components/ai-chat";
 import { ResilienceGame } from "@/components/resilience-game";
 import { MoodIndicator } from "@/components/mood-indicator";
+import { MoodTracker } from "@/components/mood-tracker";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "wouter";
 
@@ -52,9 +53,7 @@ export default function Home() {
             <p className="text-gray-600 mt-1">Ready to transform pressure into peak performance?</p>
           </div>
           <div className="flex items-center space-x-3">
-            <div className={`${overallState.color} text-white px-4 py-2 rounded-full text-sm font-medium`}>
-              {overallState.icon} {overallState.state}
-            </div>
+            <MoodTracker userId={user?.id || 1} />
           </div>
         </div>
       </div>
