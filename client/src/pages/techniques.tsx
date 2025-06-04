@@ -1,9 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 import { TechniqueCard } from "@/components/technique-card";
+import { apiRequest } from "@/lib/queryClient";
+import { useState } from "react";
 import { 
   Zap, 
   Compass, 
@@ -11,12 +16,64 @@ import {
   Anchor, 
   Clock,
   Play,
-  BookOpen
+  BookOpen,
+  Timer,
+  Share2,
+  CheckCircle2
 } from "lucide-react";
 
 export default function Techniques() {
   const { data: techniques, isLoading } = useQuery({
     queryKey: ["/api/techniques"],
+  });
+  
+  const { toast } = useToast();
+  const [emergencyDialogOpen, setEmergencyDialogOpen] = useState(false);
+  const [practiceDialogOpen, setPracticeDialogOpen] = useState(false);
+  const [ideaDialogOpen, setIdeaDialogOpen] = useState(false);
+  const [selectedTechnique, setSelectedTechnique] = useState<any>(null);
+  const [emergencyStep, setEmergencyStep] = useState(0);
+  const [ideaText, setIdeaText] = useState("");
+  
+  // Emergency Relief mutation
+  const emergencyMutation = useMutation({
+    mutationFn: async () => {
+      await apiRequest("POST", "/api/emergency-relief", {});
+    },
+    onSuccess: () => {
+      toast({
+        title: "Emergency Relief Completed",
+        description: "Great job! You've successfully completed the emergency breathing technique.",
+      });
+    }
+  });
+  
+  // Practice Now mutation
+  const practiceMutation = useMutation({
+    mutationFn: async (techniqueId: number) => {
+      await apiRequest("POST", "/api/practice-technique", { techniqueId });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Practice Session Started",
+        description: "Your practice session has been logged. Keep up the great work!",
+      });
+    }
+  });
+  
+  // Idea sharing mutation
+  const ideaMutation = useMutation({
+    mutationFn: async (idea: string) => {
+      await apiRequest("POST", "/api/share-idea", { idea });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Idea Shared Successfully",
+        description: "Your technique has been shared with Thommo and the community. Thank you!",
+      });
+      setIdeaText("");
+      setIdeaDialogOpen(false);
+    }
   });
 
   const categories = [
@@ -111,6 +168,7 @@ export default function Techniques() {
             <Button 
               size="lg" 
               className="bg-red-primary hover:bg-red-600 text-white shadow-lg"
+              onClick={() => setEmergencyDialogOpen(true)}
             >
               <Zap className="mr-2" size={20} />
               Emergency Relief (30s)
@@ -187,6 +245,10 @@ export default function Techniques() {
                         <Button 
                           className="flex-1 bg-blue-primary hover:bg-blue-deep"
                           size="sm"
+                          onClick={() => {
+                            setSelectedTechnique(technique);
+                            setPracticeDialogOpen(true);
+                          }}
                         >
                           <Play size={16} className="mr-2" />
                           Practice Now
@@ -215,7 +277,11 @@ export default function Techniques() {
                 <p className="text-gray-600 text-sm mb-4">
                   Have a technique that works for you? Share it with Thommo.
                 </p>
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setIdeaDialogOpen(true)}
+                >
                   Submit Idea
                 </Button>
               </CardContent>
@@ -263,6 +329,223 @@ export default function Techniques() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Emergency Relief Dialog */}
+      <Dialog open={emergencyDialogOpen} onOpenChange={setEmergencyDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center text-red-primary">
+              <Zap className="mr-2" size={20} />
+              Emergency Relief (30s)
+            </DialogTitle>
+            <DialogDescription>
+              Follow this guided breathing exercise to quickly shift from Red Head stress to Blue Head calm.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            {emergencyStep === 0 && (
+              <div className="text-center space-y-4">
+                <div className="w-16 h-16 bg-red-light rounded-full flex items-center justify-center mx-auto">
+                  <Timer className="w-8 h-8 text-red-primary" />
+                </div>
+                <p className="text-gray-700">
+                  Ready to start your 30-second emergency breathing technique? This will help you regain control quickly.
+                </p>
+                <Button 
+                  className="w-full bg-red-primary hover:bg-red-600"
+                  onClick={() => setEmergencyStep(1)}
+                >
+                  Start Now
+                </Button>
+              </div>
+            )}
+            
+            {emergencyStep === 1 && (
+              <div className="text-center space-y-4">
+                <div className="w-20 h-20 bg-blue-light rounded-full flex items-center justify-center mx-auto animate-pulse">
+                  <span className="text-2xl text-blue-primary">4</span>
+                </div>
+                <p className="text-lg font-medium">Breathe In</p>
+                <p className="text-gray-600">Count to 4 slowly</p>
+                <Button 
+                  variant="outline"
+                  onClick={() => setEmergencyStep(2)}
+                >
+                  Next
+                </Button>
+              </div>
+            )}
+            
+            {emergencyStep === 2 && (
+              <div className="text-center space-y-4">
+                <div className="w-20 h-20 bg-yellow-light rounded-full flex items-center justify-center mx-auto">
+                  <span className="text-2xl text-yellow-600">4</span>
+                </div>
+                <p className="text-lg font-medium">Hold</p>
+                <p className="text-gray-600">Hold for 4 counts</p>
+                <Button 
+                  variant="outline"
+                  onClick={() => setEmergencyStep(3)}
+                >
+                  Next
+                </Button>
+              </div>
+            )}
+            
+            {emergencyStep === 3 && (
+              <div className="text-center space-y-4">
+                <div className="w-20 h-20 bg-green-light rounded-full flex items-center justify-center mx-auto">
+                  <span className="text-2xl text-green-600">6</span>
+                </div>
+                <p className="text-lg font-medium">Breathe Out</p>
+                <p className="text-gray-600">Exhale slowly for 6 counts</p>
+                <Button 
+                  variant="outline"
+                  onClick={() => setEmergencyStep(4)}
+                >
+                  Complete
+                </Button>
+              </div>
+            )}
+            
+            {emergencyStep === 4 && (
+              <div className="text-center space-y-4">
+                <div className="w-16 h-16 bg-blue-light rounded-full flex items-center justify-center mx-auto">
+                  <CheckCircle2 className="w-8 h-8 text-blue-primary" />
+                </div>
+                <p className="text-lg font-medium text-blue-primary">Emergency Relief Complete!</p>
+                <p className="text-gray-600">
+                  Great job! You've successfully used the 4-4-6 breathing technique. 
+                  Repeat if needed or return to your golf when ready.
+                </p>
+                <Button 
+                  className="w-full bg-blue-primary hover:bg-blue-600"
+                  onClick={() => {
+                    emergencyMutation.mutate();
+                    setEmergencyStep(0);
+                    setEmergencyDialogOpen(false);
+                  }}
+                >
+                  Log Practice & Close
+                </Button>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Practice Now Dialog */}
+      <Dialog open={practiceDialogOpen} onOpenChange={setPracticeDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center">
+              <Play className="mr-2" size={20} />
+              Practice: {selectedTechnique?.name}
+            </DialogTitle>
+            <DialogDescription>
+              Follow the guided practice session for this technique.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div className="bg-blue-light rounded-lg p-4">
+              <h4 className="font-medium text-blue-primary mb-2">Instructions</h4>
+              <p className="text-sm text-gray-700">
+                {selectedTechnique?.instructions}
+              </p>
+            </div>
+            
+            <div className="bg-gray-50 rounded-lg p-4">
+              <h4 className="font-medium text-gray-900 mb-2">Practice Tips</h4>
+              <ul className="text-sm text-gray-600 space-y-1">
+                <li>• Find a quiet spot to practice</li>
+                <li>• Focus on the technique, not the outcome</li>
+                <li>• Notice how your body feels before and after</li>
+                <li>• Practice regularly for best results</li>
+              </ul>
+            </div>
+            
+            <div className="flex space-x-2">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => setPracticeDialogOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button 
+                className="flex-1 bg-blue-primary hover:bg-blue-600"
+                onClick={() => {
+                  if (selectedTechnique) {
+                    practiceMutation.mutate(selectedTechnique.id);
+                  }
+                  setPracticeDialogOpen(false);
+                }}
+                disabled={practiceMutation.isPending}
+              >
+                {practiceMutation.isPending ? "Logging..." : "Start Practice"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Idea Sharing Dialog */}
+      <Dialog open={ideaDialogOpen} onOpenChange={setIdeaDialogOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center">
+              <Share2 className="mr-2" size={20} />
+              Share Your Technique Idea
+            </DialogTitle>
+            <DialogDescription>
+              Share a technique that works for you. Thommo will review it and it may be added to our anonymous community collection.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium text-gray-700 mb-2 block">
+                Describe your technique or what works for you:
+              </label>
+              <Textarea
+                placeholder="e.g., I use a specific pre-shot visualization that helps me stay calm under pressure..."
+                value={ideaText}
+                onChange={(e) => setIdeaText(e.target.value)}
+                rows={4}
+                className="resize-none"
+              />
+            </div>
+            
+            <div className="bg-blue-light rounded-lg p-3">
+              <p className="text-sm text-blue-primary">
+                <strong>Privacy:</strong> Your idea will be shared anonymously with the community and sent to Thommo for potential integration into coaching sessions.
+              </p>
+            </div>
+            
+            <div className="flex space-x-2">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => {
+                  setIdeaText("");
+                  setIdeaDialogOpen(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button 
+                className="flex-1 bg-blue-primary hover:bg-blue-600"
+                onClick={() => ideaMutation.mutate(ideaText)}
+                disabled={!ideaText.trim() || ideaMutation.isPending}
+              >
+                {ideaMutation.isPending ? "Sharing..." : "Share Idea"}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
