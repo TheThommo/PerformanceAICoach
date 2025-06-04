@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Brain, Send, MessageCircle } from "lucide-react";
+import { Brain, Send, MessageCircle, Crown, Lock } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
+import { Link } from "wouter";
 
 interface Message {
   role: 'user' | 'assistant';
@@ -29,12 +30,27 @@ export function LandingChat() {
   ]);
   const [input, setInput] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
+  const [freeMessageUsed, setFreeMessageUsed] = useState(false);
+
+  // Check authentication status
+  const { data: user, isLoading } = useQuery({
+    queryKey: ["/api/auth/me"],
+    retry: false,
+  });
+
+  const isAuthenticated = !!user;
+  const isSubscribed = user?.isSubscribed;
+  const subscriptionTier = user?.subscriptionTier;
 
   const chatMutation = useMutation({
     mutationFn: async (message: string) => {
+      if (!isAuthenticated) {
+        throw new Error("Please sign in to chat with Thommo");
+      }
+
       const response = await apiRequest("POST", "/api/chat", {
         message,
-        userId: 1, // Demo user for landing page
+        userId: user.id,
       });
       return response.json();
     },
@@ -45,19 +61,67 @@ export function LandingChat() {
         timestamp: new Date().toISOString()
       };
       setMessages(prev => [...prev, assistantMessage]);
+      setFreeMessageUsed(true);
     },
-    onError: () => {
-      const errorMessage: Message = {
-        role: 'assistant',
-        content: "I'm temporarily unavailable. Try asking about box breathing, pre-shot routines, or managing first-tee nerves.",
-        timestamp: new Date().toISOString()
-      };
-      setMessages(prev => [...prev, errorMessage]);
+    onError: (error) => {
+      if (error.message.includes("sign in")) {
+        const errorMessage: Message = {
+          role: 'assistant',
+          content: "Please sign in to start chatting with me. I'm here to help with your mental game!",
+          timestamp: new Date().toISOString()
+        };
+        setMessages(prev => [...prev, errorMessage]);
+      } else {
+        const errorMessage: Message = {
+          role: 'assistant',
+          content: "I'm temporarily unavailable. Try asking about box breathing, pre-shot routines, or managing first-tee nerves.",
+          timestamp: new Date().toISOString()
+        };
+        setMessages(prev => [...prev, errorMessage]);
+      }
     }
   });
 
   const handleSend = () => {
     if (!input.trim()) return;
+
+    // Check if user needs to sign in
+    if (!isAuthenticated) {
+      const userMessage: Message = {
+        role: 'user',
+        content: input,
+        timestamp: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, userMessage]);
+      
+      const signInMessage: Message = {
+        role: 'assistant',
+        content: "Please sign in to chat with me. I'm here to help with your mental game!",
+        timestamp: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, signInMessage]);
+      setInput("");
+      return;
+    }
+
+    // Check free tier limitations (1 message/response for non-subscribers)
+    if (!isSubscribed && freeMessageUsed) {
+      const userMessage: Message = {
+        role: 'user',
+        content: input,
+        timestamp: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, userMessage]);
+      
+      const upgradeMessage: Message = {
+        role: 'assistant',
+        content: "You've used your free chat message! Upgrade to Premium ($690) or Ultimate ($1590) for unlimited AI coaching sessions.",
+        timestamp: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, upgradeMessage]);
+      setInput("");
+      return;
+    }
 
     const userMessage: Message = {
       role: 'user',
@@ -81,6 +145,7 @@ export function LandingChat() {
     return (
       <div className="fixed bottom-6 right-6 z-50">
         <Button
+          data-chat-button
           onClick={() => setIsExpanded(true)}
           className="bg-blue-600 hover:bg-blue-700 text-white rounded-full w-16 h-16 shadow-lg"
         >
@@ -142,26 +207,79 @@ export function LandingChat() {
         </ScrollArea>
         
         <div className="border-t p-4">
+          {/* Show upgrade prompt if free tier limit reached */}
+          {!isAuthenticated && (
+            <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-800 mb-2">Sign in to chat with Thommo</p>
+              <div className="flex space-x-2">
+                <Link href="/signin">
+                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                    Sign In
+                  </Button>
+                </Link>
+                <Link href="/signup">
+                  <Button size="sm" variant="outline">
+                    Sign Up
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          )}
+          
+          {isAuthenticated && !isSubscribed && freeMessageUsed && (
+            <div className="mb-3 p-3 bg-gradient-to-r from-blue-50 to-red-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-gray-800 mb-2">Upgrade for unlimited AI coaching</p>
+              <div className="flex space-x-2">
+                <Link href="/premium">
+                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                    Premium $690
+                  </Button>
+                </Link>
+                <Link href="/ultimate">
+                  <Button size="sm" className="bg-gradient-to-r from-blue-600 to-red-600 hover:from-blue-700 hover:to-red-700 text-white">
+                    <Crown size={14} className="mr-1" />
+                    Ultimate $1590
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          )}
+
           <div className="flex space-x-2">
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Ask about mental game challenges..."
+              placeholder={
+                !isAuthenticated 
+                  ? "Sign in to chat..." 
+                  : (!isSubscribed && freeMessageUsed)
+                    ? "Upgrade to continue chatting..."
+                    : "Ask about mental game challenges..."
+              }
               className="flex-1"
-              disabled={chatMutation.isPending}
+              disabled={chatMutation.isPending || (!isAuthenticated) || (!isSubscribed && freeMessageUsed)}
             />
             <Button
               onClick={handleSend}
-              disabled={!input.trim() || chatMutation.isPending}
+              disabled={!input.trim() || chatMutation.isPending || (!isAuthenticated) || (!isSubscribed && freeMessageUsed)}
               className="bg-blue-600 hover:bg-blue-700"
             >
               <Send size={16} />
             </Button>
           </div>
-          <p className="text-xs text-gray-500 mt-2">
-            Try: "I get nervous on the first tee" or "How do I handle pressure?"
-          </p>
+          
+          {isAuthenticated && isSubscribed && (
+            <p className="text-xs text-gray-500 mt-2">
+              Try: "I get nervous on the first tee" or "How do I handle pressure?"
+            </p>
+          )}
+          
+          {!isAuthenticated && (
+            <p className="text-xs text-gray-500 mt-2">
+              Sign in for personalized Red2Blue coaching
+            </p>
+          )}
         </div>
       </CardContent>
     </Card>

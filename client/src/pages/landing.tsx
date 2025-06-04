@@ -105,7 +105,18 @@ export default function Landing() {
                   className="flex-1 p-3 border rounded-lg bg-gray-50"
                   disabled
                 />
-                <Button className="bg-blue-600 hover:bg-blue-700 px-6">
+                <Button 
+                  className="bg-blue-600 hover:bg-blue-700 px-6"
+                  onClick={() => {
+                    // Scroll to bottom to show floating chat
+                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+                    // Small delay then trigger chat opening
+                    setTimeout(() => {
+                      const chatButton = document.querySelector('[data-chat-button]') as HTMLElement;
+                      if (chatButton) chatButton.click();
+                    }, 500);
+                  }}
+                >
                   Try Now
                 </Button>
               </div>
