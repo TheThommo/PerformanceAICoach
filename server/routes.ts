@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import session from "express-session";
 import Stripe from "stripe";
 import { storage } from "./storage";
-import { insertAssessmentSchema, insertChatSessionSchema, insertUserProgressSchema, insertPreShotRoutineSchema, insertMentalSkillsXCheckSchema, insertControlCircleSchema } from "@shared/schema";
+import { insertAssessmentSchema, insertChatSessionSchema, insertUserProgressSchema, insertPreShotRoutineSchema, insertMentalSkillsXCheckSchema, insertControlCircleSchema, insertDailyMoodSchema } from "@shared/schema";
 import { getCoachingResponse, analyzeAssessmentResults, generatePersonalizedPlan } from "./gemini";
 import { sessionConfig, requireAuth, requirePremium, requireAdmin, requireCoach, registerUser, loginUser, AuthRequest } from "./auth";
 import { recommendationEngine } from "./recommendationEngine";

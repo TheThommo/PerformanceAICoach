@@ -143,6 +143,16 @@ export const calendarReminders = pgTable("calendar_reminders", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Daily mood tracking
+export const dailyMoods = pgTable("daily_moods", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  date: date("date").notNull(), // just the date, not timestamp
+  moodScore: integer("mood_score").notNull(), // 0-100 scale
+  notes: text("notes"), // optional user notes
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -187,6 +197,11 @@ export const insertControlCircleSchema = createInsertSchema(controlCircles).omit
   createdAt: true,
 });
 
+export const insertDailyMoodSchema = createInsertSchema(dailyMoods).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const insertDailyCheckInSchema = createInsertSchema(dailyCheckIns).omit({
   id: true,
   createdAt: true,
@@ -220,6 +235,8 @@ export type MentalSkillsXCheck = typeof mentalSkillsXChecks.$inferSelect;
 export type InsertMentalSkillsXCheck = z.infer<typeof insertMentalSkillsXCheckSchema>;
 export type ControlCircle = typeof controlCircles.$inferSelect;
 export type InsertControlCircle = z.infer<typeof insertControlCircleSchema>;
+export type DailyMood = typeof dailyMoods.$inferSelect;
+export type InsertDailyMood = z.infer<typeof insertDailyMoodSchema>;
 export type DailyCheckIn = typeof dailyCheckIns.$inferSelect;
 export type InsertDailyCheckIn = z.infer<typeof insertDailyCheckInSchema>;
 export type TechniqueProgress = typeof techniqueProgress.$inferSelect;
