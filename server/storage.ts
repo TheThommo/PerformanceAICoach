@@ -7,6 +7,8 @@ import {
   type PreShotRoutine, type InsertPreShotRoutine, type MentalSkillsXCheck, 
   type InsertMentalSkillsXCheck, type ControlCircle, type InsertControlCircle
 } from "@shared/schema";
+import { db } from "./db";
+import { eq, desc } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -417,4 +419,224 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  async getUser(id: number): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user || undefined;
+  }
+
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user || undefined;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db
+      .insert(users)
+      .values(insertUser)
+      .returning();
+    return user;
+  }
+
+  async createAssessment(insertAssessment: InsertAssessment): Promise<Assessment> {
+    const [assessment] = await db
+      .insert(assessments)
+      .values(insertAssessment)
+      .returning();
+    return assessment;
+  }
+
+  async getLatestAssessment(userId: number): Promise<Assessment | undefined> {
+    const [assessment] = await db
+      .select()
+      .from(assessments)
+      .where(eq(assessments.userId, userId))
+      .orderBy(desc(assessments.createdAt))
+      .limit(1);
+    return assessment || undefined;
+  }
+
+  async getUserAssessments(userId: number): Promise<Assessment[]> {
+    return await db
+      .select()
+      .from(assessments)
+      .where(eq(assessments.userId, userId))
+      .orderBy(desc(assessments.createdAt));
+  }
+
+  async createChatSession(insertSession: InsertChatSession): Promise<ChatSession> {
+    const [session] = await db
+      .insert(chatSessions)
+      .values(insertSession)
+      .returning();
+    return session;
+  }
+
+  async getChatSession(id: number): Promise<ChatSession | undefined> {
+    const [session] = await db.select().from(chatSessions).where(eq(chatSessions.id, id));
+    return session || undefined;
+  }
+
+  async getUserChatSessions(userId: number): Promise<ChatSession[]> {
+    return await db
+      .select()
+      .from(chatSessions)
+      .where(eq(chatSessions.userId, userId))
+      .orderBy(desc(chatSessions.createdAt));
+  }
+
+  async updateChatSession(id: number, messages: any[]): Promise<ChatSession> {
+    const [session] = await db
+      .update(chatSessions)
+      .set({ messages })
+      .where(eq(chatSessions.id, id))
+      .returning();
+    return session;
+  }
+
+  async createUserProgress(insertProgress: InsertUserProgress): Promise<UserProgress> {
+    const [progress] = await db
+      .insert(userProgress)
+      .values(insertProgress)
+      .returning();
+    return progress;
+  }
+
+  async getUserProgress(userId: number, days: number = 7): Promise<UserProgress[]> {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    
+    return await db
+      .select()
+      .from(userProgress)
+      .where(eq(userProgress.userId, userId))
+      .orderBy(desc(userProgress.date));
+  }
+
+  async getAllTechniques(): Promise<Technique[]> {
+    return await db.select().from(techniques);
+  }
+
+  async getTechniquesByCategory(category: string): Promise<Technique[]> {
+    return await db
+      .select()
+      .from(techniques)
+      .where(eq(techniques.category, category));
+  }
+
+  async createTechnique(insertTechnique: InsertTechnique): Promise<Technique> {
+    const [technique] = await db
+      .insert(techniques)
+      .values(insertTechnique)
+      .returning();
+    return technique;
+  }
+
+  async getAllScenarios(): Promise<Scenario[]> {
+    return await db.select().from(scenarios);
+  }
+
+  async getScenariosByPressureLevel(level: string): Promise<Scenario[]> {
+    return await db
+      .select()
+      .from(scenarios)
+      .where(eq(scenarios.pressureLevel, level));
+  }
+
+  async createScenario(insertScenario: InsertScenario): Promise<Scenario> {
+    const [scenario] = await db
+      .insert(scenarios)
+      .values(insertScenario)
+      .returning();
+    return scenario;
+  }
+
+  async createPreShotRoutine(insertRoutine: InsertPreShotRoutine): Promise<PreShotRoutine> {
+    const [routine] = await db
+      .insert(preShotRoutines)
+      .values(insertRoutine)
+      .returning();
+    return routine;
+  }
+
+  async getUserPreShotRoutines(userId: number): Promise<PreShotRoutine[]> {
+    return await db
+      .select()
+      .from(preShotRoutines)
+      .where(eq(preShotRoutines.userId, userId))
+      .orderBy(desc(preShotRoutines.createdAt));
+  }
+
+  async getActivePreShotRoutine(userId: number): Promise<PreShotRoutine | undefined> {
+    const [routine] = await db
+      .select()
+      .from(preShotRoutines)
+      .where(eq(preShotRoutines.userId, userId))
+      .orderBy(desc(preShotRoutines.createdAt))
+      .limit(1);
+    return routine || undefined;
+  }
+
+  async updatePreShotRoutine(id: number, updates: Partial<PreShotRoutine>): Promise<PreShotRoutine> {
+    const [routine] = await db
+      .update(preShotRoutines)
+      .set(updates)
+      .where(eq(preShotRoutines.id, id))
+      .returning();
+    return routine;
+  }
+
+  async createMentalSkillsXCheck(insertXCheck: InsertMentalSkillsXCheck): Promise<MentalSkillsXCheck> {
+    const [xcheck] = await db
+      .insert(mentalSkillsXChecks)
+      .values(insertXCheck)
+      .returning();
+    return xcheck;
+  }
+
+  async getUserMentalSkillsXChecks(userId: number): Promise<MentalSkillsXCheck[]> {
+    return await db
+      .select()
+      .from(mentalSkillsXChecks)
+      .where(eq(mentalSkillsXChecks.userId, userId))
+      .orderBy(desc(mentalSkillsXChecks.createdAt));
+  }
+
+  async getLatestMentalSkillsXCheck(userId: number): Promise<MentalSkillsXCheck | undefined> {
+    const [xcheck] = await db
+      .select()
+      .from(mentalSkillsXChecks)
+      .where(eq(mentalSkillsXChecks.userId, userId))
+      .orderBy(desc(mentalSkillsXChecks.createdAt))
+      .limit(1);
+    return xcheck || undefined;
+  }
+
+  async createControlCircle(insertCircle: InsertControlCircle): Promise<ControlCircle> {
+    const [circle] = await db
+      .insert(controlCircles)
+      .values(insertCircle)
+      .returning();
+    return circle;
+  }
+
+  async getUserControlCircles(userId: number): Promise<ControlCircle[]> {
+    return await db
+      .select()
+      .from(controlCircles)
+      .where(eq(controlCircles.userId, userId))
+      .orderBy(desc(controlCircles.createdAt));
+  }
+
+  async getLatestControlCircle(userId: number): Promise<ControlCircle | undefined> {
+    const [circle] = await db
+      .select()
+      .from(controlCircles)
+      .where(eq(controlCircles.userId, userId))
+      .orderBy(desc(controlCircles.createdAt))
+      .limit(1);
+    return circle || undefined;
+  }
+}
+
+export const storage = new DatabaseStorage();
