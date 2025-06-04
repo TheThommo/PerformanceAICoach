@@ -153,17 +153,27 @@ export async function registerUser(userData: {
 }
 
 export async function loginUser(email: string, password: string) {
+  console.log('Login attempt for email:', email);
   const user = await storage.getUserByEmail(email);
+  
+  console.log('User found:', !!user, user ? 'with email: ' + user.email : 'not found');
+  
   if (!user) {
+    console.log('No user found with email:', email);
     throw new Error('Invalid email or password');
   }
 
+  console.log('Verifying password for user:', user.username);
   const isValid = await verifyPassword(password, user.password);
+  console.log('Password verification result:', isValid);
+
   if (!isValid) {
+    console.log('Password verification failed for user:', user.username);
     throw new Error('Invalid email or password');
   }
 
   // Remove password from response
   const { password: _, ...userWithoutPassword } = user;
+  console.log('Login successful for user:', userWithoutPassword.username);
   return userWithoutPassword;
 }
