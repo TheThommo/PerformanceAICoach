@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Navigation } from "@/components/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import Landing from "@/pages/landing";
+import Home from "@/pages/home";
 import Dashboard from "@/pages/dashboard";
 import Assessment from "@/pages/assessment";
 import Techniques from "@/pages/techniques";
@@ -39,7 +40,8 @@ function Router() {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       <Switch>
-        <Route path="/" component={Dashboard} />
+        <Route path="/" component={Home} />
+        <Route path="/dashboard" component={Dashboard} />
         <Route path="/assessment" component={Assessment} />
         <Route path="/techniques" component={Techniques} />
         <Route path="/tools" component={Tools} />
