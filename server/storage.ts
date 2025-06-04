@@ -96,7 +96,7 @@ export class MemStorage implements IStorage {
       id: 1,
       username: 'admin',
       email: 'admin@red2blue.com',
-      passwordHash: adminPassword,
+      password: adminPassword,
       firstName: 'System',
       lastName: 'Administrator',
       dateOfBirth: new Date('1980-01-01'),

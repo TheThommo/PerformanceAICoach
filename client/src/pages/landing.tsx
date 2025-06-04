@@ -702,14 +702,7 @@ function SignInForm({ onBack }: { onBack: () => void }) {
               />
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h4 className="font-semibold text-blue-900 mb-2">Admin Access Credentials:</h4>
-              <div className="text-sm space-y-1">
-                <p><strong>Email:</strong> admin@red2blue.com</p>
-                <p><strong>Password:</strong> admin123</p>
-              </div>
-              <p className="text-xs text-blue-700 mt-2">Use these credentials for full platform access including coach dashboard</p>
-            </div>
+
 
             <div className="flex space-x-3">
               <Button
