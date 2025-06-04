@@ -151,6 +151,7 @@ export const insertUserSchema = createInsertSchema(users).omit({
 export const insertAssessmentSchema = createInsertSchema(assessments).omit({
   id: true,
   createdAt: true,
+  totalScore: true, // Calculated by backend
 });
 
 export const insertChatSessionSchema = createInsertSchema(chatSessions).omit({
