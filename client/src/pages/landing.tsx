@@ -433,6 +433,11 @@ function SignUpForm({ onBack }: { onBack: () => void }) {
 
 function SignUpFormFields({ onBack }: { onBack: () => void }) {
   const { toast } = useToast();
+  const [showSignIn, setShowSignIn] = useState(false);
+
+  if (showSignIn) {
+    return <SignInFormContent onBack={() => setShowSignIn(false)} onBackToLanding={onBack} />;
+  }
   
   const [formData, setFormData] = useState({
     username: '',
@@ -655,8 +660,104 @@ function SignUpFormFields({ onBack }: { onBack: () => void }) {
       <div className="text-center">
         <p className="text-sm text-gray-600">
           Already have an account?{" "}
-          <button type="button" className="text-blue-600 hover:text-blue-700 font-medium">
+          <button 
+            type="button" 
+            onClick={() => setShowSignIn(true)}
+            className="text-blue-600 hover:text-blue-700 font-medium"
+          >
             Sign in here
+          </button>
+        </p>
+      </div>
+    </form>
+  );
+}
+
+function SignInFormContent({ onBack, onBackToLanding }: { onBack: () => void; onBackToLanding: () => void }) {
+  const { toast } = useToast();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  });
+
+  const loginMutation = useMutation({
+    mutationFn: async (data: { email: string; password: string }) => {
+      return await apiRequest("POST", "/api/auth/login", data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      toast({
+        title: "Welcome back!",
+        description: "You have successfully signed in.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Sign In Failed",
+        description: error.message || "Invalid email or password",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    loginMutation.mutate(formData);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+        <input
+          type="email"
+          required
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="your@email.com"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+        <input
+          type="password"
+          required
+          value={formData.password}
+          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          placeholder="Enter your password"
+        />
+      </div>
+
+      {/* Form Actions */}
+      <div className="flex flex-col sm:flex-row gap-4">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={onBack}
+          className="flex-1"
+        >
+          Back to Sign Up
+        </Button>
+        <Button
+          type="submit"
+          disabled={loginMutation.isPending}
+          className="flex-1 bg-blue-600 hover:bg-blue-700"
+        >
+          {loginMutation.isPending ? "Signing In..." : "Sign In"}
+        </Button>
+      </div>
+
+      <div className="text-center">
+        <p className="text-sm text-gray-600">
+          Don't have an account?{" "}
+          <button 
+            type="button" 
+            onClick={onBack}
+            className="text-blue-600 hover:text-blue-700 font-medium"
+          >
+            Create one here
           </button>
         </p>
       </div>
