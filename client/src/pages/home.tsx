@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { AIChat } from "@/components/ai-chat";
+import { ResilienceGame } from "@/components/resilience-game";
+import { MoodIndicator } from "@/components/mood-indicator";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "wouter";
 
@@ -336,6 +338,19 @@ export default function Home() {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Interactive Features Section */}
+      <div className="grid lg:grid-cols-2 gap-8 mt-8">
+        {/* Mental Resilience Mini-Game */}
+        <div>
+          <ResilienceGame />
+        </div>
+
+        {/* Real-time Performance Mood Indicator */}
+        <div>
+          <MoodIndicator />
+        </div>
       </div>
     </div>
   );
