@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Brain, Bell, Menu, X, Home, BarChart3, MessageCircle, Zap, Wrench, Users, Trophy, User, Settings, LogOut } from "lucide-react";
+import { Brain, Bell, Menu, X, Home, BarChart3, MessageCircle, Zap, Wrench, Users, Trophy, User, Settings, LogOut, Lightbulb } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -26,6 +26,7 @@ export function Navigation() {
     { href: "/assessment", label: "Assessment", icon: BarChart3 },
     { href: "/techniques", label: "Techniques", icon: Zap },
     { href: "/tools", label: "R2B Tools", icon: Wrench },
+    { href: "/recommendations", label: "AI Recommendations", icon: Lightbulb },
     { href: "/community", label: "Community", icon: Trophy },
   ];
 
