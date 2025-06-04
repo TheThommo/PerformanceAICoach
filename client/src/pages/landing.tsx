@@ -434,11 +434,6 @@ function SignUpForm({ onBack }: { onBack: () => void }) {
 function SignUpFormFields({ onBack }: { onBack: () => void }) {
   const { toast } = useToast();
   const [showSignIn, setShowSignIn] = useState(false);
-
-  if (showSignIn) {
-    return <SignInFormContent onBack={() => setShowSignIn(false)} onBackToLanding={onBack} />;
-  }
-  
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -501,6 +496,10 @@ function SignUpFormFields({ onBack }: { onBack: () => void }) {
     console.log('Registration data:', formData);
     registerMutation.mutate(formData);
   };
+
+  if (showSignIn) {
+    return <SignInFormContent onBack={() => setShowSignIn(false)} onBackToLanding={onBack} />;
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
