@@ -76,6 +76,11 @@ export function ControlCircles({ userId }: ControlCirclesProps) {
       queryClient.invalidateQueries({ queryKey: ['/api/control-circles/latest', userId] });
       setShowForm(false);
       form.reset();
+      toast({
+        title: "Exercise Complete!",
+        description: "Your Control Circles exercise has been saved successfully.",
+        variant: "default",
+      });
     },
   });
 

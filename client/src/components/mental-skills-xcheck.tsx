@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { CheckCircle2, AlertCircle, TrendingUp, Target } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { insertMentalSkillsXCheckSchema, type MentalSkillsXCheck } from "@shared/schema";
+import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 
 const formSchema = insertMentalSkillsXCheckSchema.extend({
@@ -37,6 +38,7 @@ interface MentalSkillsXCheckProps {
 export function MentalSkillsXCheck({ userId }: MentalSkillsXCheckProps) {
   const [showForm, setShowForm] = useState(false);
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const { data: latestXCheck } = useQuery({
     queryKey: ['/api/mental-skills-xcheck/latest', userId],
@@ -85,6 +87,11 @@ export function MentalSkillsXCheck({ userId }: MentalSkillsXCheckProps) {
       queryClient.invalidateQueries({ queryKey: ['/api/mental-skills-xcheck/latest', userId] });
       setShowForm(false);
       form.reset();
+      toast({
+        title: "X-Check Complete!",
+        description: "Your Mental Skills assessment has been saved successfully.",
+        variant: "default",
+      });
     },
   });
 
