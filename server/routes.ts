@@ -835,6 +835,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Daily mood tracking routes
+  app.post("/api/daily-mood", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const validatedData = insertDailyMoodSchema.parse(req.body);
+      const mood = await storage.createDailyMood(validatedData);
+      res.status(201).json(mood);
+    } catch (error) {
+      console.error("Error creating daily mood:", error);
+      res.status(500).json({ message: "Failed to save mood", error: (error as Error).message });
+    }
+  });
+
+  app.get("/api/daily-mood/:userId/:date", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const date = req.params.date;
+      const mood = await storage.getDailyMood(userId, date);
+      if (!mood) {
+        return res.status(404).json({ message: "No mood recorded for this date" });
+      }
+      res.json(mood);
+    } catch (error) {
+      console.error("Error fetching daily mood:", error);
+      res.status(500).json({ message: "Failed to fetch mood", error: (error as Error).message });
+    }
+  });
+
+  app.put("/api/daily-mood/:id", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { moodScore, notes } = req.body;
+      const mood = await storage.updateDailyMood(id, { moodScore, notes });
+      res.json(mood);
+    } catch (error) {
+      console.error("Error updating daily mood:", error);
+      res.status(500).json({ message: "Failed to update mood", error: (error as Error).message });
+    }
+  });
+
+  app.get("/api/mood-correlation/:userId", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const days = parseInt(req.query.days as string) || 30;
+      
+      const moods = await storage.getUserMoods(userId, days);
+      const assessments = await storage.getUserAssessments(userId);
+      
+      // Correlate mood data with assessment performance
+      const correlation = moods.map(mood => {
+        const moodDate = new Date(mood.date);
+        const nearbyAssessment = assessments.find(assessment => {
+          const assessmentDate = new Date(assessment.createdAt || '');
+          const timeDiff = Math.abs(assessmentDate.getTime() - moodDate.getTime());
+          return timeDiff <= 24 * 60 * 60 * 1000; // Within 24 hours
+        });
+        
+        return {
+          date: mood.date,
+          moodScore: mood.moodScore,
+          assessmentScore: nearbyAssessment?.totalScore || null,
+          notes: mood.notes
+        };
+      });
+      
+      res.json(correlation);
+    } catch (error) {
+      console.error("Error fetching mood correlation:", error);
+      res.status(500).json({ message: "Failed to fetch mood correlation", error: (error as Error).message });
+    }
+  });
+
   // Personalized plan generation
   app.post("/api/generate-plan/:userId", async (req, res) => {
     try {

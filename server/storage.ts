@@ -1,7 +1,7 @@
 import { 
   users, assessments, chatSessions, userProgress, techniques, scenarios,
   preShotRoutines, mentalSkillsXChecks, controlCircles, userCoachingProfiles,
-  aiRecommendations, coachingInsights, userEngagementMetrics,
+  aiRecommendations, coachingInsights, userEngagementMetrics, dailyMoods,
   type User, type InsertUser, type Assessment, type InsertAssessment,
   type ChatSession, type InsertChatSession, type UserProgress, type InsertUserProgress,
   type Technique, type InsertTechnique, type Scenario, type InsertScenario,
@@ -9,7 +9,8 @@ import {
   type InsertMentalSkillsXCheck, type ControlCircle, type InsertControlCircle,
   type UserCoachingProfile, type InsertUserCoachingProfile, type AiRecommendation,
   type InsertAiRecommendation, type CoachingInsight, type InsertCoachingInsight,
-  type UserEngagementMetric, type InsertUserEngagementMetric
+  type UserEngagementMetric, type InsertUserEngagementMetric, type DailyMood,
+  type InsertDailyMood
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
@@ -64,6 +65,12 @@ export interface IStorage {
   getUserControlCircles(userId: number): Promise<ControlCircle[]>;
   getLatestControlCircle(userId: number): Promise<ControlCircle | undefined>;
 
+  // Daily Mood operations
+  createDailyMood(mood: InsertDailyMood): Promise<DailyMood>;
+  getDailyMood(userId: number, date: string): Promise<DailyMood | undefined>;
+  updateDailyMood(id: number, updates: Partial<DailyMood>): Promise<DailyMood>;
+  getUserMoods(userId: number, days?: number): Promise<DailyMood[]>;
+
   // AI Recommendation Engine operations
   createUserCoachingProfile(profile: InsertUserCoachingProfile): Promise<UserCoachingProfile>;
   getUserCoachingProfile(userId: number): Promise<UserCoachingProfile | undefined>;
@@ -97,6 +104,7 @@ export class MemStorage implements IStorage {
   private aiRecommendations: Map<number, AiRecommendation>;
   private coachingInsights: Map<number, CoachingInsight>;
   private userEngagementMetrics: Map<number, UserEngagementMetric>;
+  private dailyMoods: Map<number, DailyMood>;
   private currentId: number;
 
   private initialized = false;
@@ -115,6 +123,7 @@ export class MemStorage implements IStorage {
     this.aiRecommendations = new Map();
     this.coachingInsights = new Map();
     this.userEngagementMetrics = new Map();
+    this.dailyMoods = new Map();
     this.currentId = 1;
     this.seedData().catch(console.error);
   }
@@ -618,6 +627,42 @@ export class MemStorage implements IStorage {
   async getLatestControlCircle(userId: number): Promise<ControlCircle | undefined> {
     const circles = await this.getUserControlCircles(userId);
     return circles[0];
+  }
+
+  // Daily Mood operations
+  async createDailyMood(insertMood: InsertDailyMood): Promise<DailyMood> {
+    const id = this.currentId++;
+    const mood: DailyMood = { 
+      ...insertMood, 
+      id,
+      createdAt: new Date()
+    };
+    this.dailyMoods.set(id, mood);
+    return mood;
+  }
+
+  async getDailyMood(userId: number, date: string): Promise<DailyMood | undefined> {
+    return Array.from(this.dailyMoods.values())
+      .find(mood => mood.userId === userId && mood.date === date);
+  }
+
+  async updateDailyMood(id: number, updates: Partial<DailyMood>): Promise<DailyMood> {
+    const existing = this.dailyMoods.get(id);
+    if (!existing) {
+      throw new Error('Daily mood not found');
+    }
+    const updated: DailyMood = { ...existing, ...updates };
+    this.dailyMoods.set(id, updated);
+    return updated;
+  }
+
+  async getUserMoods(userId: number, days: number = 30): Promise<DailyMood[]> {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    
+    return Array.from(this.dailyMoods.values())
+      .filter(mood => mood.userId === userId && new Date(mood.date) >= cutoffDate)
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   }
 
   // AI Recommendation Engine implementation
