@@ -5,9 +5,11 @@ import { Timer, Target, CircleDot, Brain } from "lucide-react";
 import { PreShotRoutineComponent } from "@/components/pre-shot-routine";
 import { MentalSkillsXCheck } from "@/components/mental-skills-xcheck";
 import { ControlCircles } from "@/components/control-circles";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function Tools() {
-  const userId = 1; // Demo user ID
+  const { user } = useAuth();
+  const userId = user?.id || 1;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
