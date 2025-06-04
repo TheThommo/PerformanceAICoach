@@ -1,8 +1,11 @@
 import { 
   users, assessments, chatSessions, userProgress, techniques, scenarios,
+  preShotRoutines, mentalSkillsXChecks, controlCircles,
   type User, type InsertUser, type Assessment, type InsertAssessment,
   type ChatSession, type InsertChatSession, type UserProgress, type InsertUserProgress,
-  type Technique, type InsertTechnique, type Scenario, type InsertScenario
+  type Technique, type InsertTechnique, type Scenario, type InsertScenario,
+  type PreShotRoutine, type InsertPreShotRoutine, type MentalSkillsXCheck, 
+  type InsertMentalSkillsXCheck, type ControlCircle, type InsertControlCircle
 } from "@shared/schema";
 
 export interface IStorage {
@@ -35,6 +38,22 @@ export interface IStorage {
   getAllScenarios(): Promise<Scenario[]>;
   getScenariosByPressureLevel(level: string): Promise<Scenario[]>;
   createScenario(scenario: InsertScenario): Promise<Scenario>;
+
+  // Pre-shot routine operations
+  createPreShotRoutine(routine: InsertPreShotRoutine): Promise<PreShotRoutine>;
+  getUserPreShotRoutines(userId: number): Promise<PreShotRoutine[]>;
+  getActivePreShotRoutine(userId: number): Promise<PreShotRoutine | undefined>;
+  updatePreShotRoutine(id: number, routine: Partial<PreShotRoutine>): Promise<PreShotRoutine>;
+
+  // Mental Skills X-Check operations
+  createMentalSkillsXCheck(xcheck: InsertMentalSkillsXCheck): Promise<MentalSkillsXCheck>;
+  getUserMentalSkillsXChecks(userId: number): Promise<MentalSkillsXCheck[]>;
+  getLatestMentalSkillsXCheck(userId: number): Promise<MentalSkillsXCheck | undefined>;
+
+  // Control Circle operations
+  createControlCircle(circle: InsertControlCircle): Promise<ControlCircle>;
+  getUserControlCircles(userId: number): Promise<ControlCircle[]>;
+  getLatestControlCircle(userId: number): Promise<ControlCircle | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -44,6 +63,9 @@ export class MemStorage implements IStorage {
   private userProgress: Map<number, UserProgress>;
   private techniques: Map<number, Technique>;
   private scenarios: Map<number, Scenario>;
+  private preShotRoutines: Map<number, PreShotRoutine>;
+  private mentalSkillsXChecks: Map<number, MentalSkillsXCheck>;
+  private controlCircles: Map<number, ControlCircle>;
   private currentId: number;
 
   constructor() {
@@ -53,6 +75,9 @@ export class MemStorage implements IStorage {
     this.userProgress = new Map();
     this.techniques = new Map();
     this.scenarios = new Map();
+    this.preShotRoutines = new Map();
+    this.mentalSkillsXChecks = new Map();
+    this.controlCircles = new Map();
     this.currentId = 1;
     this.seedData();
   }
@@ -96,7 +121,7 @@ export class MemStorage implements IStorage {
 
     defaultTechniques.forEach(technique => {
       const id = this.currentId++;
-      this.techniques.set(id, { ...technique, id });
+      this.techniques.set(id, { ...technique, id, duration: technique.duration || null });
     });
 
     // Seed default scenarios
@@ -129,8 +154,31 @@ export class MemStorage implements IStorage {
 
     defaultScenarios.forEach(scenario => {
       const id = this.currentId++;
-      this.scenarios.set(id, { ...scenario, id });
+      this.scenarios.set(id, { 
+        ...scenario, 
+        id,
+        redHeadTriggers: scenario.redHeadTriggers || null,
+        blueHeadTechniques: scenario.blueHeadTechniques || null
+      });
     });
+
+    // Seed default pre-shot routines
+    const defaultRoutine: InsertPreShotRoutine = {
+      userId: 1, // Demo user
+      name: "Red2Blue 25-Second Routine",
+      steps: [
+        { name: "Ritual Physical Action", duration: 10, description: "Deep breath (4 in, 6 out) + feet movement for balance" },
+        { name: "Visualize the Shot", duration: 6, description: "Picture trajectory, speed, spin with keyword 'Smooth'" },
+        { name: "Align and Commit", duration: 4, description: "Approach ball, align to target, commit fully" },
+        { name: "Practice Swing", duration: 3, description: "One purposeful swing with intended feel and tempo" },
+        { name: "Execute", duration: 5, description: "Step up, settle, execute with complete trust" }
+      ],
+      totalDuration: 28,
+      isActive: true
+    };
+
+    const routineId = this.currentId++;
+    this.preShotRoutines.set(routineId, { ...defaultRoutine, id: routineId, createdAt: new Date() });
   }
 
   async getUser(id: number): Promise<User | undefined> {
@@ -146,6 +194,7 @@ export class MemStorage implements IStorage {
     const user: User = { 
       ...insertUser, 
       id, 
+      email: insertUser.email || null,
       createdAt: new Date()
     };
     this.users.set(id, user);

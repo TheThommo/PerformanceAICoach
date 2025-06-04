@@ -59,6 +59,41 @@ export const scenarios = pgTable("scenarios", {
   blueHeadTechniques: text("blue_head_techniques").array(),
 });
 
+export const preShotRoutines = pgTable("pre_shot_routines", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  name: text("name").notNull(),
+  steps: jsonb("steps").notNull(), // array of routine steps with timings
+  totalDuration: integer("total_duration").notNull(), // in seconds
+  isActive: boolean("is_active").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const mentalSkillsXChecks = pgTable("mental_skills_x_checks", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  intensityScores: jsonb("intensity_scores").notNull(), // array of 3 scores 0-100
+  decisionMakingScores: jsonb("decision_making_scores").notNull(), // array of 3 scores 0-100
+  diversionsScores: jsonb("diversions_scores").notNull(), // array of 3 scores 0-100
+  executionScores: jsonb("execution_scores").notNull(), // array of 3 scores 0-100
+  whatDidWell: text("what_did_well"),
+  whatCouldDoBetter: text("what_could_do_better"),
+  actionPlan: text("action_plan"),
+  context: text("context"), // round, tournament, practice, etc.
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const controlCircles = pgTable("control_circles", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  cantControl: text("cant_control").array(),
+  canInfluence: text("can_influence").array(),
+  canControl: text("can_control").array(),
+  reflections: text("reflections"),
+  context: text("context"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
   createdAt: true,
@@ -87,6 +122,21 @@ export const insertScenarioSchema = createInsertSchema(scenarios).omit({
   id: true,
 });
 
+export const insertPreShotRoutineSchema = createInsertSchema(preShotRoutines).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertMentalSkillsXCheckSchema = createInsertSchema(mentalSkillsXChecks).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertControlCircleSchema = createInsertSchema(controlCircles).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type Assessment = typeof assessments.$inferSelect;
@@ -99,3 +149,9 @@ export type Technique = typeof techniques.$inferSelect;
 export type InsertTechnique = z.infer<typeof insertTechniqueSchema>;
 export type Scenario = typeof scenarios.$inferSelect;
 export type InsertScenario = z.infer<typeof insertScenarioSchema>;
+export type PreShotRoutine = typeof preShotRoutines.$inferSelect;
+export type InsertPreShotRoutine = z.infer<typeof insertPreShotRoutineSchema>;
+export type MentalSkillsXCheck = typeof mentalSkillsXChecks.$inferSelect;
+export type InsertMentalSkillsXCheck = z.infer<typeof insertMentalSkillsXCheckSchema>;
+export type ControlCircle = typeof controlCircles.$inferSelect;
+export type InsertControlCircle = z.infer<typeof insertControlCircleSchema>;
