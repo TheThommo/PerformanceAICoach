@@ -90,23 +90,27 @@ export class MemStorage implements IStorage {
   private async seedData() {
     // Seed admin user
     const { hashPassword } = await import('./auth');
-    const adminPassword = await hashPassword('admin123');
+    const adminPassword = await hashPassword('mindsetskills101');
     
     const adminUser: User = {
       id: 1,
-      username: 'admin',
-      email: 'admin@red2blue.com',
+      username: 'mark',
+      email: 'mark@cero-international.com',
       password: adminPassword,
-      firstName: 'System',
-      lastName: 'Administrator',
       dateOfBirth: new Date('1980-01-01'),
-      golfExperience: 'professional',
-      currentHandicap: 0,
-      goals: 'Platform administration and coaching oversight',
-      preferredName: 'Admin',
+      dexterity: 'right',
+      gender: 'male',
+      golfHandicap: 5,
+      bio: 'System Administrator and Golf Mental Performance Expert',
+      aiGeneratedProfile: null,
+      profileImageUrl: null,
+      isSubscribed: true,
       subscriptionTier: 'ultimate',
       role: 'admin',
-      profileGenerated: true,
+      stripeCustomerId: null,
+      stripeSubscriptionId: null,
+      subscriptionStartDate: new Date(),
+      subscriptionEndDate: null,
       createdAt: new Date(),
       updatedAt: new Date()
     };
