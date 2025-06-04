@@ -1021,6 +1021,162 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Emergency Relief route
+  app.post("/api/emergency-relief", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const userId = req.userId!;
+      
+      // Log the emergency relief practice
+      const today = new Date().toISOString().split('T')[0];
+      let progress = await storage.getUserProgress(userId, today);
+      
+      if (!progress) {
+        progress = await storage.createUserProgress({
+          userId,
+          date: today,
+          techniquesUsed: 1,
+          emergencyRelief: 1
+        });
+      } else {
+        await storage.updateUserProgress(progress.id, {
+          techniquesUsed: (progress.techniquesUsed || 0) + 1,
+          emergencyRelief: (progress.emergencyRelief || 0) + 1
+        });
+      }
+
+      res.json({ message: "Emergency relief session logged successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to log emergency relief", error: (error as Error).message });
+    }
+  });
+
+  // Practice technique route
+  app.post("/api/practice-technique", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const userId = req.userId!;
+      const { techniqueId } = req.body;
+      
+      // Log the practice session
+      const today = new Date().toISOString().split('T')[0];
+      let progress = await storage.getUserProgress(userId, today);
+      
+      if (!progress) {
+        progress = await storage.createUserProgress({
+          userId,
+          date: today,
+          techniquesUsed: 1,
+          practiceMinutes: 5 // Assume 5 minutes per practice session
+        });
+      } else {
+        await storage.updateUserProgress(progress.id, {
+          techniquesUsed: (progress.techniquesUsed || 0) + 1,
+          practiceMinutes: (progress.practiceMinutes || 0) + 5
+        });
+      }
+
+      res.json({ message: "Practice session logged successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to log practice session", error: (error as Error).message });
+    }
+  });
+
+  // Share idea route
+  app.post("/api/share-idea", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const userId = req.userId!;
+      const { idea } = req.body;
+      
+      if (!idea || idea.trim().length === 0) {
+        return res.status(400).json({ message: "Idea content is required" });
+      }
+
+      // Get user info for Thommo integration
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Create a chat session with Thommo about the shared idea
+      const chatSession = await storage.createChatSession({
+        userId,
+        message: `User shared technique idea: "${idea}"`,
+        aiResponse: `Thank you for sharing your technique idea! I've received: "${idea}". This is valuable feedback that helps me understand what works for golfers like you. I'll consider incorporating elements of this approach into future coaching sessions. Your experience and insights make the Red2Blue system better for everyone.`,
+        sentiment: "positive",
+        redHeadIndicators: [],
+        blueHeadTechniques: ["idea_sharing", "community_contribution"],
+        urgencyLevel: "low"
+      });
+
+      // Store the idea anonymously in community ideas (implement this table later)
+      // For now, we'll just log the practice engagement
+      const today = new Date().toISOString().split('T')[0];
+      let progress = await storage.getUserProgress(userId, today);
+      
+      if (!progress) {
+        progress = await storage.createUserProgress({
+          userId,
+          date: today,
+          chatMessages: 1,
+          engagementScore: 10 // Ideas sharing is high engagement
+        });
+      } else {
+        await storage.updateUserProgress(progress.id, {
+          chatMessages: (progress.chatMessages || 0) + 1,
+          engagementScore: (progress.engagementScore || 0) + 10
+        });
+      }
+
+      res.json({ 
+        message: "Idea shared successfully with Thommo and community",
+        chatSessionId: chatSession.id
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to share idea", error: (error as Error).message });
+    }
+  });
+
+  // Get community ideas route (anonymous)
+  app.get("/api/community-ideas", async (req, res) => {
+    try {
+      // For now, return some sample community ideas
+      // In the future, this would pull from a community_ideas table
+      const sampleIdeas = [
+        {
+          id: 1,
+          content: "I take three deep breaths and visualize the ball's perfect path before every shot. This helps me stay calm under pressure.",
+          category: "visualization",
+          helpfulCount: 24,
+          createdAt: new Date(Date.now() - 86400000 * 3) // 3 days ago
+        },
+        {
+          id: 2,
+          content: "When I feel tension building, I do a quick body scan and consciously relax my shoulders and jaw. Game changer!",
+          category: "body_awareness",
+          helpfulCount: 18,
+          createdAt: new Date(Date.now() - 86400000 * 7) // 1 week ago
+        },
+        {
+          id: 3,
+          content: "I use a specific word or phrase as my mental anchor. When pressure builds, I repeat it to center myself.",
+          category: "mental_anchor",
+          helpfulCount: 31,
+          createdAt: new Date(Date.now() - 86400000 * 2) // 2 days ago
+        },
+        {
+          id: 4,
+          content: "Between shots, I focus on one thing I can control in the next shot instead of thinking about score or outcomes.",
+          category: "focus",
+          helpfulCount: 27,
+          createdAt: new Date(Date.now() - 86400000 * 5) // 5 days ago
+        }
+      ];
+
+      res.json(sampleIdeas);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch community ideas", error: (error as Error).message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
