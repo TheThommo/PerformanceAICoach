@@ -140,7 +140,7 @@ User message: "${userMessage}"
 
 Please provide a coaching response in JSON format.`;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
     const result = await model.generateContent(fullPrompt);
     const response = await result.response;
@@ -221,7 +221,7 @@ As Thommo, the Red2Blue coach, provide analysis in JSON format with:
 
 Focus on practical, golf-specific insights and simple language.`;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const text = response.text();
@@ -270,7 +270,7 @@ Experience Level: ${golfExperience}
 
 Provide a comprehensive but concise profile highlighting their mental game strengths, areas for development, and personalized Red2Blue techniques that would be most effective for them.`;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const result = await model.generateContent(prompt);
     const response = await result.response;
     
