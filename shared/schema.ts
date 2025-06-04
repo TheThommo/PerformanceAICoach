@@ -15,7 +15,7 @@ export const users = pgTable("users", {
   aiGeneratedProfile: text("ai_generated_profile"),
   profileImageUrl: text("profile_image_url"),
   isSubscribed: boolean("is_subscribed").default(false),
-  subscriptionTier: text("subscription_tier").default("free"), // "free", "premium"
+  subscriptionTier: text("subscription_tier").default("free"), // "free", "premium", "ultimate"
   stripeCustomerId: text("stripe_customer_id"),
   stripeSubscriptionId: text("stripe_subscription_id"),
   subscriptionStartDate: timestamp("subscription_start_date"),

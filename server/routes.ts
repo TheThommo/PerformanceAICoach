@@ -1,10 +1,212 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import session from "express-session";
+import Stripe from "stripe";
 import { storage } from "./storage";
 import { insertAssessmentSchema, insertChatSessionSchema, insertUserProgressSchema, insertPreShotRoutineSchema, insertMentalSkillsXCheckSchema, insertControlCircleSchema } from "@shared/schema";
 import { getCoachingResponse, analyzeAssessmentResults, generatePersonalizedPlan } from "./openai";
+import { sessionConfig, requireAuth, requirePremium, registerUser, loginUser, AuthRequest } from "./auth";
+
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
+}
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2023-10-16",
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Session middleware
+  app.use(session(sessionConfig));
+
+  // Authentication routes
+  app.post("/api/auth/register", async (req, res) => {
+    try {
+      const user = await registerUser(req.body);
+      req.session.userId = user.id;
+      
+      // Remove password from response
+      const { password, ...userWithoutPassword } = user;
+      res.json(userWithoutPassword);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/auth/login", async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      const user = await loginUser(email, password);
+      req.session.userId = user.id;
+      
+      res.json(user);
+    } catch (error: any) {
+      res.status(401).json({ message: error.message });
+    }
+  });
+
+  app.post("/api/auth/logout", (req, res) => {
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ message: "Could not log out" });
+      }
+      res.json({ message: "Logged out successfully" });
+    });
+  });
+
+  app.get("/api/auth/me", async (req: AuthRequest, res) => {
+    if (!req.session.userId) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    try {
+      const user = await storage.getUser(req.session.userId);
+      if (!user) {
+        return res.status(401).json({ message: "User not found" });
+      }
+
+      // Remove password from response
+      const { password, ...userWithoutPassword } = user;
+      res.json(userWithoutPassword);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // Stripe subscription routes
+  app.post("/api/subscription/create", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const { tier } = req.body; // 'premium' or 'ultimate'
+      const user = req.user;
+
+      if (!user.email) {
+        return res.status(400).json({ message: 'Email required for subscription' });
+      }
+
+      // Create or retrieve Stripe customer
+      let customerId = user.stripeCustomerId;
+      if (!customerId) {
+        const customer = await stripe.customers.create({
+          email: user.email,
+          name: user.username,
+        });
+        customerId = customer.id;
+        
+        // Update user with customer ID
+        await storage.updateUser(user.id, { stripeCustomerId: customerId });
+      }
+
+      // Define pricing based on tier
+      const priceIds = {
+        premium: process.env.STRIPE_PREMIUM_PRICE_ID, // Annual $828
+        ultimate: process.env.STRIPE_ULTIMATE_PRICE_ID, // Annual $1908
+      };
+
+      const priceId = priceIds[tier as keyof typeof priceIds];
+      if (!priceId) {
+        return res.status(400).json({ message: 'Invalid subscription tier' });
+      }
+
+      // Create checkout session
+      const session = await stripe.checkout.sessions.create({
+        customer: customerId,
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price: priceId,
+            quantity: 1,
+          },
+        ],
+        mode: 'subscription',
+        success_url: `${req.headers.origin}/?subscription=success`,
+        cancel_url: `${req.headers.origin}/?subscription=cancelled`,
+        allow_promotion_codes: true,
+      });
+
+      res.json({ sessionUrl: session.url });
+    } catch (error: any) {
+      console.error('Subscription creation error:', error);
+      res.status(500).json({ message: 'Failed to create subscription' });
+    }
+  });
+
+  // Webhook for Stripe events
+  app.post("/api/webhook/stripe", async (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    let event;
+
+    try {
+      event = stripe.webhooks.constructEvent(req.body, sig!, process.env.STRIPE_WEBHOOK_SECRET!);
+    } catch (err: any) {
+      console.log(`Webhook signature verification failed.`, err.message);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Handle subscription events
+    switch (event.type) {
+      case 'checkout.session.completed':
+        const session = event.data.object;
+        await handleSubscriptionSuccess(session);
+        break;
+      case 'invoice.payment_succeeded':
+        const invoice = event.data.object;
+        await handlePaymentSuccess(invoice);
+        break;
+      case 'customer.subscription.deleted':
+        const deletedSubscription = event.data.object;
+        await handleSubscriptionCancelled(deletedSubscription);
+        break;
+    }
+
+    res.json({ received: true });
+  });
+
+  async function handleSubscriptionSuccess(session: any) {
+    const customer = await stripe.customers.retrieve(session.customer);
+    if ('email' in customer) {
+      const user = await storage.getUserByEmail(customer.email!);
+      if (user) {
+        const subscription = await stripe.subscriptions.retrieve(session.subscription);
+        const tier = subscription.items.data[0].price.id === process.env.STRIPE_PREMIUM_PRICE_ID ? 'premium' : 'ultimate';
+        
+        await storage.updateUser(user.id, {
+          isSubscribed: true,
+          subscriptionTier: tier,
+          stripeSubscriptionId: subscription.id,
+          subscriptionStartDate: new Date(subscription.current_period_start * 1000),
+          subscriptionEndDate: new Date(subscription.current_period_end * 1000),
+        });
+      }
+    }
+  }
+
+  async function handlePaymentSuccess(invoice: any) {
+    // Handle recurring payment success
+    const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
+    const customer = await stripe.customers.retrieve(subscription.customer as string);
+    
+    if ('email' in customer) {
+      const user = await storage.getUserByEmail(customer.email!);
+      if (user) {
+        await storage.updateUser(user.id, {
+          subscriptionEndDate: new Date(subscription.current_period_end * 1000),
+        });
+      }
+    }
+  }
+
+  async function handleSubscriptionCancelled(subscription: any) {
+    const customer = await stripe.customers.retrieve(subscription.customer);
+    if ('email' in customer) {
+      const user = await storage.getUserByEmail(customer.email!);
+      if (user) {
+        await storage.updateUser(user.id, {
+          isSubscribed: false,
+          subscriptionTier: 'free',
+          stripeSubscriptionId: null,
+        });
+      }
+    }
+  }
   
   // Assessment routes
   app.post("/api/assessments", async (req, res) => {

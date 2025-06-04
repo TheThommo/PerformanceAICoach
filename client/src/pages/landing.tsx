@@ -166,24 +166,24 @@ export default function Landing() {
               Choose Your Training Level
             </h2>
             <p className="text-lg text-gray-600">
-              Start free, upgrade when you're ready for advanced features
+              Professional mental performance coaching for every level
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {/* Free Tier */}
             <Card className="border-2 border-gray-200">
               <CardHeader>
                 <CardTitle className="text-2xl">Free Access</CardTitle>
                 <CardDescription>Get started with basic mental training</CardDescription>
-                <div className="text-3xl font-bold">$0<span className="text-lg font-normal">/month</span></div>
+                <div className="text-3xl font-bold">$0<span className="text-lg font-normal text-gray-500">/month</span></div>
+                <p className="text-sm text-gray-500">Billed annually</p>
               </CardHeader>
               <CardContent className="space-y-4">
                 <ul className="space-y-3">
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Basic assessments</li>
+                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Basic assessment</li>
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Limited chat with Thommo</li>
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Basic progress tracking</li>
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Community access</li>
+                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Limited document downloads</li>
                 </ul>
                 <Button variant="outline" className="w-full">
                   Get Started Free
@@ -192,17 +192,22 @@ export default function Landing() {
             </Card>
 
             {/* Premium Tier */}
-            <Card className="border-2 border-blue-500 relative">
+            <Card className="border-2 border-blue-500 relative transform scale-105">
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <Badge className="bg-blue-600">Most Popular</Badge>
+                <Badge className="bg-blue-600">Most Popular - 55% Savings</Badge>
               </div>
               <CardHeader>
                 <CardTitle className="text-2xl flex items-center">
                   Premium Access
                   <Star className="w-5 h-5 text-yellow-500 ml-2" />
                 </CardTitle>
-                <CardDescription>Full access to all mental performance tools</CardDescription>
-                <div className="text-3xl font-bold">$29<span className="text-lg font-normal">/month</span></div>
+                <CardDescription>Complete mental performance transformation</CardDescription>
+                <div className="flex items-baseline space-x-2">
+                  <span className="text-3xl font-bold">$69</span>
+                  <span className="text-lg text-gray-500 line-through">$153</span>
+                  <span className="text-lg font-normal text-gray-500">/month</span>
+                </div>
+                <p className="text-sm text-green-600 font-medium">Billed annually - Save 55%</p>
               </CardHeader>
               <CardContent className="space-y-4">
                 <ul className="space-y-3">
@@ -216,8 +221,62 @@ export default function Landing() {
                 <Button className="w-full bg-blue-600 hover:bg-blue-700">
                   Start Premium Trial
                 </Button>
+                <p className="text-xs text-center text-gray-500">14-day free trial, then $828/year</p>
               </CardContent>
             </Card>
+
+            {/* Ultimate Tier */}
+            <Card className="border-2 border-purple-500 relative">
+              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                <Badge className="bg-purple-600">Human Coaching</Badge>
+              </div>
+              <CardHeader>
+                <CardTitle className="text-2xl flex items-center">
+                  Ultimate Access
+                  <Users className="w-5 h-5 text-purple-500 ml-2" />
+                </CardTitle>
+                <CardDescription>Premium AI + personal human coaching</CardDescription>
+                <div className="text-3xl font-bold">$159<span className="text-lg font-normal text-gray-500">/month</span></div>
+                <p className="text-sm text-gray-500">Billed annually</p>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="bg-purple-50 p-3 rounded-lg mb-4">
+                  <p className="text-sm font-medium text-purple-800">Everything in Premium plus:</p>
+                </div>
+                <ul className="space-y-3">
+                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />All Premium features</li>
+                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />1-on-1 private sessions</li>
+                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Advanced coach matching</li>
+                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Custom training programs</li>
+                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />VIP support channel</li>
+                </ul>
+                <Button className="w-full bg-purple-600 hover:bg-purple-700">
+                  Start Ultimate Trial
+                </Button>
+                <p className="text-xs text-center text-gray-500">14-day free trial, then $1,908/year</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Value Proposition */}
+          <div className="mt-16 text-center">
+            <p className="text-lg text-gray-600 mb-4">
+              Join thousands of elite performers who've transformed their mental game
+            </p>
+            <div className="flex justify-center items-center space-x-8 text-gray-500">
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                <span>No contracts</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                <span>Cancel anytime</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                <span>30-day guarantee</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
