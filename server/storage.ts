@@ -99,7 +99,7 @@ export class MemStorage implements IStorage {
       passwordHash: adminPassword,
       firstName: 'System',
       lastName: 'Administrator',
-      dateOfBirth: '1980-01-01',
+      dateOfBirth: new Date('1980-01-01'),
       golfExperience: 'professional',
       currentHandicap: 0,
       goals: 'Platform administration and coaching oversight',
