@@ -1028,7 +1028,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Log the emergency relief practice
       const today = new Date().toISOString().split('T')[0];
-      let progress = await storage.getUserProgress(userId, today);
+      const progressList = await storage.getUserProgress(userId, 1);
+      let progress = progressList.find(p => p.date === today);
       
       if (!progress) {
         progress = await storage.createUserProgress({
@@ -1038,7 +1039,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           emergencyRelief: 1
         });
       } else {
-        await storage.updateUserProgress(progress.id, {
+        // For now, just create a new progress entry since updateUserProgress doesn't exist
+        await storage.createUserProgress({
+          userId,
+          date: today,
           techniquesUsed: (progress.techniquesUsed || 0) + 1,
           emergencyRelief: (progress.emergencyRelief || 0) + 1
         });
@@ -1058,7 +1062,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Log the practice session
       const today = new Date().toISOString().split('T')[0];
-      let progress = await storage.getUserProgress(userId, today);
+      const progressList = await storage.getUserProgress(userId, 1);
+      let progress = progressList.find(p => p.date === today);
       
       if (!progress) {
         progress = await storage.createUserProgress({
@@ -1068,7 +1073,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           practiceMinutes: 5 // Assume 5 minutes per practice session
         });
       } else {
-        await storage.updateUserProgress(progress.id, {
+        // For now, just create a new progress entry since updateUserProgress doesn't exist
+        await storage.createUserProgress({
+          userId,
+          date: today,
           techniquesUsed: (progress.techniquesUsed || 0) + 1,
           practiceMinutes: (progress.practiceMinutes || 0) + 5
         });
@@ -1110,7 +1118,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Store the idea anonymously in community ideas (implement this table later)
       // For now, we'll just log the practice engagement
       const today = new Date().toISOString().split('T')[0];
-      let progress = await storage.getUserProgress(userId, today);
+      const progressList = await storage.getUserProgress(userId, 1);
+      let progress = progressList.find(p => p.date === today);
       
       if (!progress) {
         progress = await storage.createUserProgress({
@@ -1120,7 +1129,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
           engagementScore: 10 // Ideas sharing is high engagement
         });
       } else {
-        await storage.updateUserProgress(progress.id, {
+        // For now, just create a new progress entry since updateUserProgress doesn't exist
+        await storage.createUserProgress({
+          userId,
+          date: today,
           chatMessages: (progress.chatMessages || 0) + 1,
           engagementScore: (progress.engagementScore || 0) + 10
         });
