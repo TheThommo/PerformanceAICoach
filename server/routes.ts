@@ -634,14 +634,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Mental Skills X-Check routes
   app.post("/api/mental-skills-xcheck", requireAuth, async (req: AuthRequest, res) => {
     try {
+      if (!req.userId) {
+        return res.status(401).json({ message: "User ID not found" });
+      }
+
       const data = insertMentalSkillsXCheckSchema.parse({
         ...req.body,
         userId: req.userId
       });
+      
       const xcheck = await storage.createMentalSkillsXCheck(data);
       res.status(201).json(xcheck);
-    } catch (error) {
-      res.status(400).json({ message: "Failed to create mental skills x-check", error: (error as Error).message });
+    } catch (error: any) {
+      console.error("Mental Skills X-Check creation error:", error);
+      res.status(400).json({ 
+        message: "Failed to create mental skills x-check", 
+        error: error.message,
+        details: error.issues || error.errors || null
+      });
     }
   });
 
@@ -671,14 +681,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Control Circles routes
   app.post("/api/control-circles", requireAuth, async (req: AuthRequest, res) => {
     try {
+      if (!req.userId) {
+        return res.status(401).json({ message: "User ID not found" });
+      }
+
       const data = insertControlCircleSchema.parse({
         ...req.body,
         userId: req.userId
       });
+      
       const circle = await storage.createControlCircle(data);
       res.status(201).json(circle);
-    } catch (error) {
-      res.status(400).json({ message: "Failed to create control circle", error: (error as Error).message });
+    } catch (error: any) {
+      console.error("Control Circle creation error:", error);
+      res.status(400).json({ 
+        message: "Failed to create control circle", 
+        error: error.message,
+        details: error.issues || error.errors || null
+      });
     }
   });
 
