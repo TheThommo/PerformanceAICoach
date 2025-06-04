@@ -72,14 +72,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Stripe subscription routes
-  app.post("/api/subscription/create", requireAuth, async (req: AuthRequest, res) => {
+  // Stripe one-time payment routes
+  app.post("/api/payment/create", requireAuth, async (req: AuthRequest, res) => {
     try {
       const { tier } = req.body; // 'premium' or 'ultimate'
       const user = req.user;
 
       if (!user.email) {
-        return res.status(400).json({ message: 'Email required for subscription' });
+        return res.status(400).json({ message: 'Email required for payment' });
       }
 
       // Create or retrieve Stripe customer
@@ -95,37 +95,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await storage.updateUser(user.id, { stripeCustomerId: customerId });
       }
 
-      // Define pricing based on tier
-      const priceIds = {
-        premium: process.env.STRIPE_PREMIUM_PRICE_ID, // Annual $828
-        ultimate: process.env.STRIPE_ULTIMATE_PRICE_ID, // Annual $1908
+      // Define pricing based on tier using your product IDs
+      const productPricing = {
+        premium: {
+          productId: 'prod_SR3rZuRQG7JnqR',
+          amount: 69000, // $690.00 in cents
+          description: 'Premium Access - Lifetime',
+        },
+        ultimate: {
+          productId: 'prod_SR3txKbR55uws2',
+          amount: 159000, // $1590.00 in cents
+          description: 'Ultimate Access - Lifetime',
+        },
       };
 
-      const priceId = priceIds[tier as keyof typeof priceIds];
-      if (!priceId) {
-        return res.status(400).json({ message: 'Invalid subscription tier' });
+      const pricing = productPricing[tier as keyof typeof productPricing];
+      if (!pricing) {
+        return res.status(400).json({ message: 'Invalid access tier' });
       }
 
-      // Create checkout session
+      // Create checkout session for one-time payment
       const session = await stripe.checkout.sessions.create({
         customer: customerId,
         payment_method_types: ['card'],
         line_items: [
           {
-            price: priceId,
+            price_data: {
+              currency: 'usd',
+              product: pricing.productId,
+              unit_amount: pricing.amount,
+            },
             quantity: 1,
           },
         ],
-        mode: 'subscription',
-        success_url: `${req.headers.origin}/?subscription=success`,
-        cancel_url: `${req.headers.origin}/?subscription=cancelled`,
-        allow_promotion_codes: true,
+        mode: 'payment',
+        success_url: `${req.headers.origin}/?payment=success&tier=${tier}`,
+        cancel_url: `${req.headers.origin}/?payment=cancelled`,
+        metadata: {
+          userId: user.id.toString(),
+          tier: tier,
+        },
       });
 
       res.json({ sessionUrl: session.url });
     } catch (error: any) {
-      console.error('Subscription creation error:', error);
-      res.status(500).json({ message: 'Failed to create subscription' });
+      console.error('Payment creation error:', error);
+      res.status(500).json({ message: 'Failed to create payment session' });
     }
   });
 
@@ -141,72 +156,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
-    // Handle subscription events
+    // Handle payment events
     switch (event.type) {
       case 'checkout.session.completed':
         const session = event.data.object;
-        await handleSubscriptionSuccess(session);
-        break;
-      case 'invoice.payment_succeeded':
-        const invoice = event.data.object;
-        await handlePaymentSuccess(invoice);
-        break;
-      case 'customer.subscription.deleted':
-        const deletedSubscription = event.data.object;
-        await handleSubscriptionCancelled(deletedSubscription);
+        await handlePaymentSuccess(session);
         break;
     }
 
     res.json({ received: true });
   });
 
-  async function handleSubscriptionSuccess(session: any) {
-    const customer = await stripe.customers.retrieve(session.customer);
-    if ('email' in customer) {
-      const user = await storage.getUserByEmail(customer.email!);
-      if (user) {
-        const subscription = await stripe.subscriptions.retrieve(session.subscription);
-        const tier = subscription.items.data[0].price.id === process.env.STRIPE_PREMIUM_PRICE_ID ? 'premium' : 'ultimate';
-        
-        await storage.updateUser(user.id, {
-          isSubscribed: true,
-          subscriptionTier: tier,
-          stripeSubscriptionId: subscription.id,
-          subscriptionStartDate: new Date(subscription.current_period_start * 1000),
-          subscriptionEndDate: new Date(subscription.current_period_end * 1000),
-        });
-      }
-    }
-  }
-
-  async function handlePaymentSuccess(invoice: any) {
-    // Handle recurring payment success
-    const subscription = await stripe.subscriptions.retrieve(invoice.subscription);
-    const customer = await stripe.customers.retrieve(subscription.customer as string);
+  async function handlePaymentSuccess(session: any) {
+    // Get user ID and tier from session metadata
+    const userId = parseInt(session.metadata.userId);
+    const tier = session.metadata.tier;
     
-    if ('email' in customer) {
-      const user = await storage.getUserByEmail(customer.email!);
-      if (user) {
-        await storage.updateUser(user.id, {
-          subscriptionEndDate: new Date(subscription.current_period_end * 1000),
-        });
-      }
+    if (userId && tier) {
+      await storage.updateUser(userId, {
+        isSubscribed: true,
+        subscriptionTier: tier,
+        stripeCustomerId: session.customer,
+        subscriptionStartDate: new Date(),
+        subscriptionEndDate: null, // Lifetime access
+      });
     }
   }
 
-  async function handleSubscriptionCancelled(subscription: any) {
-    const customer = await stripe.customers.retrieve(subscription.customer);
-    if ('email' in customer) {
-      const user = await storage.getUserByEmail(customer.email!);
-      if (user) {
-        await storage.updateUser(user.id, {
-          isSubscribed: false,
-          subscriptionTier: 'free',
-          stripeSubscriptionId: null,
-        });
+  // Document download routes for Free tier
+  app.get("/api/downloads/master-your-moment", (req, res) => {
+    const filePath = "/home/runner/workspace/attached_assets/Master Your Moment by Cero Golf.pdf";
+    res.download(filePath, "Master Your Moment by Cero Golf.pdf", (err) => {
+      if (err) {
+        res.status(404).json({ message: "File not found" });
       }
-    }
-  }
+    });
+  });
+
+  app.get("/api/downloads/ability-to-focus", (req, res) => {
+    const filePath = "/home/runner/workspace/attached_assets/Ability to Focus - Book.pdf";
+    res.download(filePath, "Ability to Focus - Book.pdf", (err) => {
+      if (err) {
+        res.status(404).json({ message: "File not found" });
+      }
+    });
+  });
+
+  app.get("/api/downloads/mental-toughness", (req, res) => {
+    const filePath = "/home/runner/workspace/attached_assets/Mental Toughness - Book.pdf";
+    res.download(filePath, "Mental Toughness - Book.pdf", (err) => {
+      if (err) {
+        res.status(404).json({ message: "File not found" });
+      }
+    });
+  });
   
   // Assessment routes
   app.post("/api/assessments", async (req, res) => {

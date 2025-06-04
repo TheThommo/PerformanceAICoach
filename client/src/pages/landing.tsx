@@ -183,7 +183,9 @@ export default function Landing() {
                 <ul className="space-y-3">
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Basic assessment</li>
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Limited chat with Thommo</li>
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Limited document downloads</li>
+                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Master Your Moment PDF</li>
+                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Ability to Focus PDF</li>
+                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Mental Toughness PDF</li>
                 </ul>
                 <Button variant="outline" className="w-full" onClick={() => setShowSignUp(true)}>
                   Get Started Free
@@ -203,11 +205,10 @@ export default function Landing() {
                 </CardTitle>
                 <CardDescription>Complete mental performance transformation</CardDescription>
                 <div className="flex items-baseline space-x-2">
-                  <span className="text-3xl font-bold">$69</span>
-                  <span className="text-lg text-gray-500 line-through">$153</span>
-                  <span className="text-lg font-normal text-gray-500">/month</span>
+                  <span className="text-3xl font-bold">$690</span>
+                  <span className="text-lg font-normal text-gray-500">one-time</span>
                 </div>
-                <p className="text-sm text-green-600 font-medium">Billed annually - Save 55%</p>
+                <p className="text-sm text-blue-600 font-medium">Lifetime access - No recurring fees</p>
               </CardHeader>
               <CardContent className="space-y-4">
                 <ul className="space-y-3">
@@ -219,9 +220,9 @@ export default function Landing() {
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Priority support</li>
                 </ul>
                 <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => setShowSignUp(true)}>
-                  Start Premium Trial
+                  Get Premium Access
                 </Button>
-                <p className="text-xs text-center text-gray-500">14-day free trial, then $828/year</p>
+                <p className="text-xs text-center text-gray-500">One-time payment, lifetime access</p>
               </CardContent>
             </Card>
 
@@ -236,8 +237,8 @@ export default function Landing() {
                   <Users className="w-5 h-5 text-purple-500 ml-2" />
                 </CardTitle>
                 <CardDescription>Premium AI + personal human coaching</CardDescription>
-                <div className="text-3xl font-bold">$159<span className="text-lg font-normal text-gray-500">/month</span></div>
-                <p className="text-sm text-gray-500">Billed annually</p>
+                <div className="text-3xl font-bold">$1590<span className="text-lg font-normal text-gray-500"> one-time</span></div>
+                <p className="text-sm text-purple-600 font-medium">Lifetime access - No recurring fees</p>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="bg-purple-50 p-3 rounded-lg mb-4">
@@ -251,9 +252,9 @@ export default function Landing() {
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />VIP support channel</li>
                 </ul>
                 <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={() => setShowSignUp(true)}>
-                  Start Ultimate Trial
+                  Get Ultimate Access
                 </Button>
-                <p className="text-xs text-center text-gray-500">14-day free trial, then $1,908/year</p>
+                <p className="text-xs text-center text-gray-500">One-time payment, lifetime access</p>
               </CardContent>
             </Card>
           </div>
