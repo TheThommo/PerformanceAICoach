@@ -241,9 +241,11 @@ export default function Dashboard() {
               </div>
             ))}
             
-            <Button variant="outline" className="w-full bg-blue-light text-blue-primary border-blue-200 hover:bg-blue-100">
-              View All Scenarios
-            </Button>
+            <Link href="/scenarios">
+              <Button variant="outline" className="w-full bg-blue-light text-blue-primary border-blue-200 hover:bg-blue-100">
+                View All Scenarios
+              </Button>
+            </Link>
           </CardContent>
         </Card>
 
