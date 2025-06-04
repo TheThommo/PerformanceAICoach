@@ -70,10 +70,7 @@ export function ControlCircles({ userId }: ControlCirclesProps) {
         canInfluence: data.canInfluenceItems.filter(item => item.trim() !== ""),
         canControl: data.canControlItems.filter(item => item.trim() !== "")
       };
-      return apiRequest('/api/control-circles', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      });
+      return apiRequest('POST', '/api/control-circles', payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/control-circles/latest', userId] });

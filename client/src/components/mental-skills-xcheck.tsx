@@ -79,10 +79,7 @@ export function MentalSkillsXCheck({ userId }: MentalSkillsXCheckProps) {
         whatCouldDoBetter: data.whatCouldDoBetter,
         actionPlan: data.actionPlan
       };
-      return apiRequest('/api/mental-skills-xcheck', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      });
+      return apiRequest('POST', '/api/mental-skills-xcheck', payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/mental-skills-xcheck/latest', userId] });
