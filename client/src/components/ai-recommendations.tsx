@@ -303,7 +303,7 @@ export function AIRecommendations() {
                         {rec.relatedChatMessages.map((msg: any, msgIndex: number) => (
                           <div key={msgIndex} className="text-sm">
                             <span className="font-medium text-blue-900">
-                              {msg.role === "user" ? "You" : "Thommo"}:
+                              {msg.role === "user" ? "You" : "Flo"}:
                             </span>
                             <span className="text-blue-800 ml-2">
                               {msg.content.substring(0, 100)}

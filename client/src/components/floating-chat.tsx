@@ -106,7 +106,7 @@ export function FloatingChat() {
                   </div>
                   <div>
                     <CardTitle className="text-sm font-medium text-white">
-                      Thommo - AI Coach
+                      Flo - AI Coach
                     </CardTitle>
                     <div className="flex items-center space-x-2">
                       <div className="w-2 h-2 bg-green-400 rounded-full"></div>
@@ -212,7 +212,7 @@ export function FloatingChat() {
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       onKeyPress={handleKeyPress}
-                      placeholder="Ask Thommo anything..."
+                      placeholder="Ask Flo anything..."
                       className="flex-1 text-xs"
                       disabled={mutation.isPending}
                     />
