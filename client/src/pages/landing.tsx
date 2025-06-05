@@ -8,6 +8,7 @@ import { Brain, Target, TrendingUp, Users, Shield, Check, Star } from "lucide-re
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { LandingChat } from "@/components/landing-chat";
+import { Footer } from "@/components/footer";
 
 export default function Landing() {
   const [showSignUp, setShowSignUp] = useState(false);
@@ -365,43 +366,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="col-span-2">
-              <div className="flex items-center space-x-3 mb-4">
-                <div className="w-8 h-8 gradient-red-blue rounded-full flex items-center justify-center">
-                  <Brain className="text-white" size={16} />
-                </div>
-                <span className="text-xl font-bold">Red2Blue</span>
-              </div>
-              <p className="text-gray-400 mb-4">
-                Transform your mental game with AI-powered coaching and proven Red2Blue methodology.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Product</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="#" className="hover:text-white">Features</Link></li>
-                <li><Link href="#" className="hover:text-white">Pricing</Link></li>
-                <li><Link href="#" className="hover:text-white">Demo</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-gray-400">
-                <li><Link href="#" className="hover:text-white">Privacy Policy</Link></li>
-                <li><Link href="#" className="hover:text-white">Terms of Service</Link></li>
-                <li><Link href="#" className="hover:text-white">Data Protection</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 Red2Blue AI Mental Coach. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

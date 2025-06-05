@@ -23,15 +23,15 @@ export function Footer() {
             <div className="space-y-2 text-sm text-gray-300">
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4" />
-                <span>support@red2blue.com</span>
+                <span>support@red2blue.me</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4" />
-                <span>+1 (555) 123-4567</span>
+                <span>+971505283505</span>
               </div>
               <div className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4" />
-                <span>Melbourne, Australia</span>
+                <span>Dubai, UAE</span>
               </div>
             </div>
           </div>
@@ -56,8 +56,8 @@ export function Footer() {
               <li><Link href="/help" className="hover:text-white transition-colors">Getting Started</Link></li>
               <li><Link href="/help" className="hover:text-white transition-colors">User Guide</Link></li>
               <li><Link href="/help" className="hover:text-white transition-colors">Troubleshooting</Link></li>
-              <li><a href="mailto:support@red2blue.com" className="hover:text-white transition-colors">Contact Support</a></li>
-              <li><a href="mailto:coaching@red2blue.com" className="hover:text-white transition-colors">Coach Consultation</a></li>
+              <li><a href="mailto:support@red2blue.me" className="hover:text-white transition-colors">Contact Support</a></li>
+              <li><a href="mailto:coaching@red2blue.me" className="hover:text-white transition-colors">Coach Consultation</a></li>
               <li><Link href="/help" className="hover:text-white transition-colors">System Status</Link></li>
             </ul>
           </div>
