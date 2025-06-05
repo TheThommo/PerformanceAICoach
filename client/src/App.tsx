@@ -17,6 +17,7 @@ import Community from "@/pages/community";
 import CoachDashboard from "@/pages/coach-dashboard";
 import Profile from "@/pages/profile";
 import RecommendationsPage from "@/pages/recommendations";
+import Goals from "@/pages/goals";
 import Scenarios from "@/pages/scenarios";
 import Help from "@/pages/help";
 import Features from "@/pages/features";
@@ -56,6 +57,7 @@ function Router() {
           <Route path="/techniques" component={Techniques} />
           <Route path="/tools" component={Tools} />
           <Route path="/recommendations" component={RecommendationsPage} />
+          <Route path="/goals" component={Goals} />
           <Route path="/scenarios" component={Scenarios} />
           <Route path="/community">
             {() => <Community userId={user?.id || 1} />}
