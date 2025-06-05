@@ -15,7 +15,7 @@ import Techniques from "@/pages/techniques";
 import Tools from "@/pages/tools";
 import Community from "@/pages/community";
 import CoachDashboard from "@/pages/coach-dashboard";
-import Profile from "@/pages/profile";
+import Profile from "@/pages/profile-new";
 import RecommendationsPage from "@/pages/recommendations";
 import Goals from "@/pages/goals";
 import Scenarios from "@/pages/scenarios";
