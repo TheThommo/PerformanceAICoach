@@ -111,7 +111,7 @@ const faqData: FAQItem[] = [
   {
     id: "11",
     question: "Can I share my own techniques with the community?",
-    answer: "Yes! Use the 'Share Your Technique' feature to contribute ideas that work for you. Your submissions go directly to Thommo for review and potential integration into the coaching system, plus they're added anonymously to the community collection for other golfers to benefit from.",
+    answer: "Yes! Use the 'Share Your Technique' feature to contribute ideas that work for you. Your submissions go directly to Flo for review and potential integration into the coaching system, plus they're added anonymously to the community collection for other golfers to benefit from.",
     category: "techniques",
     tags: ["sharing", "community", "contribution", "techniques"]
   },
@@ -127,7 +127,7 @@ const faqData: FAQItem[] = [
   {
     id: "13",
     question: "How does the recommendation engine work?",
-    answer: "The AI analyzes your assessment results, chat history, mood patterns, and engagement metrics to generate personalized recommendations. It identifies your specific mental game needs and suggests targeted techniques, practice routines, or conversation topics with Thommo.",
+    answer: "The AI analyzes your assessment results, chat history, mood patterns, and engagement metrics to generate personalized recommendations. It identifies your specific mental game needs and suggests targeted techniques, practice routines, or conversation topics with Flo.",
     category: "progress",
     tags: ["recommendations", "ai", "personalized", "analysis"]
   },
@@ -164,7 +164,7 @@ const faqData: FAQItem[] = [
   {
     id: "18",
     question: "Can I try the platform before subscribing?",
-    answer: "Yes! The free tier includes one complete conversation with Thommo, access to basic assessment tools, technique browsing, and mood tracking. This gives you a solid understanding of the platform's value before upgrading.",
+    answer: "Yes! The free tier includes one complete conversation with Flo, access to basic assessment tools, technique browsing, and mood tracking. This gives you a solid understanding of the platform's value before upgrading.",
     category: "subscription",
     tags: ["free-tier", "trial", "before-buying"]
   },
@@ -365,7 +365,7 @@ export default function Help() {
             <Link href="/">
               <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2 w-full">
                 <MessageCircle className="h-5 w-5 text-blue-600" />
-                <span className="text-sm">Chat with Thommo</span>
+                <span className="text-sm">Chat with Flo</span>
               </Button>
             </Link>
             <Link href="/assessment">

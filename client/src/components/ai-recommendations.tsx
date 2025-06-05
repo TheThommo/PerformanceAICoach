@@ -189,7 +189,7 @@ export function AIRecommendations() {
         </div>
         <Badge variant="outline" className="text-sm">
           <Brain className="w-3 h-3 mr-1" />
-          Powered by Thommo AI
+          Powered by Flo AI
         </Badge>
       </div>
 
