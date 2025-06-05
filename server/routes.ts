@@ -1287,6 +1287,104 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Goal tracking API routes
+  app.get("/api/goals/:userId", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      if (req.user!.id !== userId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
+      const goals = await storage.getUserGoals(userId);
+      res.json(goals);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch goals", error: (error as Error).message });
+    }
+  });
+
+  app.post("/api/goals", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const validatedData = insertUserGoalSchema.parse({
+        ...req.body,
+        userId: req.user!.id
+      });
+      
+      const goal = await storage.createUserGoal(validatedData);
+      res.status(201).json(goal);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid goal data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create goal", error: (error as Error).message });
+    }
+  });
+
+  app.put("/api/goals/:id", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const goalId = parseInt(req.params.id);
+      const userId = req.user!.id;
+      
+      // First check if the goal belongs to the user
+      const userGoals = await storage.getUserGoals(userId);
+      const existingGoal = userGoals.find(g => g.id === goalId);
+      
+      if (!existingGoal) {
+        return res.status(404).json({ message: "Goal not found or access denied" });
+      }
+      
+      const updates = req.body;
+      delete updates.id; // Prevent ID modification
+      delete updates.userId; // Prevent user modification
+      delete updates.createdAt; // Prevent creation date modification
+      
+      const updatedGoal = await storage.updateUserGoal(goalId, updates);
+      res.json(updatedGoal);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update goal", error: (error as Error).message });
+    }
+  });
+
+  app.patch("/api/goals/:id/toggle", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const goalId = parseInt(req.params.id);
+      const userId = req.user!.id;
+      const { isCompleted } = req.body;
+      
+      // First check if the goal belongs to the user
+      const userGoals = await storage.getUserGoals(userId);
+      const existingGoal = userGoals.find(g => g.id === goalId);
+      
+      if (!existingGoal) {
+        return res.status(404).json({ message: "Goal not found or access denied" });
+      }
+      
+      const updatedGoal = await storage.toggleGoalCompletion(goalId, isCompleted);
+      res.json(updatedGoal);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to toggle goal completion", error: (error as Error).message });
+    }
+  });
+
+  app.delete("/api/goals/:id", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const goalId = parseInt(req.params.id);
+      const userId = req.user!.id;
+      
+      // First check if the goal belongs to the user
+      const userGoals = await storage.getUserGoals(userId);
+      const existingGoal = userGoals.find(g => g.id === goalId);
+      
+      if (!existingGoal) {
+        return res.status(404).json({ message: "Goal not found or access denied" });
+      }
+      
+      await storage.deleteUserGoal(goalId);
+      res.json({ message: "Goal deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to delete goal", error: (error as Error).message });
+    }
+  });
+
   // Get community ideas route (anonymous)
   app.get("/api/community-ideas", async (req, res) => {
     try {

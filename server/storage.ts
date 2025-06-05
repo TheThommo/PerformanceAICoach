@@ -88,6 +88,13 @@ export interface IStorage {
   createEngagementMetric(metric: InsertUserEngagementMetric): Promise<UserEngagementMetric>;
   getUserEngagementMetrics(userId: number, days?: number): Promise<UserEngagementMetric[]>;
   updateEngagementMetric(userId: number, date: string, updates: Partial<UserEngagementMetric>): Promise<UserEngagementMetric>;
+  
+  // Goal tracking operations
+  createUserGoal(goal: InsertUserGoal): Promise<UserGoal>;
+  getUserGoals(userId: number): Promise<UserGoal[]>;
+  updateUserGoal(id: number, updates: Partial<UserGoal>): Promise<UserGoal>;
+  toggleGoalCompletion(id: number, isCompleted: boolean): Promise<UserGoal>;
+  deleteUserGoal(id: number): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -105,6 +112,7 @@ export class MemStorage implements IStorage {
   private coachingInsights: Map<number, CoachingInsight>;
   private userEngagementMetrics: Map<number, UserEngagementMetric>;
   private dailyMoods: Map<number, DailyMood>;
+  private userGoals: Map<number, UserGoal>;
   private currentId: number;
 
   private initialized = false;
@@ -124,6 +132,7 @@ export class MemStorage implements IStorage {
     this.coachingInsights = new Map();
     this.userEngagementMetrics = new Map();
     this.dailyMoods = new Map();
+    this.userGoals = new Map();
     this.currentId = 1;
     this.seedData().catch(console.error);
   }
@@ -851,6 +860,74 @@ export class MemStorage implements IStorage {
       } as InsertUserEngagementMetric);
     }
   }
+
+  // Goal tracking operations
+  async createUserGoal(insertGoal: InsertUserGoal): Promise<UserGoal> {
+    await this.ensureInitialized();
+    const id = this.currentId++;
+    const goal: UserGoal = {
+      id,
+      ...insertGoal,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.userGoals.set(id, goal);
+    return goal;
+  }
+
+  async getUserGoals(userId: number): Promise<UserGoal[]> {
+    await this.ensureInitialized();
+    return Array.from(this.userGoals.values())
+      .filter(goal => goal.userId === userId)
+      .sort((a, b) => {
+        // Sort by completion status (incomplete first), then by priority (high to low), then by created date (newest first)
+        if (a.isCompleted !== b.isCompleted) {
+          return a.isCompleted ? 1 : -1;
+        }
+        if (a.priority !== b.priority) {
+          return (b.priority || 0) - (a.priority || 0);
+        }
+        return new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime();
+      });
+  }
+
+  async updateUserGoal(id: number, updates: Partial<UserGoal>): Promise<UserGoal> {
+    await this.ensureInitialized();
+    const existing = this.userGoals.get(id);
+    if (!existing) {
+      throw new Error('Goal not found');
+    }
+    
+    const updated: UserGoal = {
+      ...existing,
+      ...updates,
+      updatedAt: new Date()
+    };
+    this.userGoals.set(id, updated);
+    return updated;
+  }
+
+  async toggleGoalCompletion(id: number, isCompleted: boolean): Promise<UserGoal> {
+    await this.ensureInitialized();
+    const existing = this.userGoals.get(id);
+    if (!existing) {
+      throw new Error('Goal not found');
+    }
+    
+    const updated: UserGoal = {
+      ...existing,
+      isCompleted,
+      completedAt: isCompleted ? new Date() : null,
+      updatedAt: new Date()
+    };
+    this.userGoals.set(id, updated);
+    return updated;
+  }
+
+  async deleteUserGoal(id: number): Promise<void> {
+    await this.ensureInitialized();
+    this.userGoals.delete(id);
+  }
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1179,6 +1256,56 @@ export class DatabaseStorage implements IStorage {
 
   async updateEngagementMetric(userId: number, date: string, updates: Partial<UserEngagementMetric>): Promise<UserEngagementMetric> {
     throw new Error('Method not implemented in DatabaseStorage');
+  }
+
+  // Goal tracking operations
+  async createUserGoal(insertGoal: InsertUserGoal): Promise<UserGoal> {
+    const [goal] = await db
+      .insert(userGoals)
+      .values(insertGoal)
+      .returning();
+    return goal;
+  }
+
+  async getUserGoals(userId: number): Promise<UserGoal[]> {
+    const goals = await db
+      .select()
+      .from(userGoals)
+      .where(eq(userGoals.userId, userId))
+      .orderBy(desc(userGoals.createdAt));
+    return goals;
+  }
+
+  async updateUserGoal(id: number, updates: Partial<UserGoal>): Promise<UserGoal> {
+    const [goal] = await db
+      .update(userGoals)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(userGoals.id, id))
+      .returning();
+    if (!goal) {
+      throw new Error('Goal not found');
+    }
+    return goal;
+  }
+
+  async toggleGoalCompletion(id: number, isCompleted: boolean): Promise<UserGoal> {
+    const [goal] = await db
+      .update(userGoals)
+      .set({ 
+        isCompleted, 
+        completedAt: isCompleted ? new Date() : null,
+        updatedAt: new Date()
+      })
+      .where(eq(userGoals.id, id))
+      .returning();
+    if (!goal) {
+      throw new Error('Goal not found');
+    }
+    return goal;
+  }
+
+  async deleteUserGoal(id: number): Promise<void> {
+    await db.delete(userGoals).where(eq(userGoals.id, id));
   }
 }
 
