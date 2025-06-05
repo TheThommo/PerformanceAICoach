@@ -390,6 +390,8 @@ export const insertUserGoalSchema = createInsertSchema(userGoals).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  targetDate: z.string().optional().transform((val) => val ? new Date(val) : undefined),
 });
 
 export type UserGoal = typeof userGoals.$inferSelect;

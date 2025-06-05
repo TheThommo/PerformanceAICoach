@@ -111,7 +111,11 @@ export default function Profile() {
   // Create goal mutation
   const createGoalMutation = useMutation({
     mutationFn: async (data: GoalFormData) => {
-      return apiRequest("POST", "/api/goals", data);
+      const formattedData = {
+        ...data,
+        targetDate: data.targetDate ? data.targetDate.toISOString() : undefined,
+      };
+      return apiRequest("POST", "/api/goals", formattedData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/goals"] });
@@ -134,7 +138,13 @@ export default function Profile() {
   // Update goal mutation
   const updateGoalMutation = useMutation({
     mutationFn: async (data: { id: number; updates: Partial<UserGoal> }) => {
-      return apiRequest("PUT", `/api/goals/${data.id}`, data.updates);
+      const formattedUpdates = {
+        ...data.updates,
+        targetDate: data.updates.targetDate instanceof Date 
+          ? data.updates.targetDate.toISOString() 
+          : data.updates.targetDate,
+      };
+      return apiRequest("PUT", `/api/goals/${data.id}`, formattedUpdates);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/goals"] });
