@@ -369,3 +369,28 @@ export type CoachingInsight = typeof coachingInsights.$inferSelect;
 export type InsertCoachingInsight = z.infer<typeof insertCoachingInsightSchema>;
 export type UserEngagementMetric = typeof userEngagementMetrics.$inferSelect;
 export type InsertUserEngagementMetric = z.infer<typeof insertUserEngagementMetricSchema>;
+
+// Goal tracking table
+export const userGoals = pgTable("user_goals", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  goalText: text("goal_text").notNull(),
+  category: text("category").notNull(), // "short_term", "long_term", "handicap", "mental", "technical"
+  priority: integer("priority").default(3), // 1-5 scale, 5 being highest
+  targetDate: timestamp("target_date"),
+  isCompleted: boolean("is_completed").default(false),
+  completedAt: timestamp("completed_at"),
+  notes: text("notes"),
+  relatedStats: jsonb("related_stats"), // Store related statistics or measurements
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const insertUserGoalSchema = createInsertSchema(userGoals).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export type UserGoal = typeof userGoals.$inferSelect;
+export type InsertUserGoal = z.infer<typeof insertUserGoalSchema>;

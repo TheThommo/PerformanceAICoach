@@ -10,7 +10,7 @@ import {
   type UserCoachingProfile, type InsertUserCoachingProfile, type AiRecommendation,
   type InsertAiRecommendation, type CoachingInsight, type InsertCoachingInsight,
   type UserEngagementMetric, type InsertUserEngagementMetric, type DailyMood,
-  type InsertDailyMood
+  type InsertDailyMood, type UserGoal, type InsertUserGoal, userGoals
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
@@ -206,6 +206,8 @@ export class MemStorage implements IStorage {
         dexterity: 'left',
         gender: 'male',
         golfHandicap: 8,
+        golfExperience: 'advanced',
+        goals: 'Achieve single-digit handicap and improve tournament performance',
         bio: 'Advanced golfer focusing on competitive mental performance',
         aiGeneratedProfile: null,
         profileImageUrl: null,
