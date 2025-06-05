@@ -57,7 +57,7 @@ export default function Landing() {
               AI-Powered Mental Performance
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-              Meet Thommo - Your
+              Meet Flo - Your
               <span className="bg-gradient-to-r from-red-600 to-blue-600 bg-clip-text text-transparent">
                 {" "}AI Mental Coach
               </span>
