@@ -175,7 +175,7 @@ Total: ${totalScore}/400
 
 Previous assessments: ${JSON.stringify(previousAssessments || [])}
 
-As Thommo, the Red2Blue coach, provide analysis in JSON format with:
+As Flo, the Red2Blue coach, provide analysis in JSON format with:
 - overallState: "red_head", "blue_head", or "transitional"
 - strengths: array of specific strengths identified
 - opportunities: array of areas for improvement

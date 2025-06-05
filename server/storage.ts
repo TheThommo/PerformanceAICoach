@@ -192,12 +192,12 @@ export class MemStorage implements IStorage {
         updatedAt: new Date()
       };
       
-      const thommoPassword = await hashPassword('password123');
-      const thommoUser: User = {
+      const floPassword = await hashPassword('password123');
+      const floUser: User = {
         id: 3,
-        username: 'thethommo',
-        email: 'thommo@example.com',
-        password: thommoPassword,
+        username: 'flo',
+        email: 'flo@example.com',
+        password: floPassword,
         dateOfBirth: new Date('1985-03-20'),
         dexterity: 'left',
         gender: 'male',
@@ -217,7 +217,7 @@ export class MemStorage implements IStorage {
       };
       
       this.users.set(2, testUser1);
-      this.users.set(3, thommoUser);
+      this.users.set(3, floUser);
       this.currentId = 4;
 
     // Seed default techniques

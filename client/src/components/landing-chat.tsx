@@ -204,7 +204,7 @@ export function LandingChat() {
             {chatMutation.isPending && (
               <div className="flex justify-start">
                 <div className="bg-gray-100 text-gray-800 p-3 rounded-lg border">
-                  <p className="text-sm">Thommo is thinking...</p>
+                  <p className="text-sm">Flo is thinking...</p>
                 </div>
               </div>
             )}
@@ -215,7 +215,7 @@ export function LandingChat() {
           {/* Show upgrade prompt if free tier limit reached */}
           {!isAuthenticated && (
             <div className="mb-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm text-blue-800 mb-2">Sign in to chat with Thommo</p>
+              <p className="text-sm text-blue-800 mb-2">Sign in to chat with Flo</p>
               <div className="flex space-x-2">
                 <Link href="/signin">
                   <Button size="sm" className="bg-blue-600 hover:bg-blue-700">

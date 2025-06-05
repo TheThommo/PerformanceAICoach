@@ -30,8 +30,8 @@ interface FeatureCard {
 
 const features: FeatureCard[] = [
   {
-    title: "AI Coach Thommo",
-    description: "Your personal mental performance coach powered by advanced AI technology. Thommo provides personalized coaching conversations tailored to your specific mental game challenges.",
+    title: "AI Coach Flo",
+    description: "Your personal mental performance coach powered by advanced AI technology. Flo provides personalized coaching conversations tailored to your specific mental game challenges.",
     icon: MessageCircle,
     benefits: [
       "24/7 availability for mental coaching support",

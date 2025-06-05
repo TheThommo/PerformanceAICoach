@@ -146,7 +146,7 @@ export function FloatingChat() {
                     </div>
                     <div>
                       <p className="text-xs text-blue-800 leading-relaxed">
-                        <strong>Thommo:</strong> Ready to transform pressure into peak performance? 
+                        <strong>Flo:</strong> Ready to transform pressure into peak performance? 
                         Ask me about mental techniques, pressure situations, or any golf psychology challenges!
                       </p>
                     </div>

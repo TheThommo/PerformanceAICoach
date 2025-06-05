@@ -95,7 +95,7 @@ const faqData: FAQItem[] = [
   {
     id: "9",
     question: "What does my mood tracker data do?",
-    answer: "Your daily mood scores (0-100) are correlated with assessment performance to identify patterns. This data helps Thommo understand how your emotional state affects your mental game and provides insights like 'your best performance happens when morning mood is above 70.'",
+    answer: "Your daily mood scores (0-100) are correlated with assessment performance to identify patterns. This data helps Flo understand how your emotional state affects your mental game and provides insights like 'your best performance happens when morning mood is above 70.'",
     category: "assessments",
     tags: ["mood", "tracking", "correlation", "patterns"]
   },
