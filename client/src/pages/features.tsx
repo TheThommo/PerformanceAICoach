@@ -225,7 +225,7 @@ const getAvailabilityIcon = (availability: string) => {
 };
 
 export default function Features() {
-  const categories = [...new Set(features.map(f => f.category))];
+  const categories = Array.from(new Set(features.map(f => f.category)));
 
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-8">

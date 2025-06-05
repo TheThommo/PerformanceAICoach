@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -361,22 +362,30 @@ export default function Help() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
-              <MessageCircle className="h-5 w-5 text-blue-600" />
-              <span className="text-sm">Chat with Thommo</span>
-            </Button>
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
-              <Target className="h-5 w-5 text-green-600" />
-              <span className="text-sm">Take Assessment</span>
-            </Button>
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
-              <Brain className="h-5 w-5 text-purple-600" />
-              <span className="text-sm">Browse Techniques</span>
-            </Button>
-            <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2">
-              <Star className="h-5 w-5 text-yellow-600" />
-              <span className="text-sm">Upgrade Plan</span>
-            </Button>
+            <Link href="/">
+              <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2 w-full">
+                <MessageCircle className="h-5 w-5 text-blue-600" />
+                <span className="text-sm">Chat with Thommo</span>
+              </Button>
+            </Link>
+            <Link href="/assessment">
+              <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2 w-full">
+                <Target className="h-5 w-5 text-green-600" />
+                <span className="text-sm">Take Assessment</span>
+              </Button>
+            </Link>
+            <Link href="/techniques">
+              <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2 w-full">
+                <Brain className="h-5 w-5 text-purple-600" />
+                <span className="text-sm">Browse Techniques</span>
+              </Button>
+            </Link>
+            <Link href="/features">
+              <Button variant="outline" className="h-auto p-4 flex flex-col items-center space-y-2 w-full">
+                <Star className="h-5 w-5 text-yellow-600" />
+                <span className="text-sm">View Features</span>
+              </Button>
+            </Link>
           </div>
         </CardContent>
       </Card>
@@ -412,7 +421,9 @@ export default function Help() {
             <p className="text-sm text-gray-600 mb-3">
               Step-by-step walkthrough for new users to maximize platform benefits.
             </p>
-            <Button variant="outline" size="sm">View Guide</Button>
+            <Link href="/features">
+              <Button variant="outline" size="sm">View Guide</Button>
+            </Link>
           </CardContent>
         </Card>
         
@@ -427,7 +438,9 @@ export default function Help() {
             <p className="text-sm text-gray-600 mb-3">
               Learn from other golfers' shared techniques and success stories.
             </p>
-            <Button variant="outline" size="sm">Browse Community</Button>
+            <Link href="/community">
+              <Button variant="outline" size="sm">Browse Community</Button>
+            </Link>
           </CardContent>
         </Card>
         
@@ -442,7 +455,9 @@ export default function Help() {
             <p className="text-sm text-gray-600 mb-3">
               Advanced strategies for elite mental performance development.
             </p>
-            <Button variant="outline" size="sm">Read Tips</Button>
+            <Link href="/recommendations">
+              <Button variant="outline" size="sm">Read Tips</Button>
+            </Link>
           </CardContent>
         </Card>
       </div>

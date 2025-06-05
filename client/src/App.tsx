@@ -18,6 +18,7 @@ import Profile from "@/pages/profile";
 import RecommendationsPage from "@/pages/recommendations";
 import Scenarios from "@/pages/scenarios";
 import Help from "@/pages/help";
+import Features from "@/pages/features";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -56,6 +57,7 @@ function Router() {
         </Route>
         <Route path="/profile" component={Profile} />
         <Route path="/help" component={Help} />
+        <Route path="/features" component={Features} />
         {/* Admin/Coach only routes */}
         {(user?.role === 'admin' || user?.role === 'coach') && (
           <Route path="/coach" component={CoachDashboard} />
