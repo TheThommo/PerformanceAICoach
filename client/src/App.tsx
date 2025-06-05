@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Navigation } from "@/components/navigation";
 import { FloatingChat } from "@/components/floating-chat";
+import { Footer } from "@/components/footer";
 import { useAuth } from "@/hooks/useAuth";
 import Landing from "@/pages/landing";
 import Home from "@/pages/home";
@@ -19,6 +20,9 @@ import RecommendationsPage from "@/pages/recommendations";
 import Scenarios from "@/pages/scenarios";
 import Help from "@/pages/help";
 import Features from "@/pages/features";
+import PrivacyPolicy from "@/pages/privacy-policy";
+import TermsOfService from "@/pages/terms-of-service";
+import RefundPolicy from "@/pages/refund-policy";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -42,28 +46,34 @@ function Router() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navigation />
-      <Switch>
-        <Route path="/" component={Home} />
-        <Route path="/dashboard" component={Dashboard} />
-        <Route path="/assessment" component={Assessment} />
-        <Route path="/techniques" component={Techniques} />
-        <Route path="/tools" component={Tools} />
-        <Route path="/recommendations" component={RecommendationsPage} />
-        <Route path="/scenarios" component={Scenarios} />
-        <Route path="/community">
-          {() => <Community userId={user?.id || 1} />}
-        </Route>
-        <Route path="/profile" component={Profile} />
-        <Route path="/help" component={Help} />
-        <Route path="/features" component={Features} />
-        {/* Admin/Coach only routes */}
-        {(user?.role === 'admin' || user?.role === 'coach') && (
-          <Route path="/coach" component={CoachDashboard} />
-        )}
-        <Route component={NotFound} />
-      </Switch>
+      <main className="flex-1">
+        <Switch>
+          <Route path="/" component={Home} />
+          <Route path="/dashboard" component={Dashboard} />
+          <Route path="/assessment" component={Assessment} />
+          <Route path="/techniques" component={Techniques} />
+          <Route path="/tools" component={Tools} />
+          <Route path="/recommendations" component={RecommendationsPage} />
+          <Route path="/scenarios" component={Scenarios} />
+          <Route path="/community">
+            {() => <Community userId={user?.id || 1} />}
+          </Route>
+          <Route path="/profile" component={Profile} />
+          <Route path="/help" component={Help} />
+          <Route path="/features" component={Features} />
+          <Route path="/privacy-policy" component={PrivacyPolicy} />
+          <Route path="/terms-of-service" component={TermsOfService} />
+          <Route path="/refund-policy" component={RefundPolicy} />
+          {/* Admin/Coach only routes */}
+          {(user?.role === 'admin' || user?.role === 'coach') && (
+            <Route path="/coach" component={CoachDashboard} />
+          )}
+          <Route component={NotFound} />
+        </Switch>
+      </main>
+      <Footer />
       <FloatingChat />
     </div>
   );
