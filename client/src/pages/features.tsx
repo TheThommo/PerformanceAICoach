@@ -360,7 +360,7 @@ export default function Features() {
                 <span className="font-bold">3</span>
               </div>
               <h3 className="font-semibold">Coach</h3>
-              <p className="text-sm text-gray-600">Chat with Thommo for personalized mental game guidance</p>
+              <p className="text-sm text-gray-600">Chat with Flo for personalized mental game guidance</p>
             </div>
             
             <div className="text-center space-y-3">

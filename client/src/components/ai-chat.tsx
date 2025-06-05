@@ -88,7 +88,7 @@ export function AIChat({ userId }: AIChatProps) {
             <Users className="text-white" size={20} />
           </div>
           <div className="flex-1">
-            <CardTitle className="font-semibold text-gray-900">Chat with Thommo</CardTitle>
+            <CardTitle className="font-semibold text-gray-900">Chat with Flo</CardTitle>
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-success rounded-full"></div>
               <span className="text-sm text-gray-500">Online</span>
@@ -108,7 +108,7 @@ export function AIChat({ userId }: AIChatProps) {
                 </div>
                 <h3 className="font-medium text-gray-900 mb-2">Welcome to Red2Blue Coaching</h3>
                 <p className="text-sm text-gray-600">
-                  Hi! I'm Thommo, your AI mental performance coach. How can I help you shift from Red Head to Blue Head today?
+                  Hi! I'm Flo, your AI mental performance coach. How can I help you shift from Red Head to Blue Head today?
                 </p>
               </div>
             ) : (
@@ -187,7 +187,7 @@ export function AIChat({ userId }: AIChatProps) {
       <div className="p-4 border-t border-gray-100">
         <div className="flex space-x-3">
           <Input
-            placeholder="Ask Thommo anything..."
+            placeholder="Ask Flo anything..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}

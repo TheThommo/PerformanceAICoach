@@ -102,7 +102,7 @@ export default function Home() {
                       }}
                     >
                       <MessageCircle className="mr-2" size={16} />
-                      Start Chatting with Thommo
+                      Start Chatting with Flo
                     </Button>
                   </div>
                 </div>

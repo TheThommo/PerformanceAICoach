@@ -48,7 +48,7 @@ export default function RefundPolicy() {
               To be eligible for a full refund, you must have used less than 25% of your subscription's included features:
             </p>
             <ul className="list-disc list-inside mt-2 space-y-1 text-gray-700">
-              <li>Fewer than 10 AI coaching conversations with Thommo</li>
+              <li>Fewer than 10 AI coaching conversations with Flo</li>
               <li>Completed fewer than 3 comprehensive mental skills assessments</li>
               <li>Practiced fewer than 5 mental techniques through the platform</li>
               <li>Engaged with community features for less than 2 hours total</li>

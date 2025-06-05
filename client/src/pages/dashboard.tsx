@@ -59,7 +59,7 @@ export default function Dashboard() {
                 <Users className="text-white" size={24} />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Meet Thommo</h2>
+                <h2 className="text-2xl font-bold text-gray-900">Meet Flo</h2>
                 <p className="text-blue-primary font-medium">Your Red2Blue AI Coach</p>
               </div>
             </div>

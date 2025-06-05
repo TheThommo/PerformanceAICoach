@@ -24,7 +24,7 @@ export function LandingChat() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: "Hi! I'm Thommo, your Red2Blue mental performance coach. Ask me about handling pressure, improving focus, or any mental game challenge you're facing on the course.",
+      content: "Hi! I'm Flo, your Red2Blue mental performance coach. Ask me about handling pressure, improving focus, or any mental game challenge you're facing on the course.",
       timestamp: new Date().toISOString()
     }
   ]);
@@ -50,7 +50,7 @@ export function LandingChat() {
   const chatMutation = useMutation({
     mutationFn: async (message: string) => {
       if (!isAuthenticated) {
-        throw new Error("Please sign in to chat with Thommo");
+        throw new Error("Please sign in to chat with Flo");
       }
 
       const response = await apiRequest("POST", "/api/chat", {
