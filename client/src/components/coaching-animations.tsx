@@ -42,7 +42,7 @@ const coachingMessages = {
   },
   practice: {
     avatar: "💪",
-    name: "Coach Thommo",
+    name: "Coach Flo",
     messages: [
       "Excellent work on that technique! I can see your mental muscle memory strengthening.",
       "Each practice session builds neural pathways that will serve you under pressure.",
@@ -52,7 +52,7 @@ const coachingMessages = {
   },
   achievement: {
     avatar: "🏆",
-    name: "Coach Thommo",
+    name: "Coach Flo",
     messages: [
       "Outstanding! You've just demonstrated the kind of mental fortitude that defines elite performers.",
       "This breakthrough moment is proof that your dedicated practice is paying dividends.",
@@ -62,7 +62,7 @@ const coachingMessages = {
   },
   encouragement: {
     avatar: "❤️",
-    name: "Coach Thommo",
+    name: "Coach Flo",
     messages: [
       "I understand this feels challenging right now. Every champion has walked this exact path.",
       "Your willingness to push through discomfort is what separates you from those who give up.",

@@ -70,7 +70,7 @@ export default function Home() {
                   <Brain className="text-white" size={28} />
                 </div>
                 <div>
-                  <CardTitle className="text-2xl font-bold text-gray-900">Meet Thommo</CardTitle>
+                  <CardTitle className="text-2xl font-bold text-gray-900">Meet Flo</CardTitle>
                   <p className="text-blue-600 font-medium">Your Red2Blue AI Mental Performance Coach</p>
                 </div>
                 <div className="ml-auto">

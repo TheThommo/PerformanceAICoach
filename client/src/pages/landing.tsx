@@ -75,7 +75,7 @@ export default function Landing() {
                   <Brain size={24} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-bold">Thommo AI Coach</h3>
+                  <h3 className="text-xl font-bold">Flo AI Coach</h3>
                   <p className="text-blue-100">Red2Blue Mental Performance Expert</p>
                 </div>
                 <div className="ml-auto flex items-center space-x-2">
@@ -88,7 +88,7 @@ export default function Landing() {
             <div className="p-6 space-y-4">
               {/* Sample conversation */}
               <div className="bg-gray-100 p-4 rounded-lg max-w-[80%]">
-                <p className="text-gray-800">Hi! I'm Thommo, your Red2Blue mental performance coach. Ask me about handling pressure, improving focus, or any mental game challenge you're facing on the course.</p>
+                <p className="text-gray-800">Hi! I'm Flo, your Red2Blue mental performance coach. Ask me about handling pressure, improving focus, or any mental game challenge you're facing on the course.</p>
               </div>
               
               <div className="bg-blue-600 text-white p-4 rounded-lg max-w-[80%] ml-auto">
@@ -175,7 +175,7 @@ export default function Landing() {
                 <Brain className="w-12 h-12 text-purple-600 mb-4" />
                 <CardTitle>AI-Powered Coaching</CardTitle>
                 <CardDescription>
-                  Personalized guidance from Thommo, your AI mental coach
+                  Personalized guidance from Flo, your AI mental coach
                 </CardDescription>
               </CardHeader>
               <CardContent>
