@@ -86,6 +86,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // User profile update endpoint
+  app.patch("/api/users/:id", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const updateData = req.body;
+
+      // Ensure user can only update their own profile
+      if (req.session.userId !== userId) {
+        return res.status(403).json({ message: "Cannot update another user's profile" });
+      }
+
+      // Remove sensitive fields that shouldn't be updated via this endpoint
+      const { password, stripeCustomerId, stripeSubscriptionId, ...safeUpdateData } = updateData;
+
+      const updatedUser = await storage.updateUser(userId, safeUpdateData);
+      
+      if (!updatedUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Remove password from response
+      const { password: _, ...userWithoutPassword } = updatedUser;
+      res.json(userWithoutPassword);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to update profile", error: (error as Error).message });
+    }
+  });
+
   // Stripe one-time payment routes
   app.post("/api/payment/create", requireAuth, async (req: AuthRequest, res) => {
     try {

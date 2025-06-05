@@ -21,6 +21,7 @@ export default function Profile() {
     username: user?.username || "",
     email: user?.email || "",
     golfHandicap: user?.golfHandicap || 0,
+    golfExperience: user?.golfExperience || "",
     goals: user?.goals || "",
     bio: user?.bio || ""
   });
@@ -81,6 +82,7 @@ export default function Profile() {
       username: user?.username || "",
       email: user?.email || "",
       golfHandicap: user?.golfHandicap || 0,
+      golfExperience: user?.golfExperience || "",
       goals: user?.goals || "",
       bio: user?.bio || ""
     });
@@ -161,35 +163,58 @@ export default function Profile() {
                 </div>
               </div>
 
-              <div>
-                <Label htmlFor="handicap">Golf Handicap</Label>
-                <div className="flex items-center gap-2">
-                  <Input
-                    id="handicap"
-                    type="number"
-                    step="0.1"
-                    min="0"
-                    max="54"
-                    value={formData.golfHandicap}
-                    onChange={(e) => setFormData({ ...formData, golfHandicap: parseFloat(e.target.value) || 0 })}
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <Label htmlFor="handicap">Golf Handicap</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id="handicap"
+                      type="number"
+                      step="0.1"
+                      min="-10"
+                      max="54"
+                      value={formData.golfHandicap}
+                      onChange={(e) => setFormData({ ...formData, golfHandicap: parseFloat(e.target.value) || 0 })}
+                      disabled={!isEditing}
+                      className="flex-1"
+                      placeholder="0.0 (scratch) or negative for plus"
+                    />
+                    {isEditing && user?.golfHandicap && (
+                      <div className="flex items-center text-sm">
+                        {formData.golfHandicap < user.golfHandicap ? (
+                          <div className="flex items-center text-green-600">
+                            <TrendingDown className="h-4 w-4 mr-1" />
+                            Improved!
+                          </div>
+                        ) : formData.golfHandicap > user.golfHandicap ? (
+                          <div className="flex items-center text-orange-600">
+                            <TrendingUp className="h-4 w-4 mr-1" />
+                            Higher
+                          </div>
+                        ) : null}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div>
+                  <Label htmlFor="experience">Experience Level</Label>
+                  <Select
+                    value={formData.golfExperience}
+                    onValueChange={(value) => setFormData({ ...formData, golfExperience: value })}
                     disabled={!isEditing}
-                    className="flex-1"
-                  />
-                  {isEditing && user?.golfHandicap && (
-                    <div className="flex items-center text-sm">
-                      {formData.golfHandicap < user.golfHandicap ? (
-                        <div className="flex items-center text-green-600">
-                          <TrendingDown className="h-4 w-4 mr-1" />
-                          Improved!
-                        </div>
-                      ) : formData.golfHandicap > user.golfHandicap ? (
-                        <div className="flex items-center text-orange-600">
-                          <TrendingUp className="h-4 w-4 mr-1" />
-                          Higher
-                        </div>
-                      ) : null}
-                    </div>
-                  )}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select experience level" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="beginner">Beginner (0-2 years)</SelectItem>
+                      <SelectItem value="intermediate">Intermediate (2-5 years)</SelectItem>
+                      <SelectItem value="advanced">Advanced (5-10 years)</SelectItem>
+                      <SelectItem value="expert">Expert (10+ years)</SelectItem>
+                      <SelectItem value="professional">Professional</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 

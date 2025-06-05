@@ -11,6 +11,8 @@ export const users = pgTable("users", {
   dexterity: text("dexterity"), // "left" or "right"
   gender: text("gender"), // "male" or "female"
   golfHandicap: integer("golf_handicap"),
+  golfExperience: text("golf_experience"), // beginner, intermediate, advanced, expert, professional
+  goals: text("goals"),
   bio: text("bio"),
   aiGeneratedProfile: text("ai_generated_profile"),
   profileImageUrl: text("profile_image_url"),
