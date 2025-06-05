@@ -178,8 +178,8 @@ const subscriptionTiers = [
   },
   {
     name: "Premium",
-    price: "$690",
-    description: "Full access to AI coaching and analytics",
+    price: "$490",
+    description: "Full access to AI coaching and analytics (75% savings)",
     features: [
       "Unlimited Thommo conversations",
       "AI recommendation engine",
@@ -192,7 +192,7 @@ const subscriptionTiers = [
   },
   {
     name: "Ultimate",
-    price: "$1590",
+    price: "$2190",
     description: "Advanced features for elite performance",
     features: [
       "Everything in Premium",

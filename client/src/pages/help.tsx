@@ -149,14 +149,14 @@ const faqData: FAQItem[] = [
   // Subscription & Pricing
   {
     id: "16",
-    question: "What's included in the Premium ($690) subscription?",
+    question: "What's included in the Premium ($490) subscription?",
     answer: "Premium includes unlimited Thommo conversations, full access to all assessment tools, comprehensive progress tracking, personalized recommendations, all mental techniques, mood correlation analysis, and priority customer support.",
     category: "subscription",
     tags: ["premium", "pricing", "features", "unlimited"]
   },
   {
     id: "17",
-    question: "What additional benefits does Ultimate ($1590) include?",
+    question: "What additional benefits does Ultimate ($2190) include?",
     answer: "Ultimate adds advanced analytics, detailed performance insights, priority AI processing for faster responses, exclusive advanced techniques, direct coach consultation scheduling, and early access to new platform features and tools.",
     category: "subscription",
     tags: ["ultimate", "advanced", "analytics", "exclusive"]

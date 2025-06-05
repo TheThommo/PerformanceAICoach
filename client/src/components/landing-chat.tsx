@@ -237,13 +237,13 @@ export function LandingChat() {
               <div className="flex space-x-2">
                 <Link href="/premium">
                   <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                    Premium $690
+                    Premium $490
                   </Button>
                 </Link>
                 <Link href="/ultimate">
                   <Button size="sm" className="bg-gradient-to-r from-blue-600 to-red-600 hover:from-blue-700 hover:to-red-700 text-white">
                     <Crown size={14} className="mr-1" />
-                    Ultimate $1590
+                    Ultimate $2190
                   </Button>
                 </Link>
               </div>

@@ -82,8 +82,8 @@ export default function TermsOfService() {
             <h4 className="font-semibold mb-2">Subscription Tiers</h4>
             <ul className="list-disc list-inside space-y-1 text-gray-700">
               <li><strong>Free Tier:</strong> Limited access to basic features and one AI coaching conversation</li>
-              <li><strong>Premium ($690):</strong> Full platform access with unlimited AI coaching</li>
-              <li><strong>Ultimate ($1590):</strong> Advanced analytics and priority support</li>
+              <li><strong>Premium ($490):</strong> Full platform access with unlimited AI coaching</li>
+              <li><strong>Ultimate ($2190):</strong> Advanced analytics and priority support</li>
             </ul>
           </div>
 
