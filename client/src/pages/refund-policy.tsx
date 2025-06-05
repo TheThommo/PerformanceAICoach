@@ -23,7 +23,7 @@ export default function RefundPolicy() {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-gray-700">
-            We offer a 14-day refund window from the date of purchase for both Premium ($690) and Ultimate ($1590) subscriptions. 
+            We offer a 14-day refund window from the date of purchase for both Premium ($490) and Ultimate ($2190) subscriptions. 
             This allows you to thoroughly evaluate the Red2Blue platform and ensure it meets your mental performance training needs.
           </p>
           <div className="bg-blue-50 p-4 rounded-lg">

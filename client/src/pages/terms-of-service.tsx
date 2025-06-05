@@ -201,7 +201,7 @@ export default function TermsOfService() {
           <div>
             <h4 className="font-semibold mb-2">Liability Limitation</h4>
             <p className="text-gray-700">
-              Our total liability for any claims arising from your use of Red2Blue shall not exceed the amount you paid for your current subscription period, up to a maximum of $1,590 USD.
+              Our total liability for any claims arising from your use of Red2Blue shall not exceed the amount you paid for your current subscription period, up to a maximum of $2,190 USD.
             </p>
           </div>
         </CardContent>
