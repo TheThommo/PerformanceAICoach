@@ -22,7 +22,7 @@ interface CoachingAnimationsProps {
 const coachingMessages = {
   welcome: {
     avatar: "👨‍💼",
-    name: "Coach Thommo",
+    name: "Coach Flo",
     messages: [
       "Welcome to your mental performance journey! I'm here to guide you every step of the way.",
       "Together, we'll build the mental resilience that separates good golfers from champions.",
@@ -32,7 +32,7 @@ const coachingMessages = {
   },
   assessment: {
     avatar: "🧠",
-    name: "Coach Thommo",
+    name: "Coach Flo",
     messages: [
       "I can see you're reflecting deeply on your performance. That's exactly the mindset of a champion.",
       "Your honest self-assessment is the foundation of all meaningful improvement.",

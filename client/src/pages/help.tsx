@@ -54,25 +54,25 @@ const faqData: FAQItem[] = [
     tags: ["red-head", "blue-head", "mental-states"]
   },
 
-  // Thommo AI Coach
+  // Flo AI Coach
   {
     id: "4",
-    question: "Who is Thommo and how does the AI coaching work?",
-    answer: "Thommo is your personal AI mental performance coach, powered by advanced AI technology. Thommo analyzes your assessments, mood patterns, and chat interactions to provide personalized coaching advice, technique recommendations, and performance insights tailored specifically to your mental game needs.",
+    question: "Who is Flo and how does the AI coaching work?",
+    answer: "Flo is your personal AI mental performance coach, powered by advanced AI technology. Flo analyzes your assessments, mood patterns, and chat interactions to provide personalized coaching advice, technique recommendations, and performance insights tailored specifically to your mental game needs.",
     category: "ai-coach",
-    tags: ["thommo", "ai", "coaching", "personalized"]
+    tags: ["flo", "ai", "coaching", "personalized"]
   },
   {
     id: "5",
-    question: "How many messages can I send to Thommo?",
-    answer: "Free tier users get 1 message and response to try the platform. Premium ($690) and Ultimate ($1590) subscribers get unlimited access to Thommo's coaching guidance, allowing for ongoing conversations and deeper mental game development.",
+    question: "How many messages can I send to Flo?",
+    answer: "Free tier users get 1 message and response to try the platform. Premium ($490) and Ultimate ($2190) subscribers get unlimited access to Flo's coaching guidance, allowing for ongoing conversations and deeper mental game development.",
     category: "ai-coach",
     tags: ["limits", "premium", "messages", "subscription"]
   },
   {
     id: "6",
-    question: "What can I talk to Thommo about?",
-    answer: "Discuss any mental game challenges: pre-shot anxiety, pressure situations, confidence issues, focus problems, tournament nerves, or specific golf scenarios. Thommo can provide techniques, analyze your mental patterns, and create personalized practice plans for your unique situations.",
+    question: "What can I talk to Flo about?",
+    answer: "Discuss any mental game challenges: pre-shot anxiety, pressure situations, confidence issues, focus problems, tournament nerves, or specific golf scenarios. Flo can provide techniques, analyze your mental patterns, and create personalized practice plans for your unique situations.",
     category: "ai-coach",
     tags: ["topics", "mental-game", "golf", "anxiety"]
   },
