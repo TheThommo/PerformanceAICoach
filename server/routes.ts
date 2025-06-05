@@ -1289,6 +1289,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Goal tracking API routes
+  app.get("/api/goals", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const goals = await storage.getUserGoals(req.user!.id);
+      res.json(goals);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch goals", error: (error as Error).message });
+    }
+  });
+
   app.get("/api/goals/:userId", requireAuth, async (req: AuthRequest, res) => {
     try {
       const userId = parseInt(req.params.userId);

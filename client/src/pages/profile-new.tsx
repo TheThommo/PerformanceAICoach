@@ -81,7 +81,7 @@ export default function Profile() {
 
   // Fetch user goals
   const { data: goals = [], isLoading: goalsLoading } = useQuery({
-    queryKey: ["/api/goals", user?.id],
+    queryKey: ["/api/goals"],
     enabled: !!user?.id,
   });
 
