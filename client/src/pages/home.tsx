@@ -279,7 +279,7 @@ export default function Home() {
       <div className="mt-8">
         <Card className="shadow-sm bg-gradient-to-r from-gray-50 to-blue-50">
           <CardHeader>
-            <CardTitle className="text-xl">Ask Thommo About:</CardTitle>
+            <CardTitle className="text-xl">Ask Flo About:</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
