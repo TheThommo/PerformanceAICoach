@@ -644,6 +644,184 @@ export class MemStorage implements IStorage {
     return circles[0];
   }
 
+  // Recognition Assessment operations
+  private recognitionAssessments = new Map<number, RecognitionAssessment>();
+
+  async createRecognitionAssessment(insertAssessment: InsertRecognitionAssessment): Promise<RecognitionAssessment> {
+    const id = this.currentId++;
+    const assessment: RecognitionAssessment = {
+      ...insertAssessment,
+      id,
+      createdAt: new Date()
+    };
+    this.recognitionAssessments.set(id, assessment);
+    return assessment;
+  }
+
+  async getUserRecognitionAssessments(userId: number): Promise<RecognitionAssessment[]> {
+    return Array.from(this.recognitionAssessments.values())
+      .filter(assessment => assessment.userId === userId)
+      .sort((a, b) => {
+        const aDate = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bDate = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bDate - aDate;
+      });
+  }
+
+  // What If Planning operations
+  private whatIfPlanning = new Map<number, WhatIfPlanning>();
+
+  async createWhatIfPlan(insertPlan: InsertWhatIfPlanning): Promise<WhatIfPlanning> {
+    const id = this.currentId++;
+    const plan: WhatIfPlanning = {
+      ...insertPlan,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.whatIfPlanning.set(id, plan);
+    return plan;
+  }
+
+  async getUserWhatIfPlans(userId: number): Promise<WhatIfPlanning[]> {
+    return Array.from(this.whatIfPlanning.values())
+      .filter(plan => plan.userId === userId)
+      .sort((a, b) => {
+        const aDate = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bDate = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bDate - aDate;
+      });
+  }
+
+  async updateWhatIfPlan(id: number, updates: Partial<WhatIfPlanning>): Promise<WhatIfPlanning> {
+    const plan = this.whatIfPlanning.get(id);
+    if (!plan) throw new Error('What If plan not found');
+    
+    const updatedPlan: WhatIfPlanning = {
+      ...plan,
+      ...updates,
+      updatedAt: new Date()
+    };
+    this.whatIfPlanning.set(id, updatedPlan);
+    return updatedPlan;
+  }
+
+  // Screw Up Cascade operations
+  private screwUpCascades = new Map<number, ScrewUpCascade>();
+
+  async createScrewUpCascade(insertCascade: InsertScrewUpCascade): Promise<ScrewUpCascade> {
+    const id = this.currentId++;
+    const cascade: ScrewUpCascade = {
+      ...insertCascade,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.screwUpCascades.set(id, cascade);
+    return cascade;
+  }
+
+  async getUserScrewUpCascades(userId: number): Promise<ScrewUpCascade[]> {
+    return Array.from(this.screwUpCascades.values())
+      .filter(cascade => cascade.userId === userId)
+      .sort((a, b) => {
+        const aDate = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bDate = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bDate - aDate;
+      });
+  }
+
+  async updateScrewUpCascade(id: number, updates: Partial<ScrewUpCascade>): Promise<ScrewUpCascade> {
+    const cascade = this.screwUpCascades.get(id);
+    if (!cascade) throw new Error('Screw Up Cascade not found');
+    
+    const updatedCascade: ScrewUpCascade = {
+      ...cascade,
+      ...updates,
+      updatedAt: new Date()
+    };
+    this.screwUpCascades.set(id, updatedCascade);
+    return updatedCascade;
+  }
+
+  // Priority Planning operations
+  private priorityPlanning = new Map<number, PriorityPlanning>();
+
+  async createPriorityPlan(insertPlan: InsertPriorityPlanning): Promise<PriorityPlanning> {
+    const id = this.currentId++;
+    const plan: PriorityPlanning = {
+      ...insertPlan,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    this.priorityPlanning.set(id, plan);
+    return plan;
+  }
+
+  async getUserPriorityPlans(userId: number): Promise<PriorityPlanning[]> {
+    return Array.from(this.priorityPlanning.values())
+      .filter(plan => plan.userId === userId)
+      .sort((a, b) => {
+        const aDate = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const bDate = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return bDate - aDate;
+      });
+  }
+
+  async updatePriorityPlan(id: number, updates: Partial<PriorityPlanning>): Promise<PriorityPlanning> {
+    const plan = this.priorityPlanning.get(id);
+    if (!plan) throw new Error('Priority plan not found');
+    
+    const updatedPlan: PriorityPlanning = {
+      ...plan,
+      ...updates,
+      updatedAt: new Date()
+    };
+    this.priorityPlanning.set(id, updatedPlan);
+    return updatedPlan;
+  }
+
+  // Certification Progress operations
+  private certificationProgress = new Map<number, CertificationProgress>();
+
+  async getCertificationProgress(userId: number): Promise<CertificationProgress | undefined> {
+    return Array.from(this.certificationProgress.values()).find(cp => cp.userId === userId);
+  }
+
+  async updateCertificationProgress(userId: number, updates: Partial<CertificationProgress>): Promise<CertificationProgress> {
+    let progress = Array.from(this.certificationProgress.values()).find(cp => cp.userId === userId);
+    
+    if (!progress) {
+      const id = this.currentId++;
+      progress = {
+        id,
+        userId,
+        toolsCompleted: updates.toolsCompleted || [],
+        assessmentsCompleted: updates.assessmentsCompleted || [],
+        practiceScenarios: updates.practiceScenarios || [],
+        underPressureTesting: updates.underPressureTesting || [],
+        coachObservations: updates.coachObservations || null,
+        selfReflections: updates.selfReflections || null,
+        certificationLevel: updates.certificationLevel || 'beginner',
+        businessObservationChecklist: updates.businessObservationChecklist || null,
+        lastProgressUpdate: new Date(),
+        createdAt: new Date()
+      };
+      this.certificationProgress.set(id, progress);
+    } else {
+      const updatedProgress: CertificationProgress = {
+        ...progress,
+        ...updates,
+        lastProgressUpdate: new Date()
+      };
+      this.certificationProgress.set(progress.id, updatedProgress);
+      progress = updatedProgress;
+    }
+    
+    return progress;
+  }
+
   // Daily Mood operations
   async createDailyMood(insertMood: InsertDailyMood): Promise<DailyMood> {
     const id = this.currentId++;
