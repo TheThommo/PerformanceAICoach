@@ -111,6 +111,84 @@ export const controlCircles = pgTable("control_circles", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Red2Blue Recognition Tool
+export const recognitionAssessments = pgTable("recognition_assessments", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  scenario: text("scenario").notNull(),
+  redIndicators: jsonb("red_indicators").notNull(), // diverted indicators
+  blueIndicators: jsonb("blue_indicators").notNull(), // on task indicators
+  demeanourScore: integer("demeanour_score").notNull(), // 1-10
+  communicationScore: integer("communication_score").notNull(), // 1-10
+  decisionMakingScore: integer("decision_making_score").notNull(), // 1-10
+  executionScore: integer("execution_score").notNull(), // 1-10
+  overallState: text("overall_state").notNull(), // "red", "blue", "transitional"
+  actionPlan: text("action_plan"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// What Ifs Planning Tool
+export const whatIfPlanning = pgTable("what_if_planning", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  scenario: text("scenario").notNull(),
+  riskRating: integer("risk_rating").notNull(), // 1-10
+  impactRating: integer("impact_rating").notNull(), // 1-10
+  blueStrategy: text("blue_strategy").notNull(), // strategy to stay/return to blue
+  testedUnderPressure: boolean("tested_under_pressure").default(false),
+  effectiveness: integer("effectiveness"), // 1-10 rating after testing
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Screw Up Cascade (SUC) Tool
+export const screwUpCascade = pgTable("screw_up_cascade", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  category: text("category").notNull(), // "golf", "general", "performance"
+  screwUpDescription: text("screw_up_description").notNull(),
+  frequency: integer("frequency").notNull(), // how often this happens (1-10)
+  preventionStrategy: text("prevention_strategy").notNull(),
+  triggerWarnings: jsonb("trigger_warnings"), // array of warning signs
+  recoveryActions: jsonb("recovery_actions"), // array of recovery steps
+  tested: boolean("tested").default(false),
+  effectiveness: integer("effectiveness"), // 1-10 rating
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Priority Planner Tool
+export const priorityPlanning = pgTable("priority_planning", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  purpose: text("purpose").notNull(),
+  primaryIndicator: text("primary_indicator").notNull(),
+  primaryResponsibility: text("primary_responsibility").notNull(),
+  criticalBuildingBlocks: jsonb("critical_building_blocks").notNull(), // array of focus areas
+  responsibilities: jsonb("responsibilities").notNull(), // array per building block
+  keyActions: jsonb("key_actions").notNull(), // array of specific actions
+  keyIndicators: jsonb("key_indicators").notNull(), // array of success metrics
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Red2Blue Certification Progress
+export const certificationProgress = pgTable("certification_progress", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  toolsCompleted: jsonb("tools_completed").notNull(), // array of completed tool names
+  assessmentsCompleted: jsonb("assessments_completed").notNull(), // array of assessment types
+  practiceScenarios: jsonb("practice_scenarios").notNull(), // array of practiced scenarios
+  underPressureTesting: jsonb("under_pressure_testing").notNull(), // array of pressure tested tools
+  coachObservations: text("coach_observations"),
+  selfReflections: text("self_reflections"),
+  certificationLevel: text("certification_level").default("beginner"), // "beginner", "intermediate", "advanced", "certified"
+  businessObservationChecklist: jsonb("business_observation_checklist"), // for business certification
+  lastProgressUpdate: timestamp("last_progress_update").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Daily check-ins and leaderboard
 export const dailyCheckIns = pgTable("daily_check_ins", {
   id: serial("id").primaryKey(),
@@ -219,6 +297,35 @@ export const insertCalendarReminderSchema = createInsertSchema(calendarReminders
   createdAt: true,
 });
 
+export const insertRecognitionAssessmentSchema = createInsertSchema(recognitionAssessments).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertWhatIfPlanningSchema = createInsertSchema(whatIfPlanning).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertScrewUpCascadeSchema = createInsertSchema(screwUpCascade).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertPriorityPlanningSchema = createInsertSchema(priorityPlanning).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertCertificationProgressSchema = createInsertSchema(certificationProgress).omit({
+  id: true,
+  createdAt: true,
+  lastProgressUpdate: true,
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type Assessment = typeof assessments.$inferSelect;
@@ -245,6 +352,16 @@ export type TechniqueProgress = typeof techniqueProgress.$inferSelect;
 export type InsertTechniqueProgress = z.infer<typeof insertTechniqueProgressSchema>;
 export type CalendarReminder = typeof calendarReminders.$inferSelect;
 export type InsertCalendarReminder = z.infer<typeof insertCalendarReminderSchema>;
+export type RecognitionAssessment = typeof recognitionAssessments.$inferSelect;
+export type InsertRecognitionAssessment = z.infer<typeof insertRecognitionAssessmentSchema>;
+export type WhatIfPlanning = typeof whatIfPlanning.$inferSelect;
+export type InsertWhatIfPlanning = z.infer<typeof insertWhatIfPlanningSchema>;
+export type ScrewUpCascade = typeof screwUpCascade.$inferSelect;
+export type InsertScrewUpCascade = z.infer<typeof insertScrewUpCascadeSchema>;
+export type PriorityPlanning = typeof priorityPlanning.$inferSelect;
+export type InsertPriorityPlanning = z.infer<typeof insertPriorityPlanningSchema>;
+export type CertificationProgress = typeof certificationProgress.$inferSelect;
+export type InsertCertificationProgress = z.infer<typeof insertCertificationProgressSchema>;
 
 // Notifications table for coach check-ins and system alerts
 export const notifications = pgTable("notifications", {
