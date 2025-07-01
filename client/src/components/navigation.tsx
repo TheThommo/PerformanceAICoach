@@ -59,7 +59,7 @@ export function Navigation() {
             </Link>
 
             {/* Desktop Navigation Items */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-6 ml-8">
               {navItems.map((item) => {
                 const isActive = location === item.href;
                 return (

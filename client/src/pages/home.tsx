@@ -295,9 +295,9 @@ export default function Home() {
                   }
                 }}
               >
-                <div className="w-full">
-                  <div className="font-medium text-gray-900 mb-1">Pre-Round Nerves</div>
-                  <div className="text-sm text-gray-600 break-words">Managing anxiety before important rounds</div>
+                <div className="w-full overflow-hidden">
+                  <div className="font-medium text-gray-900 mb-1 text-sm">Pre-Round Nerves</div>
+                  <div className="text-xs text-gray-600 leading-relaxed">Managing anxiety before rounds</div>
                 </div>
               </Button>
               
@@ -312,9 +312,9 @@ export default function Home() {
                   }
                 }}
               >
-                <div className="w-full">
-                  <div className="font-medium text-gray-900 mb-1">Bad Shot Recovery</div>
-                  <div className="text-sm text-gray-600 break-words">Bouncing back from mistakes quickly</div>
+                <div className="w-full overflow-hidden">
+                  <div className="font-medium text-gray-900 mb-1 text-sm">Bad Shot Recovery</div>
+                  <div className="text-xs text-gray-600 leading-relaxed">Bouncing back from mistakes</div>
                 </div>
               </Button>
               
@@ -329,9 +329,9 @@ export default function Home() {
                   }
                 }}
               >
-                <div className="w-full">
-                  <div className="font-medium text-gray-900 mb-1">Breathing Techniques</div>
-                  <div className="text-sm text-gray-600 break-words">Quick calming methods during play</div>
+                <div className="w-full overflow-hidden">
+                  <div className="font-medium text-gray-900 mb-1 text-sm">Breathing Techniques</div>
+                  <div className="text-xs text-gray-600 leading-relaxed">Quick calming methods</div>
                 </div>
               </Button>
             </div>
