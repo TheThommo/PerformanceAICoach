@@ -285,7 +285,7 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Button 
                 variant="ghost" 
-                className="h-auto p-4 text-left bg-white hover:bg-blue-50 border border-gray-200"
+                className="h-auto min-h-[80px] p-4 text-left bg-white hover:bg-blue-50 border border-gray-200 flex items-start"
                 onClick={() => {
                   // This would send a message to the chat
                   const chatInput = document.querySelector('[data-chat-input]') as HTMLInputElement;
@@ -295,15 +295,15 @@ export default function Home() {
                   }
                 }}
               >
-                <div>
+                <div className="w-full">
                   <div className="font-medium text-gray-900 mb-1">Pre-Round Nerves</div>
-                  <div className="text-sm text-gray-600">Managing anxiety before important rounds</div>
+                  <div className="text-sm text-gray-600 break-words">Managing anxiety before important rounds</div>
                 </div>
               </Button>
               
               <Button 
                 variant="ghost" 
-                className="h-auto p-4 text-left bg-white hover:bg-blue-50 border border-gray-200"
+                className="h-auto min-h-[80px] p-4 text-left bg-white hover:bg-blue-50 border border-gray-200 flex items-start"
                 onClick={() => {
                   const chatInput = document.querySelector('[data-chat-input]') as HTMLInputElement;
                   if (chatInput) {
@@ -312,15 +312,15 @@ export default function Home() {
                   }
                 }}
               >
-                <div>
+                <div className="w-full">
                   <div className="font-medium text-gray-900 mb-1">Bad Shot Recovery</div>
-                  <div className="text-sm text-gray-600">Bouncing back from mistakes quickly</div>
+                  <div className="text-sm text-gray-600 break-words">Bouncing back from mistakes quickly</div>
                 </div>
               </Button>
               
               <Button 
                 variant="ghost" 
-                className="h-auto p-4 text-left bg-white hover:bg-blue-50 border border-gray-200"
+                className="h-auto min-h-[80px] p-4 text-left bg-white hover:bg-blue-50 border border-gray-200 flex items-start"
                 onClick={() => {
                   const chatInput = document.querySelector('[data-chat-input]') as HTMLInputElement;
                   if (chatInput) {
@@ -329,9 +329,9 @@ export default function Home() {
                   }
                 }}
               >
-                <div>
+                <div className="w-full">
                   <div className="font-medium text-gray-900 mb-1">Breathing Techniques</div>
-                  <div className="text-sm text-gray-600">Quick calming methods during play</div>
+                  <div className="text-sm text-gray-600 break-words">Quick calming methods during play</div>
                 </div>
               </Button>
             </div>
