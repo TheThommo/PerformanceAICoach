@@ -77,6 +77,25 @@ export function Navigation() {
             <div className="hidden md:flex items-center space-x-6 ml-8">
               {navItems.map((item) => {
                 const isActive = location === item.href;
+                
+                // Special handling for Home button to ensure it works
+                if (item.href === "/") {
+                  return (
+                    <button
+                      key={item.href}
+                      onClick={() => window.location.href = "/"}
+                      className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors ${
+                        isActive
+                          ? "bg-blue-primary text-white"
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                      }`}
+                    >
+                      <item.icon size={18} />
+                      <span className="font-medium">{item.label}</span>
+                    </button>
+                  );
+                }
+                
                 return (
                   <Link
                     key={item.href}
