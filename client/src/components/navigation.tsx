@@ -53,8 +53,17 @@ export function Navigation() {
                 <Brain className="text-white" size={20} />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Red2Blue</h1>
-                <p className="text-xs text-gray-500">AI Mental Coach</p>
+                <div className="flex items-center space-x-2">
+                  <h1 className="text-xl font-bold text-gray-900">Red2Blue</h1>
+                  {user?.subscriptionTier === 'ultimate' && (
+                    <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-2 py-1 rounded text-xs font-bold">
+                      ULTIMATE
+                    </div>
+                  )}
+                </div>
+                <p className="text-xs text-gray-500">
+                  {user?.subscriptionTier === 'ultimate' ? 'AI + Human Coaching' : 'AI Mental Coach'}
+                </p>
               </div>
             </Link>
 

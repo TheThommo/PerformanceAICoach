@@ -20,6 +20,7 @@ import RecommendationsPage from "@/pages/recommendations";
 import Goals from "@/pages/goals";
 import Scenarios from "@/pages/scenarios";
 import CoachingTools from "@/pages/coaching-tools";
+import HumanCoaching from "@/pages/human-coaching";
 import Help from "@/pages/help";
 import Features from "@/pages/features";
 import PrivacyPolicy from "@/pages/privacy-policy";
@@ -61,6 +62,7 @@ function Router() {
           <Route path="/goals" component={Goals} />
           <Route path="/scenarios" component={Scenarios} />
           <Route path="/coaching-tools" component={CoachingTools} />
+          <Route path="/human-coaching" component={HumanCoaching} />
           <Route path="/community">
             {() => <Community userId={user?.id || 1} />}
           </Route>

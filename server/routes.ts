@@ -1439,6 +1439,83 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Human Coaching API routes (Ultimate tier only)
+  app.post("/api/human-coaching/message", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const { message } = req.body;
+      const userId = req.user!.id;
+      
+      // In a real implementation, this would send the message to the coach
+      // For now, we'll just acknowledge receipt
+      const response = {
+        id: Date.now(),
+        userId,
+        message,
+        status: "sent",
+        timestamp: new Date(),
+        coachResponse: null
+      };
+      
+      res.json({ 
+        success: true, 
+        message: "Message sent to your coach. They will respond within 24 hours.",
+        data: response 
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to send message", error: (error as Error).message });
+    }
+  });
+
+  app.post("/api/human-coaching/progress-review", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const { request } = req.body;
+      const userId = req.user!.id;
+      
+      // In a real implementation, this would trigger a coach review process
+      const response = {
+        id: Date.now(),
+        userId,
+        reviewRequest: request,
+        status: "pending",
+        timestamp: new Date(),
+        estimatedCompletion: new Date(Date.now() + 48 * 60 * 60 * 1000) // 48 hours
+      };
+      
+      res.json({ 
+        success: true, 
+        message: "Progress review request submitted. Your coach will provide feedback within 48 hours.",
+        data: response 
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to request review", error: (error as Error).message });
+    }
+  });
+
+  app.post("/api/human-coaching/schedule-request", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const { requestType } = req.body;
+      const userId = req.user!.id;
+      
+      // In a real implementation, this would integrate with a calendar booking system
+      const response = {
+        id: Date.now(),
+        userId,
+        requestType,
+        status: "pending",
+        timestamp: new Date(),
+        message: "Your coach will contact you within 24 hours to schedule your session."
+      };
+      
+      res.json({ 
+        success: true, 
+        message: "Session request sent. Your coach will contact you within 24 hours to schedule.",
+        data: response 
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to request session", error: (error as Error).message });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

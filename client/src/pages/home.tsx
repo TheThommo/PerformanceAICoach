@@ -58,6 +58,71 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Human Coaching Section - Only for Ultimate subscribers */}
+      {user?.subscriptionTier === 'ultimate' && (
+        <div className="mb-8">
+          <Card className="bg-gradient-to-r from-purple-600 to-indigo-700 text-white shadow-xl border-0">
+            <CardContent className="p-8">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+                    <Users className="text-white" size={32} />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold">Human Coaching Access</h2>
+                    <p className="text-purple-100 mt-1">Connect with your certified Red2Blue performance coach</p>
+                  </div>
+                </div>
+                <div className="flex space-x-3">
+                  <Link href="/human-coaching">
+                    <Button className="bg-white text-purple-700 hover:bg-purple-50 font-semibold">
+                      <Calendar className="mr-2" size={18} />
+                      Schedule Session
+                    </Button>
+                  </Link>
+                  <Link href="/human-coaching">
+                    <Button variant="outline" className="border-white/20 text-white hover:bg-white/10">
+                      <MessageCircle className="mr-2" size={18} />
+                      Message Coach
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+              
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-white/10 rounded-lg p-4">
+                  <h4 className="font-semibold mb-2">Next Session</h4>
+                  <p className="text-sm text-purple-100">No upcoming sessions</p>
+                  <Link href="/human-coaching">
+                    <Button size="sm" className="mt-2 bg-white/20 hover:bg-white/30 text-white border-0">
+                      Book Now
+                    </Button>
+                  </Link>
+                </div>
+                <div className="bg-white/10 rounded-lg p-4">
+                  <h4 className="font-semibold mb-2">Coach Messages</h4>
+                  <p className="text-sm text-purple-100">0 unread messages</p>
+                  <Link href="/human-coaching">
+                    <Button size="sm" className="mt-2 bg-white/20 hover:bg-white/30 text-white border-0">
+                      View Inbox
+                    </Button>
+                  </Link>
+                </div>
+                <div className="bg-white/10 rounded-lg p-4">
+                  <h4 className="font-semibold mb-2">Progress Review</h4>
+                  <p className="text-sm text-purple-100">Request coach feedback</p>
+                  <Link href="/human-coaching">
+                    <Button size="sm" className="mt-2 bg-white/20 hover:bg-white/30 text-white border-0">
+                      Request Review
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
       {/* Main Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
@@ -93,6 +158,11 @@ export default function Home() {
                       I analyze your mental performance in real-time and provide instant techniques to shift 
                       from Red Head stress to Blue Head peak performance. Ask me about pressure situations, 
                       breathing techniques, focus strategies, or any mental game challenges you're facing.
+                      {user?.subscriptionTier === 'ultimate' && (
+                        <span className="block mt-2 text-purple-700 font-medium">
+                          💜 As an Ultimate member, I can also coordinate with your human coach to provide combined AI + human support!
+                        </span>
+                      )}
                     </p>
                     <Button 
                       className="bg-blue-600 hover:bg-blue-700 text-white"
