@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Brain, Bell, Menu, X, Home, BarChart3, MessageCircle, Zap, Wrench, Users, Trophy, User, Settings, LogOut, Lightbulb, HelpCircle, Target } from "lucide-react";
+import { Brain, Bell, Menu, X, Home, BarChart3, MessageCircle, Zap, Wrench, Users, Trophy, User, Settings, LogOut, Lightbulb, HelpCircle, Target, ClipboardCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -22,8 +22,9 @@ export function Navigation() {
   };
 
   const baseNavItems = [
-    { href: "/", label: "Dashboard", icon: Home },
-    { href: "/assessment", label: "Assessment", icon: BarChart3 },
+    { href: "/", label: "Home", icon: Home },
+    { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
+    { href: "/assessment", label: "Assessment", icon: ClipboardCheck },
     { href: "/techniques", label: "Techniques", icon: Zap },
     { href: "/tools", label: "R2B Tools", icon: Wrench },
     { href: "/recommendations", label: "AI Recommendations", icon: Lightbulb },
@@ -32,9 +33,14 @@ export function Navigation() {
     { href: "/help", label: "Help & FAQ", icon: HelpCircle },
   ];
 
-  // Add admin/coach-only items
+  // Add conditional items based on user type
   const navItems = [
     ...baseNavItems,
+    // Add Human Coaching for Ultimate subscribers
+    ...(user?.subscriptionTier === 'ultimate' 
+      ? [{ href: "/human-coaching", label: "Human Coaching", icon: MessageCircle }] 
+      : []),
+    // Add admin/coach-only items
     ...(user?.role === 'admin' || user?.role === 'coach' 
       ? [{ href: "/coach", label: "Coach Dashboard", icon: Users }] 
       : [])
