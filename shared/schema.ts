@@ -30,11 +30,12 @@ export const users = pgTable("users", {
 export const assessments = pgTable("assessments", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
-  intensityScore: integer("intensity_score").notNull(), // 0-100
-  decisionMakingScore: integer("decision_making_score").notNull(), // 0-100
-  diversionsScore: integer("diversions_score").notNull(), // 0-100
-  executionScore: integer("execution_score").notNull(), // 0-100
-  totalScore: integer("total_score").notNull(), // sum of all scores
+  responses: jsonb("responses"), // Store all assessment responses as JSON
+  intensityScore: integer("intensity_score").default(0), // Optional for backward compatibility
+  decisionMakingScore: integer("decision_making_score").default(0),
+  diversionsScore: integer("diversions_score").default(0),
+  executionScore: integer("execution_score").default(0),
+  totalScore: integer("total_score").default(0),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -241,7 +242,6 @@ export const insertUserSchema = createInsertSchema(users).omit({
 export const insertAssessmentSchema = createInsertSchema(assessments).omit({
   id: true,
   createdAt: true,
-  totalScore: true, // Calculated by backend
 });
 
 export const insertChatSessionSchema = createInsertSchema(chatSessions).omit({

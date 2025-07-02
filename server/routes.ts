@@ -467,8 +467,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Store responses without scoring since this is not right/wrong based
       const assessment = await storage.createAssessment({
         userId,
-        responses: JSON.stringify(responses), // Store all responses as JSON
-        totalScore: 0 // No scoring needed
+        responses: responses, // Store all responses as JSON
+        intensityScore: 0,
+        decisionMakingScore: 0,
+        diversionsScore: 0,
+        executionScore: 0,
+        totalScore: 0
       });
 
       // Get AI analysis based on response patterns, not scores
