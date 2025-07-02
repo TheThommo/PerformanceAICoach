@@ -24,7 +24,6 @@ export function Navigation() {
   const baseNavItems = [
     { href: "/", label: "Home", icon: Home },
     { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
-    { href: "/community", label: "Community", icon: Trophy },
     { href: "/help", label: "Help", icon: HelpCircle },
   ];
 
