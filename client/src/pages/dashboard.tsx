@@ -163,27 +163,7 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          {/* Quick Techniques */}
-          <Card className="shadow-sm border-gray-100">
-            <CardHeader>
-              <CardTitle className="font-semibold text-gray-900">Quick Techniques</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {techniques?.slice(0, 3).map((technique: any) => (
-                <Button
-                  key={technique.id}
-                  variant="ghost"
-                  className="w-full justify-between bg-blue-light hover:bg-blue-100 text-left h-auto p-3"
-                >
-                  <div className="flex items-center space-x-3">
-                    <Brain className="text-blue-primary" size={16} />
-                    <span className="font-medium">{technique.name}</span>
-                  </div>
-                  <span className="text-gray-400">→</span>
-                </Button>
-              ))}
-            </CardContent>
-          </Card>
+
 
           {/* Red Head Alert */}
           {latestAssessment && latestAssessment.diversionsScore < 70 && (

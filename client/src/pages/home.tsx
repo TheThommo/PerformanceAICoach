@@ -317,35 +317,7 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          {/* Quick Techniques */}
-          <Card className="shadow-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg flex items-center space-x-2">
-                <Brain className="text-blue-600" size={20} />
-                <span>Quick Techniques</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {techniques?.slice(0, 3).map((technique: any) => (
-                <Button
-                  key={technique.id}
-                  variant="ghost"
-                  className="w-full justify-between bg-blue-50 hover:bg-blue-100 text-left h-auto p-3"
-                >
-                  <div className="flex items-center space-x-3">
-                    <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
-                    <span className="font-medium text-sm">{technique.name}</span>
-                  </div>
-                  <span className="text-gray-400">→</span>
-                </Button>
-              ))}
-              <Link href="/techniques">
-                <Button variant="outline" className="w-full text-sm" size="sm">
-                  View All Techniques
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+
 
           {/* Weekly Progress */}
           <Card className="shadow-sm">
