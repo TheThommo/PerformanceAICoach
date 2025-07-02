@@ -107,6 +107,69 @@ export default function Home() {
                   </div>
                 </div>
               </div>
+
+              {/* Chat Suggestions - moved here from bottom */}
+              <div className="mt-6">
+                <Card className="shadow-sm bg-gradient-to-r from-gray-50 to-blue-50">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg">Ask Flo About:</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <Button 
+                        variant="ghost" 
+                        className="h-auto min-h-[80px] p-4 text-left bg-white hover:bg-blue-50 border border-gray-200 flex items-start"
+                        onClick={() => {
+                          const chatInput = document.querySelector('[data-chat-input]') as HTMLInputElement;
+                          if (chatInput) {
+                            chatInput.value = "I'm feeling nervous before my next round. How can I manage pre-round anxiety?";
+                            chatInput.focus();
+                          }
+                        }}
+                      >
+                        <div className="w-full overflow-hidden">
+                          <div className="font-medium text-gray-900 mb-1 text-sm">Pre-Round Nerves</div>
+                          <div className="text-xs text-gray-600 leading-relaxed">Managing anxiety before rounds</div>
+                        </div>
+                      </Button>
+                      
+                      <Button 
+                        variant="ghost" 
+                        className="h-auto min-h-[80px] p-4 text-left bg-white hover:bg-blue-50 border border-gray-200 flex items-start"
+                        onClick={() => {
+                          const chatInput = document.querySelector('[data-chat-input]') as HTMLInputElement;
+                          if (chatInput) {
+                            chatInput.value = "I missed a short putt and got really frustrated. How do I recover quickly?";
+                            chatInput.focus();
+                          }
+                        }}
+                      >
+                        <div className="w-full overflow-hidden">
+                          <div className="font-medium text-gray-900 mb-1 text-sm">Bad Shot Recovery</div>
+                          <div className="text-xs text-gray-600 leading-relaxed">Bouncing back from mistakes</div>
+                        </div>
+                      </Button>
+                      
+                      <Button 
+                        variant="ghost" 
+                        className="h-auto min-h-[80px] p-4 text-left bg-white hover:bg-blue-50 border border-gray-200 flex items-start"
+                        onClick={() => {
+                          const chatInput = document.querySelector('[data-chat-input]') as HTMLInputElement;
+                          if (chatInput) {
+                            chatInput.value = "Teach me a breathing technique I can use on the course to stay calm.";
+                            chatInput.focus();
+                          }
+                        }}
+                      >
+                        <div className="w-full overflow-hidden">
+                          <div className="font-medium text-gray-900 mb-1 text-sm">Breathing Techniques</div>
+                          <div className="text-xs text-gray-600 leading-relaxed">Quick calming methods</div>
+                        </div>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
               
               {/* Recent Performance Insights */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -275,69 +338,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Chat Suggestions */}
-      <div className="mt-8">
-        <Card className="shadow-sm bg-gradient-to-r from-gray-50 to-blue-50">
-          <CardHeader>
-            <CardTitle className="text-xl">Ask Flo About:</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Button 
-                variant="ghost" 
-                className="h-auto min-h-[80px] p-4 text-left bg-white hover:bg-blue-50 border border-gray-200 flex items-start"
-                onClick={() => {
-                  // This would send a message to the chat
-                  const chatInput = document.querySelector('[data-chat-input]') as HTMLInputElement;
-                  if (chatInput) {
-                    chatInput.value = "I'm feeling nervous before my next round. How can I manage pre-round anxiety?";
-                    chatInput.focus();
-                  }
-                }}
-              >
-                <div className="w-full overflow-hidden">
-                  <div className="font-medium text-gray-900 mb-1 text-sm">Pre-Round Nerves</div>
-                  <div className="text-xs text-gray-600 leading-relaxed">Managing anxiety before rounds</div>
-                </div>
-              </Button>
-              
-              <Button 
-                variant="ghost" 
-                className="h-auto min-h-[80px] p-4 text-left bg-white hover:bg-blue-50 border border-gray-200 flex items-start"
-                onClick={() => {
-                  const chatInput = document.querySelector('[data-chat-input]') as HTMLInputElement;
-                  if (chatInput) {
-                    chatInput.value = "I missed a short putt and got really frustrated. How do I recover quickly?";
-                    chatInput.focus();
-                  }
-                }}
-              >
-                <div className="w-full overflow-hidden">
-                  <div className="font-medium text-gray-900 mb-1 text-sm">Bad Shot Recovery</div>
-                  <div className="text-xs text-gray-600 leading-relaxed">Bouncing back from mistakes</div>
-                </div>
-              </Button>
-              
-              <Button 
-                variant="ghost" 
-                className="h-auto min-h-[80px] p-4 text-left bg-white hover:bg-blue-50 border border-gray-200 flex items-start"
-                onClick={() => {
-                  const chatInput = document.querySelector('[data-chat-input]') as HTMLInputElement;
-                  if (chatInput) {
-                    chatInput.value = "Teach me a breathing technique I can use on the course to stay calm.";
-                    chatInput.focus();
-                  }
-                }}
-              >
-                <div className="w-full overflow-hidden">
-                  <div className="font-medium text-gray-900 mb-1 text-sm">Breathing Techniques</div>
-                  <div className="text-xs text-gray-600 leading-relaxed">Quick calming methods</div>
-                </div>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+
 
       {/* Interactive Features Section */}
       <div className="grid lg:grid-cols-2 gap-8 mt-8">

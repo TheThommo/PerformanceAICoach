@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { TechniqueCard } from "@/components/technique-card";
 import { apiRequest } from "@/lib/queryClient";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Zap, 
   Compass, 
@@ -34,6 +34,9 @@ export default function Techniques() {
   const [selectedTechnique, setSelectedTechnique] = useState<any>(null);
   const [emergencyStep, setEmergencyStep] = useState(0);
   const [ideaText, setIdeaText] = useState("");
+  const [isAutoAdvancing, setIsAutoAdvancing] = useState(false);
+  const [practiceStep, setPracticeStep] = useState(0);
+  const [countdown, setCountdown] = useState(0);
   
   // Emergency Relief mutation
   const emergencyMutation = useMutation({
@@ -55,9 +58,11 @@ export default function Techniques() {
     },
     onSuccess: () => {
       toast({
-        title: "Practice Session Started",
-        description: "Your practice session has been logged. Keep up the great work!",
+        title: "Practice Completed",
+        description: "Great work! Your practice session has been completed and logged.",
       });
+      setPracticeDialogOpen(false);
+      setPracticeStep(0);
     }
   });
   
@@ -75,6 +80,31 @@ export default function Techniques() {
       setIdeaDialogOpen(false);
     }
   });
+
+  // Auto-advance timer for emergency relief
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    
+    if (isAutoAdvancing && countdown > 0) {
+      timer = setTimeout(() => {
+        setCountdown(countdown - 1);
+      }, 1000);
+    } else if (isAutoAdvancing && countdown === 0) {
+      // Auto advance to next step
+      if (emergencyStep === 1) {
+        setEmergencyStep(2);
+        setCountdown(4); // Hold for 4 seconds
+      } else if (emergencyStep === 2) {
+        setEmergencyStep(3);
+        setCountdown(6); // Exhale for 6 seconds
+      } else if (emergencyStep === 3) {
+        setEmergencyStep(4);
+        setIsAutoAdvancing(false);
+      }
+    }
+    
+    return () => clearTimeout(timer);
+  }, [isAutoAdvancing, countdown, emergencyStep]);
 
   const categories = [
     { 
@@ -354,9 +384,13 @@ export default function Techniques() {
                 </p>
                 <Button 
                   className="w-full bg-red-primary hover:bg-red-600"
-                  onClick={() => setEmergencyStep(1)}
+                  onClick={() => {
+                    setEmergencyStep(1);
+                    setIsAutoAdvancing(true);
+                    setCountdown(4);
+                  }}
                 >
-                  Start Now
+                  Start Auto-Guided Practice
                 </Button>
               </div>
             )}
@@ -364,48 +398,33 @@ export default function Techniques() {
             {emergencyStep === 1 && (
               <div className="text-center space-y-4">
                 <div className="w-20 h-20 bg-blue-light rounded-full flex items-center justify-center mx-auto animate-pulse">
-                  <span className="text-2xl text-blue-primary">4</span>
+                  <span className="text-3xl text-blue-primary font-bold">{countdown}</span>
                 </div>
                 <p className="text-lg font-medium">Breathe In</p>
-                <p className="text-gray-600">Count to 4 slowly</p>
-                <Button 
-                  variant="outline"
-                  onClick={() => setEmergencyStep(2)}
-                >
-                  Next
-                </Button>
+                <p className="text-gray-600">Inhale slowly through your nose</p>
+                <div className="text-sm text-gray-500">Auto-advancing in {countdown} seconds...</div>
               </div>
             )}
             
             {emergencyStep === 2 && (
               <div className="text-center space-y-4">
                 <div className="w-20 h-20 bg-yellow-light rounded-full flex items-center justify-center mx-auto">
-                  <span className="text-2xl text-yellow-600">4</span>
+                  <span className="text-3xl text-yellow-600 font-bold">{countdown}</span>
                 </div>
                 <p className="text-lg font-medium">Hold</p>
-                <p className="text-gray-600">Hold for 4 counts</p>
-                <Button 
-                  variant="outline"
-                  onClick={() => setEmergencyStep(3)}
-                >
-                  Next
-                </Button>
+                <p className="text-gray-600">Hold your breath gently</p>
+                <div className="text-sm text-gray-500">Auto-advancing in {countdown} seconds...</div>
               </div>
             )}
             
             {emergencyStep === 3 && (
               <div className="text-center space-y-4">
                 <div className="w-20 h-20 bg-green-light rounded-full flex items-center justify-center mx-auto">
-                  <span className="text-2xl text-green-600">6</span>
+                  <span className="text-3xl text-green-600 font-bold">{countdown}</span>
                 </div>
                 <p className="text-lg font-medium">Breathe Out</p>
-                <p className="text-gray-600">Exhale slowly for 6 counts</p>
-                <Button 
-                  variant="outline"
-                  onClick={() => setEmergencyStep(4)}
-                >
-                  Complete
-                </Button>
+                <p className="text-gray-600">Exhale slowly through your mouth</p>
+                <div className="text-sm text-gray-500">Auto-advancing in {countdown} seconds...</div>
               </div>
             )}
             
@@ -480,11 +499,10 @@ export default function Techniques() {
                   if (selectedTechnique) {
                     practiceMutation.mutate(selectedTechnique.id);
                   }
-                  setPracticeDialogOpen(false);
                 }}
                 disabled={practiceMutation.isPending}
               >
-                {practiceMutation.isPending ? "Logging..." : "Start Practice"}
+                {practiceMutation.isPending ? "Completing..." : "Complete Practice"}
               </Button>
             </div>
           </div>
