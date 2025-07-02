@@ -215,9 +215,9 @@ export default function Techniques() {
                 }`}
                 onClick={() => setActiveCategory(category.id)}
               >
-                <CardContent className="p-4 text-center">
-                  <div className="flex flex-col items-center space-y-2">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                <CardContent className="p-3">
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
                       activeCategory === category.id ? 'bg-blue-primary text-white' : 'bg-gray-100'
                     }`}>
                       {category.icon}
