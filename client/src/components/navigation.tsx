@@ -24,13 +24,8 @@ export function Navigation() {
   const baseNavItems = [
     { href: "/", label: "Home", icon: Home },
     { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
-    { href: "/assessment", label: "Assessment", icon: ClipboardCheck },
-    { href: "/techniques", label: "Techniques", icon: Zap },
-    { href: "/tools", label: "R2B Tools", icon: Wrench },
-    { href: "/recommendations", label: "AI Recommendations", icon: Lightbulb },
-    { href: "/goals", label: "Goals", icon: Target },
     { href: "/community", label: "Community", icon: Trophy },
-    { href: "/help", label: "Help & FAQ", icon: HelpCircle },
+    { href: "/help", label: "Help", icon: HelpCircle },
   ];
 
   // Add conditional items based on user type

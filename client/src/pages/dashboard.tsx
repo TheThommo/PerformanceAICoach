@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { Brain, Users, TrendingUp, Target, Flame, Crosshair, Eye, AlertTriangle } from "lucide-react";
+import { Brain, Users, TrendingUp, Target, Flame, Crosshair, Eye, AlertTriangle, ClipboardCheck, Zap, Wrench, Lightbulb } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -180,6 +180,55 @@ export default function Dashboard() {
               </CardContent>
             </Card>
           )}
+
+          {/* Quick Actions */}
+          <Card className="shadow-sm border-gray-100">
+            <CardHeader>
+              <CardTitle className="font-semibold text-gray-900">Quick Actions</CardTitle>
+            </CardHeader>
+            <CardContent className="grid grid-cols-2 gap-3">
+              <Link href="/assessment">
+                <Button className="w-full bg-blue-primary hover:bg-blue-600 text-white text-sm h-auto p-3">
+                  <div className="flex flex-col items-center space-y-1">
+                    <ClipboardCheck size={18} />
+                    <span>Assessment</span>
+                  </div>
+                </Button>
+              </Link>
+              <Link href="/techniques">
+                <Button variant="outline" className="w-full text-sm h-auto p-3 border-blue-200 hover:bg-blue-50">
+                  <div className="flex flex-col items-center space-y-1">
+                    <Zap size={18} />
+                    <span>Techniques</span>
+                  </div>
+                </Button>
+              </Link>
+              <Link href="/tools">
+                <Button variant="outline" className="w-full text-sm h-auto p-3 border-blue-200 hover:bg-blue-50">
+                  <div className="flex flex-col items-center space-y-1">
+                    <Wrench size={18} />
+                    <span>R2B Tools</span>
+                  </div>
+                </Button>
+              </Link>
+              <Link href="/recommendations">
+                <Button variant="outline" className="w-full text-sm h-auto p-3 border-blue-200 hover:bg-blue-50">
+                  <div className="flex flex-col items-center space-y-1">
+                    <Lightbulb size={18} />
+                    <span>AI Recommendations</span>
+                  </div>
+                </Button>
+              </Link>
+              <Link href="/goals">
+                <Button variant="outline" className="w-full text-sm h-auto p-3 border-blue-200 hover:bg-blue-50">
+                  <div className="flex flex-col items-center space-y-1">
+                    <Target size={18} />
+                    <span>Goals</span>
+                  </div>
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
 
         </div>
       </div>
