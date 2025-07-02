@@ -10,8 +10,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Brain, CheckCircle } from "lucide-react";
+import { Brain, CheckCircle, ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
+import { Link } from "wouter";
 
 const assessmentSchema = z.object({
   intensityQ1: z.string(),
@@ -235,6 +236,16 @@ export default function Assessment() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-20 lg:pb-8">
+      
+      {/* Back Button */}
+      <div className="mb-6">
+        <Link href="/dashboard">
+          <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
+            <ArrowLeft size={18} className="mr-2" />
+            Back to Dashboard
+          </Button>
+        </Link>
+      </div>
       
       {/* Header */}
       <div className="text-center mb-8">

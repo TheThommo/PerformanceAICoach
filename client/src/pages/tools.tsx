@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Timer, Target, CircleDot, Brain } from "lucide-react";
+import { Timer, Target, CircleDot, Brain, ArrowLeft } from "lucide-react";
+import { Link } from "wouter";
+import { Button } from "@/components/ui/button";
 import { PreShotRoutineBuilder } from "@/components/pre-shot-routine-builder";
 import { SimpleR2BTools } from "@/components/simple-r2b-tools";
 import { useAuth } from "@/hooks/useAuth";
@@ -14,6 +16,17 @@ export default function Tools() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
+          
+          {/* Back Button */}
+          <div className="mb-6">
+            <Link href="/dashboard">
+              <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
+                <ArrowLeft size={18} className="mr-2" />
+                Back to Dashboard
+              </Button>
+            </Link>
+          </div>
+          
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">

@@ -15,7 +15,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { CalendarIcon, Plus, Target, Trophy, Clock, Trash2, Edit3, BarChart3 } from "lucide-react";
+import { CalendarIcon, Plus, Target, Trophy, Clock, Trash2, Edit3, BarChart3, ArrowLeft } from "lucide-react";
+import { Link } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -227,6 +228,17 @@ export default function Goals() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4">
       <div className="max-w-6xl mx-auto space-y-6">
+        
+        {/* Back Button */}
+        <div className="mb-6">
+          <Link href="/dashboard">
+            <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
+              <ArrowLeft size={18} className="mr-2" />
+              Back to Dashboard
+            </Button>
+          </Link>
+        </div>
+        
         {/* Header */}
         <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
           <div>

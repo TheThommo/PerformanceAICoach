@@ -19,8 +19,10 @@ import {
   BookOpen,
   Timer,
   Share2,
-  CheckCircle2
+  CheckCircle2,
+  ArrowLeft
 } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Techniques() {
   const { data: techniques, isLoading } = useQuery({
@@ -170,6 +172,16 @@ export default function Techniques() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-20 lg:pb-8">
+      
+      {/* Back Button */}
+      <div className="mb-6">
+        <Link href="/dashboard">
+          <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
+            <ArrowLeft size={18} className="mr-2" />
+            Back to Dashboard
+          </Button>
+        </Link>
+      </div>
       
       {/* Header */}
       <div className="text-center mb-8">

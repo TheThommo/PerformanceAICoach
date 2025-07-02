@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Calendar, MessageCircle, Video, Clock, User, Star, CheckCircle } from "lucide-react";
+import { Calendar, MessageCircle, Video, Clock, User, Star, CheckCircle, ArrowLeft } from "lucide-react";
+import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -90,6 +91,17 @@ export default function HumanCoaching() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      
+      {/* Back Button */}
+      <div className="mb-6">
+        <Link href="/dashboard">
+          <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
+            <ArrowLeft size={18} className="mr-2" />
+            Back to Dashboard
+          </Button>
+        </Link>
+      </div>
+      
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center space-x-4 mb-4">
