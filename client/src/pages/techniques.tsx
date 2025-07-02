@@ -1,28 +1,24 @@
+import { useState, useEffect } from "react";
+import { Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { apiRequest } from "@/lib/queryClient";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { TechniqueCard } from "@/components/technique-card";
-import { apiRequest } from "@/lib/queryClient";
-import { useState, useEffect } from "react";
 import { 
+  ArrowLeft, 
   Zap, 
-  Compass, 
+  AlertTriangle, 
+  PlayCircle, 
+  Heart, 
+  Share2, 
   Target, 
-  Anchor, 
-  Clock,
-  Play,
-  BookOpen,
-  Timer,
-  Share2,
-  CheckCircle2,
-  ArrowLeft
+  Compass, 
+  Anchor
 } from "lucide-react";
-import { Link } from "wouter";
 
 export default function Techniques() {
   const { data: techniques, isLoading } = useQuery({
@@ -39,7 +35,8 @@ export default function Techniques() {
   const [isAutoAdvancing, setIsAutoAdvancing] = useState(false);
   const [practiceStep, setPracticeStep] = useState(0);
   const [countdown, setCountdown] = useState(0);
-  
+  const [activeCategory, setActiveCategory] = useState("breathing");
+
   // Emergency Relief mutation
   const emergencyMutation = useMutation({
     mutationFn: async () => {
@@ -140,118 +137,112 @@ export default function Techniques() {
   };
 
   const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case "beginner": return "bg-green-100 text-green-800";
-      case "intermediate": return "bg-yellow-100 text-yellow-800";
-      case "advanced": return "bg-red-100 text-red-800";
-      default: return "bg-gray-100 text-gray-800";
+    switch (difficulty?.toLowerCase()) {
+      case 'beginner': return 'bg-green-100 text-green-800';
+      case 'intermediate': return 'bg-yellow-100 text-yellow-800';
+      case 'advanced': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
-  };
-
-  const formatDuration = (seconds: number) => {
-    if (seconds === 0) return "Instant";
-    if (seconds < 60) return `${seconds}s`;
-    return `${Math.round(seconds / 60)}m`;
   };
 
   if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="animate-pulse space-y-4">
-          <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-          <div className="h-4 bg-gray-200 rounded w-2/3"></div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {Array(8).fill(0).map((_, i) => (
-              <div key={i} className="h-64 bg-gray-200 rounded-xl"></div>
-            ))}
-          </div>
-        </div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="animate-spin w-8 h-8 border-4 border-blue-primary border-t-transparent rounded-full" />
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-20 lg:pb-8">
-      
-      {/* Back Button */}
-      <div className="mb-6">
-        <Link href="/dashboard">
-          <Button variant="ghost" className="text-gray-600 hover:text-gray-900">
-            <ArrowLeft size={18} className="mr-2" />
-            Back to Dashboard
-          </Button>
-        </Link>
-      </div>
-      
-      {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Blue Head Techniques</h1>
-        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-          Quick, effective techniques to shift from Red Head stress to Blue Head calm performance. 
-          All techniques are designed for immediate implementation on the golf course.
-        </p>
-        <Badge variant="outline" className="mt-4 bg-blue-light text-blue-primary border-blue-200">
-          Available Offline
-        </Badge>
-      </div>
-
-      {/* Emergency Quick Relief */}
-      <Card className="mb-8 bg-gradient-to-r from-red-light to-orange-50 border-red-200">
-        <CardContent className="p-8">
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <div className="mb-4 md:mb-0">
-              <h2 className="text-2xl font-bold text-red-primary mb-2">
-                Feeling Red Head Stress Right Now?
-              </h2>
-              <p className="text-red-600">
-                Use our fastest technique for immediate relief in high-pressure moments
-              </p>
+    <div className="min-h-screen bg-gray-50">
+      <div className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <Link href="/dashboard">
+                <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back to Dashboard
+                </Button>
+              </Link>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Mental Techniques</h1>
+                <p className="text-gray-600">Master proven techniques to enhance your mental game</p>
+              </div>
             </div>
-            <Button 
-              size="lg" 
-              className="bg-red-primary hover:bg-red-600 text-white shadow-lg"
-              onClick={() => setEmergencyDialogOpen(true)}
-            >
-              <Zap className="mr-2" size={20} />
-              Emergency Relief (30s)
-            </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      {/* Technique Categories */}
-      <Tabs defaultValue="breathing" className="space-y-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         
-        {/* Category Tabs */}
-        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4">
-          {categories.map((category) => (
-            <TabsTrigger 
-              key={category.id} 
-              value={category.id}
-              className="flex items-center space-x-2"
-            >
-              {category.icon}
-              <span className="hidden sm:inline">{category.name}</span>
-            </TabsTrigger>
-          ))}
-        </TabsList>
+        {/* Emergency Relief Card */}
+        <Card className="bg-gradient-to-r from-red-50 to-orange-50 border-red-200">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                  <AlertTriangle className="text-red-600" size={24} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Emergency Relief</h3>
+                  <p className="text-gray-600">Instant stress relief technique for pressure moments</p>
+                </div>
+              </div>
+              <Button 
+                onClick={() => setEmergencyDialogOpen(true)}
+                className="bg-red-600 hover:bg-red-700 text-white"
+              >
+                <Zap className="w-4 h-4 mr-2" />
+                Use Now
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
-        {/* Category Content */}
-        {categories.map((category) => (
-          <TabsContent key={category.id} value={category.id} className="space-y-6">
-            
+        {/* Technique Categories */}
+        <div className="space-y-8">
+          
+          {/* Category Cards */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {categories.map((category) => (
+              <Card 
+                key={category.id}
+                className={`cursor-pointer transition-all duration-200 hover:shadow-lg ${
+                  activeCategory === category.id 
+                    ? 'ring-2 ring-blue-primary bg-blue-light border-blue-primary' 
+                    : 'hover:border-gray-300'
+                }`}
+                onClick={() => setActiveCategory(category.id)}
+              >
+                <CardContent className="p-4 text-center">
+                  <div className="flex flex-col items-center space-y-2">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                      activeCategory === category.id ? 'bg-blue-primary text-white' : 'bg-gray-100'
+                    }`}>
+                      {category.icon}
+                    </div>
+                    <span className="font-medium text-sm">{category.name}</span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Active Category Content */}
+          <div className="space-y-6">
             {/* Category Header */}
             <div className="text-center mb-8">
               <div className="w-16 h-16 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                {category.icon}
+                {categories.find(cat => cat.id === activeCategory)?.icon}
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">{category.name} Techniques</h2>
-              <p className="text-gray-600">{category.description}</p>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">{categories.find(cat => cat.id === activeCategory)?.name} Techniques</h2>
+              <p className="text-gray-600">{categories.find(cat => cat.id === activeCategory)?.description}</p>
             </div>
 
             {/* Techniques Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {getTechniquesByCategory(category.id).map((technique: any, index: number) => (
+              {getTechniquesByCategory(activeCategory).map((technique: any, index: number) => (
                 <Card key={technique.id} className="hover:shadow-lg transition-shadow">
                   <CardHeader>
                     <div className="flex items-start justify-between">
@@ -260,317 +251,404 @@ export default function Techniques() {
                         {technique.difficulty}
                       </Badge>
                     </div>
-                    <p className="text-gray-600 text-sm">{technique.description}</p>
+                    <CardDescription className="mt-2">{technique.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
+                      <div>
+                        <h4 className="font-medium text-sm text-gray-900 mb-2">Instructions:</h4>
+                        <div className="text-sm text-gray-600 space-y-1">
+                          {technique.instructions?.map((instruction: string, i: number) => (
+                            <div key={i} className="flex items-start space-x-2">
+                              <span className="text-blue-primary font-bold mt-0.5">{i + 1}.</span>
+                              <span>{instruction}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                       
-                      {/* Duration */}
-                      <div className="flex items-center space-x-2 text-sm text-gray-600">
-                        <Clock size={16} />
-                        <span>{formatDuration(technique.duration)}</span>
-                      </div>
-
-                      {/* Instructions */}
-                      <div className="bg-gray-50 rounded-lg p-4">
-                        <h4 className="font-medium text-gray-900 mb-2 flex items-center">
-                          <BookOpen size={16} className="mr-2" />
-                          Instructions
-                        </h4>
-                        <p className="text-sm text-gray-700 leading-relaxed">
-                          {technique.instructions}
-                        </p>
-                      </div>
-
-                      {/* Action Buttons */}
                       <div className="flex space-x-2">
                         <Button 
-                          className="flex-1 bg-blue-primary hover:bg-blue-deep"
-                          size="sm"
+                          variant="outline" 
+                          size="sm" 
+                          className="flex-1"
                           onClick={() => {
                             setSelectedTechnique(technique);
                             setPracticeDialogOpen(true);
                           }}
                         >
-                          <Play size={16} className="mr-2" />
-                          Practice Now
+                          <PlayCircle className="w-4 h-4 mr-1" />
+                          Practice
                         </Button>
                         <Button 
                           variant="outline" 
                           size="sm"
-                          className="border-gray-300"
+                          onClick={() => {
+                            toast({
+                              title: "Technique Added to Favorites",
+                              description: `${technique.name} has been saved to your collection.`,
+                            });
+                          }}
                         >
-                          Learn More
+                          <Heart className="w-4 h-4" />
                         </Button>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               ))}
-            </div>
 
-            {/* Add New Technique Placeholder */}
-            <Card className="border-dashed border-2 border-gray-300 hover:border-blue-primary transition-colors">
-              <CardContent className="p-8 text-center">
-                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl text-gray-400">+</span>
-                </div>
-                <h3 className="font-medium text-gray-900 mb-2">Suggest a Technique</h3>
-                <p className="text-gray-600 text-sm mb-4">
-                  Have a technique that works for you? Share it with Thommo.
-                </p>
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => setIdeaDialogOpen(true)}
-                >
-                  Submit Idea
-                </Button>
-              </CardContent>
-            </Card>
-
-          </TabsContent>
-        ))}
-      </Tabs>
-
-      {/* Popular Techniques Section */}
-      <div className="mt-12">
-        <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Most Effective Techniques</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {techniques?.slice(0, 4).map((technique: any, index: number) => (
-            <TechniqueCard
-              key={technique.id}
-              technique={technique}
-              colorIndex={index}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Technique Usage Tips */}
-      <Card className="mt-8 bg-gradient-to-r from-blue-light to-white">
-        <CardContent className="p-8">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">Maximizing Technique Effectiveness</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-2">Before the Round</h4>
-              <ul className="text-sm text-gray-600 space-y-1">
-                <li>• Practice 2-3 techniques during warm-up</li>
-                <li>• Choose your "go-to" technique for pressure moments</li>
-                <li>• Set a mental cue to remind yourself to use techniques</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-2">During the Round</h4>
-              <ul className="text-sm text-gray-600 space-y-1">
-                <li>• Use between shots, not during your routine</li>
-                <li>• Start with easier techniques, progress to advanced</li>
-                <li>• Notice when you're shifting from Red to Blue Head</li>
-              </ul>
+              {/* Add New Technique Placeholder */}
+              <Card className="border-dashed border-2 border-gray-300 hover:border-blue-primary transition-colors">
+                <CardContent className="p-8 text-center">
+                  <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-2xl text-gray-400">+</span>
+                  </div>
+                  <h3 className="font-medium text-gray-900 mb-2">Suggest a Technique</h3>
+                  <p className="text-gray-600 text-sm mb-4">
+                    Have a technique that works for you? Share it with Thommo.
+                  </p>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => setIdeaDialogOpen(true)}
+                  >
+                    Submit Idea
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
+        {/* Popular Techniques Section */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Most Effective Techniques</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {techniques?.slice(0, 4).map((technique: any, index: number) => (
+              <Card key={technique.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <CardTitle className="text-sm font-semibold">{technique.name}</CardTitle>
+                  <CardDescription className="text-xs">{technique.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    className="w-full"
+                    onClick={() => {
+                      setSelectedTechnique(technique);
+                      setPracticeDialogOpen(true);
+                    }}
+                  >
+                    <PlayCircle className="w-4 h-4 mr-1" />
+                    Practice
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Technique Usage Tips */}
+        <Card className="mt-8 bg-gradient-to-r from-blue-light to-white">
+          <CardContent className="p-8">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Maximizing Technique Effectiveness</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">Before the Round</h4>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• Practice 2-3 techniques during warm-up</li>
+                  <li>• Choose your "go-to" technique for pressure moments</li>
+                  <li>• Set a mental cue to remind yourself to use techniques</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-2">During the Round</h4>
+                <ul className="text-sm text-gray-600 space-y-1">
+                  <li>• Use techniques between shots, not during setup</li>
+                  <li>• Keep techniques simple and repeatable</li>
+                  <li>• Trust your preparation and commit to the shot</li>
+                </ul>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Dialogs remain the same... */}
+      
       {/* Emergency Relief Dialog */}
       <Dialog open={emergencyDialogOpen} onOpenChange={setEmergencyDialogOpen}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle className="flex items-center text-red-primary">
-              <Zap className="mr-2" size={20} />
-              Emergency Relief (30s)
+            <DialogTitle className="flex items-center space-x-2">
+              <AlertTriangle className="text-red-600" size={20} />
+              <span>Emergency Relief</span>
             </DialogTitle>
             <DialogDescription>
-              Follow this guided breathing exercise to quickly shift from Red Head stress to Blue Head calm.
+              Follow the breathing pattern to calm your nervous system instantly
             </DialogDescription>
           </DialogHeader>
           
-          <div className="space-y-4">
+          <div className="space-y-6">
             {emergencyStep === 0 && (
               <div className="text-center space-y-4">
-                <div className="w-16 h-16 bg-red-light rounded-full flex items-center justify-center mx-auto">
-                  <Timer className="w-8 h-8 text-red-primary" />
+                <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                  <Zap className="text-red-600" size={32} />
                 </div>
-                <p className="text-gray-700">
-                  Ready to start your 30-second emergency breathing technique? This will help you regain control quickly.
-                </p>
-                <Button 
-                  className="w-full bg-red-primary hover:bg-red-600"
-                  onClick={() => {
-                    setEmergencyStep(1);
-                    setIsAutoAdvancing(true);
-                    setCountdown(4);
-                  }}
-                >
-                  Start Auto-Guided Practice
-                </Button>
+                <div>
+                  <h3 className="font-semibold text-gray-900 mb-2">Box Breathing Emergency Protocol</h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    This technique will help you regain control in 30 seconds
+                  </p>
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={() => {
+                        setEmergencyStep(1);
+                        setCountdown(4);
+                        setIsAutoAdvancing(true);
+                      }}
+                      className="w-full bg-red-600 hover:bg-red-700"
+                    >
+                      Start Guided Breathing
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      onClick={() => {
+                        setEmergencyStep(1);
+                        setCountdown(4);
+                        setIsAutoAdvancing(false);
+                      }}
+                      className="w-full"
+                    >
+                      Manual Control
+                    </Button>
+                  </div>
+                </div>
               </div>
             )}
-            
+
             {emergencyStep === 1 && (
               <div className="text-center space-y-4">
-                <div className="w-20 h-20 bg-blue-light rounded-full flex items-center justify-center mx-auto animate-pulse">
-                  <span className="text-3xl text-blue-primary font-bold">{countdown}</span>
+                <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
+                  <span className="text-2xl font-bold text-blue-600">{countdown}</span>
                 </div>
-                <p className="text-lg font-medium">Breathe In</p>
-                <p className="text-gray-600">Inhale slowly through your nose</p>
-                <div className="text-sm text-gray-500">Auto-advancing in {countdown} seconds...</div>
+                <div>
+                  <h3 className="text-xl font-semibold text-blue-600">Breathe In</h3>
+                  <p className="text-gray-600">Fill your lungs slowly and deeply</p>
+                </div>
+                {!isAutoAdvancing && (
+                  <Button 
+                    onClick={() => {
+                      setEmergencyStep(2);
+                      setCountdown(4);
+                    }}
+                    className="w-full"
+                  >
+                    Next: Hold
+                  </Button>
+                )}
               </div>
             )}
-            
+
             {emergencyStep === 2 && (
               <div className="text-center space-y-4">
-                <div className="w-20 h-20 bg-yellow-light rounded-full flex items-center justify-center mx-auto">
-                  <span className="text-3xl text-yellow-600 font-bold">{countdown}</span>
+                <div className="w-24 h-24 bg-yellow-100 rounded-full flex items-center justify-center mx-auto">
+                  <span className="text-2xl font-bold text-yellow-600">{countdown}</span>
                 </div>
-                <p className="text-lg font-medium">Hold</p>
-                <p className="text-gray-600">Hold your breath gently</p>
-                <div className="text-sm text-gray-500">Auto-advancing in {countdown} seconds...</div>
+                <div>
+                  <h3 className="text-xl font-semibold text-yellow-600">Hold</h3>
+                  <p className="text-gray-600">Keep the air in your lungs</p>
+                </div>
+                {!isAutoAdvancing && (
+                  <Button 
+                    onClick={() => {
+                      setEmergencyStep(3);
+                      setCountdown(6);
+                    }}
+                    className="w-full"
+                  >
+                    Next: Exhale
+                  </Button>
+                )}
               </div>
             )}
-            
+
             {emergencyStep === 3 && (
               <div className="text-center space-y-4">
-                <div className="w-20 h-20 bg-green-light rounded-full flex items-center justify-center mx-auto">
-                  <span className="text-3xl text-green-600 font-bold">{countdown}</span>
+                <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                  <span className="text-2xl font-bold text-green-600">{countdown}</span>
                 </div>
-                <p className="text-lg font-medium">Breathe Out</p>
-                <p className="text-gray-600">Exhale slowly through your mouth</p>
-                <div className="text-sm text-gray-500">Auto-advancing in {countdown} seconds...</div>
+                <div>
+                  <h3 className="text-xl font-semibold text-green-600">Exhale</h3>
+                  <p className="text-gray-600">Release all the air slowly</p>
+                </div>
+                {!isAutoAdvancing && (
+                  <Button 
+                    onClick={() => setEmergencyStep(4)}
+                    className="w-full"
+                  >
+                    Complete
+                  </Button>
+                )}
               </div>
             )}
-            
+
             {emergencyStep === 4 && (
               <div className="text-center space-y-4">
-                <div className="w-16 h-16 bg-blue-light rounded-full flex items-center justify-center mx-auto">
-                  <CheckCircle2 className="w-8 h-8 text-blue-primary" />
+                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto">
+                  <span className="text-2xl">✓</span>
                 </div>
-                <p className="text-lg font-medium text-blue-primary">Emergency Relief Complete!</p>
-                <p className="text-gray-600">
-                  Great job! You've successfully used the 4-4-6 breathing technique. 
-                  Repeat if needed or return to your golf when ready.
-                </p>
-                <Button 
-                  className="w-full bg-blue-primary hover:bg-blue-600"
-                  onClick={() => {
-                    emergencyMutation.mutate();
-                    setEmergencyStep(0);
-                    setEmergencyDialogOpen(false);
-                  }}
-                >
-                  Log Practice & Close
-                </Button>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Well Done!</h3>
+                  <p className="text-gray-600 mb-4">You've completed the emergency relief technique</p>
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={() => {
+                        emergencyMutation.mutate();
+                        setEmergencyDialogOpen(false);
+                        setEmergencyStep(0);
+                      }}
+                      className="w-full bg-green-600 hover:bg-green-700"
+                      disabled={emergencyMutation.isPending}
+                    >
+                      {emergencyMutation.isPending ? "Saving..." : "Complete Session"}
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      onClick={() => {
+                        setEmergencyStep(1);
+                        setCountdown(4);
+                      }}
+                      className="w-full"
+                    >
+                      Repeat Cycle
+                    </Button>
+                  </div>
+                </div>
               </div>
             )}
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Practice Now Dialog */}
+      {/* Practice Dialog */}
       <Dialog open={practiceDialogOpen} onOpenChange={setPracticeDialogOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle className="flex items-center">
-              <Play className="mr-2" size={20} />
-              Practice: {selectedTechnique?.name}
+            <DialogTitle className="flex items-center space-x-2">
+              <PlayCircle className="text-blue-primary" size={20} />
+              <span>Practice: {selectedTechnique?.name}</span>
             </DialogTitle>
             <DialogDescription>
-              Follow the guided practice session for this technique.
+              Follow the guided practice session
             </DialogDescription>
           </DialogHeader>
           
-          <div className="space-y-4">
-            <div className="bg-blue-light rounded-lg p-4">
-              <h4 className="font-medium text-blue-primary mb-2">Instructions</h4>
-              <p className="text-sm text-gray-700">
-                {selectedTechnique?.instructions}
-              </p>
-            </div>
-            
-            <div className="bg-gray-50 rounded-lg p-4">
-              <h4 className="font-medium text-gray-900 mb-2">Practice Tips</h4>
-              <ul className="text-sm text-gray-600 space-y-1">
-                <li>• Find a quiet spot to practice</li>
-                <li>• Focus on the technique, not the outcome</li>
-                <li>• Notice how your body feels before and after</li>
-                <li>• Practice regularly for best results</li>
-              </ul>
-            </div>
-            
-            <div className="flex space-x-2">
-              <Button 
-                variant="outline" 
-                className="flex-1"
-                onClick={() => setPracticeDialogOpen(false)}
-              >
-                Cancel
-              </Button>
-              <Button 
-                className="flex-1 bg-blue-primary hover:bg-blue-600"
-                onClick={() => {
-                  if (selectedTechnique) {
-                    practiceMutation.mutate(selectedTechnique.id);
-                  }
-                }}
-                disabled={practiceMutation.isPending}
-              >
-                {practiceMutation.isPending ? "Completing..." : "Complete Practice"}
-              </Button>
-            </div>
+          <div className="space-y-6">
+            {practiceStep === 0 && (
+              <div className="space-y-4">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <PlayCircle className="text-blue-primary" size={24} />
+                  </div>
+                  <h3 className="font-semibold text-gray-900 mb-2">{selectedTechnique?.name}</h3>
+                  <p className="text-gray-600 text-sm mb-4">{selectedTechnique?.description}</p>
+                </div>
+                
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h4 className="font-medium text-gray-900 mb-2">Instructions:</h4>
+                  <div className="text-sm text-gray-600 space-y-1">
+                    {selectedTechnique?.instructions?.map((instruction: string, i: number) => (
+                      <div key={i} className="flex items-start space-x-2">
+                        <span className="text-blue-primary font-bold mt-0.5">{i + 1}.</span>
+                        <span>{instruction}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                
+                <Button 
+                  onClick={() => setPracticeStep(1)}
+                  className="w-full"
+                >
+                  Start Practice
+                </Button>
+              </div>
+            )}
+
+            {practiceStep === 1 && (
+              <div className="text-center space-y-4">
+                <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
+                  <PlayCircle className="text-blue-primary" size={32} />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Practice in Progress</h3>
+                  <p className="text-gray-600 mb-4">Take your time to practice the technique</p>
+                  <p className="text-sm text-gray-500 mb-6">Click when you've completed the practice</p>
+                  <Button 
+                    onClick={() => {
+                      practiceMutation.mutate(selectedTechnique.id);
+                    }}
+                    className="w-full"
+                    disabled={practiceMutation.isPending}
+                  >
+                    {practiceMutation.isPending ? "Saving..." : "Complete Practice"}
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Idea Sharing Dialog */}
+      {/* Share Idea Dialog */}
       <Dialog open={ideaDialogOpen} onOpenChange={setIdeaDialogOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle className="flex items-center">
-              <Share2 className="mr-2" size={20} />
-              Share Your Technique Idea
+            <DialogTitle className="flex items-center space-x-2">
+              <Share2 className="text-blue-primary" size={20} />
+              <span>Share Your Technique</span>
             </DialogTitle>
             <DialogDescription>
-              Share a technique that works for you. Thommo will review it and it may be added to our anonymous community collection.
+              Help other golfers by sharing a technique that works for you
             </DialogDescription>
           </DialogHeader>
           
           <div className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Describe your technique or what works for you:
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Describe your technique or idea
               </label>
               <Textarea
-                placeholder="e.g., I use a specific pre-shot visualization that helps me stay calm under pressure..."
+                placeholder="Share the technique, when to use it, and why it works for you..."
                 value={ideaText}
                 onChange={(e) => setIdeaText(e.target.value)}
                 rows={4}
-                className="resize-none"
               />
             </div>
             
-            <div className="bg-blue-light rounded-lg p-3">
-              <p className="text-sm text-blue-primary">
-                <strong>Privacy:</strong> Your idea will be shared anonymously with the community and sent to Thommo for potential integration into coaching sessions.
-              </p>
-            </div>
-            
-            <div className="flex space-x-2">
+            <div className="flex space-x-3">
               <Button 
-                variant="outline" 
-                className="flex-1"
                 onClick={() => {
-                  setIdeaText("");
+                  if (ideaText.trim()) {
+                    ideaMutation.mutate(ideaText);
+                  }
+                }}
+                disabled={!ideaText.trim() || ideaMutation.isPending}
+                className="flex-1"
+              >
+                {ideaMutation.isPending ? "Sharing..." : "Share with Thommo"}
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => {
                   setIdeaDialogOpen(false);
+                  setIdeaText("");
                 }}
               >
                 Cancel
-              </Button>
-              <Button 
-                className="flex-1 bg-blue-primary hover:bg-blue-600"
-                onClick={() => ideaMutation.mutate(ideaText)}
-                disabled={!ideaText.trim() || ideaMutation.isPending}
-              >
-                {ideaMutation.isPending ? "Sharing..." : "Share Idea"}
               </Button>
             </div>
           </div>
