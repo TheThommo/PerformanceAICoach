@@ -258,12 +258,20 @@ export default function Techniques() {
                       <div>
                         <h4 className="font-medium text-sm text-gray-900 mb-2">Instructions:</h4>
                         <div className="text-sm text-gray-600 space-y-1">
-                          {technique.instructions?.map((instruction: string, i: number) => (
-                            <div key={i} className="flex items-start space-x-2">
-                              <span className="text-blue-primary font-bold mt-0.5">{i + 1}.</span>
-                              <span>{instruction}</span>
-                            </div>
-                          ))}
+                          {Array.isArray(technique.instructions) 
+                            ? technique.instructions.map((instruction: string, i: number) => (
+                                <div key={i} className="flex items-start space-x-2">
+                                  <span className="text-blue-primary font-bold mt-0.5">{i + 1}.</span>
+                                  <span>{instruction}</span>
+                                </div>
+                              ))
+                            : technique.instructions && (
+                                <div className="flex items-start space-x-2">
+                                  <span className="text-blue-primary font-bold mt-0.5">1.</span>
+                                  <span>{technique.instructions}</span>
+                                </div>
+                              )
+                          }
                         </div>
                       </div>
                       
