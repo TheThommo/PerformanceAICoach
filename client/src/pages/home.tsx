@@ -354,29 +354,7 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          {/* Quick Actions */}
-          <Card className="shadow-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <Link href="/assessment">
-                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-sm">
-                  Take Assessment
-                </Button>
-              </Link>
-              <Link href="/dashboard">
-                <Button variant="outline" className="w-full text-sm">
-                  Full Dashboard
-                </Button>
-              </Link>
-              <Link href="/tools">
-                <Button variant="outline" className="w-full text-sm">
-                  Mental Tools
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
+
         </div>
       </div>
 
