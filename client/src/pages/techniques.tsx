@@ -329,34 +329,7 @@ export default function Techniques() {
           </div>
         </div>
 
-        {/* Popular Techniques Section */}
-        <div className="mt-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Most Effective Techniques</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {techniques?.slice(0, 4).map((technique: any, index: number) => (
-              <Card key={technique.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle className="text-sm font-semibold">{technique.name}</CardTitle>
-                  <CardDescription className="text-xs">{technique.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    className="w-full"
-                    onClick={() => {
-                      setSelectedTechnique(technique);
-                      setPracticeDialogOpen(true);
-                    }}
-                  >
-                    <PlayCircle className="w-4 h-4 mr-1" />
-                    Practice
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
+
 
         {/* Technique Usage Tips */}
         <Card className="mt-8 bg-gradient-to-r from-blue-light to-white">
