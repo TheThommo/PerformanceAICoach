@@ -203,55 +203,22 @@ export default function Assessment() {
   const currentSectionData = sections[currentSection];
   const progress = ((currentSection + 1) / sections.length) * 100;
 
-  const calculateSectionScore = (sectionKey: string) => {
-    const values = form.getValues();
-    const sectionQuestions = questions[sectionKey as keyof typeof questions];
-    let total = 0;
-    let count = 0;
-
-    sectionQuestions.forEach((q) => {
-      const value = values[q.id as keyof typeof values];
-      if (value) {
-        total += parseInt(value);
-        count++;
-      }
-    });
-
-    return count > 0 ? Math.round(total / count) : 0;
-  };
-
   const onSubmit = (data: z.infer<typeof assessmentSchema>) => {
-    const intensityScore = Math.round((
-      parseInt(data.intensityQ1) + parseInt(data.intensityQ2) + parseInt(data.intensityQ3)
-    ) / 3);
-    
-    const decisionMakingScore = Math.round((
-      parseInt(data.decisionQ1) + parseInt(data.decisionQ2) + parseInt(data.decisionQ3)
-    ) / 3);
-    
-    const diversionsScore = Math.round((
-      parseInt(data.diversionsQ1) + parseInt(data.diversionsQ2) + parseInt(data.diversionsQ3)
-    ) / 3);
-    
-    const executionScore = Math.round((
-      parseInt(data.executionQ1) + parseInt(data.executionQ2) + parseInt(data.executionQ3)
-    ) / 3);
-
+    // Store responses without scoring since this is not right/wrong based
     const submitData = {
       userId: 2, // Using authenticated user ID
-      intensityScore,
-      decisionMakingScore,
-      diversionsScore,
-      executionScore,
+      responses: data, // Store all responses for analysis
     };
 
-    console.log('Submitting assessment data:', submitData);
+    console.log('Submitting assessment responses:', submitData);
     mutation.mutate(submitData);
   };
 
   const handleNext = () => {
     if (currentSection < sections.length - 1) {
       setCurrentSection(currentSection + 1);
+      // Auto-scroll to top of section
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -292,8 +259,6 @@ export default function Assessment() {
       {/* Section Navigation */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {sections.map((section, index) => {
-          const sectionScore = calculateSectionScore(section.key);
-          const isCompleted = isCurrentSectionComplete() && index === currentSection;
           const isPast = index < currentSection;
           
           return (
@@ -306,15 +271,18 @@ export default function Assessment() {
                   ? 'border-green-200 bg-green-50'
                   : 'border-gray-200 bg-white hover:bg-gray-50'
               }`}
-              onClick={() => setCurrentSection(index)}
+              onClick={() => {
+                setCurrentSection(index);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             >
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-medium text-sm">{section.name}</h3>
                 {isPast && <CheckCircle className="text-green-600" size={16} />}
               </div>
-              {(isPast || (index === currentSection && sectionScore > 0)) && (
-                <p className="text-xs text-gray-600">Score: {sectionScore}/100</p>
-              )}
+              <p className="text-xs text-gray-500">
+                {isPast ? 'Completed' : index === currentSection ? 'Current Section' : 'Not Started'}
+              </p>
             </div>
           );
         })}

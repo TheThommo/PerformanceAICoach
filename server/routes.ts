@@ -462,21 +462,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Assessment routes
   app.post("/api/assessments", async (req, res) => {
     try {
-      const data = insertAssessmentSchema.parse(req.body);
-      const totalScore = data.intensityScore + data.decisionMakingScore + data.diversionsScore + data.executionScore;
+      const { userId, responses } = req.body;
       
+      // Store responses without scoring since this is not right/wrong based
       const assessment = await storage.createAssessment({
-        ...data,
-        totalScore
+        userId,
+        responses: JSON.stringify(responses), // Store all responses as JSON
+        totalScore: 0 // No scoring needed
       });
 
-      // Get AI analysis
-      const previousAssessments = await storage.getUserAssessments(data.userId);
+      // Get AI analysis based on response patterns, not scores
+      const previousAssessments = await storage.getUserAssessments(userId);
       const analysis = await analyzeAssessmentResults(
-        data.intensityScore,
-        data.decisionMakingScore,
-        data.diversionsScore,
-        data.executionScore,
+        0, 0, 0, 0, // No scores needed
         previousAssessments.slice(1, 4) // Last 3 previous assessments
       );
 
