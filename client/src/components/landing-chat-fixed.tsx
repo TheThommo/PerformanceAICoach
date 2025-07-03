@@ -30,7 +30,7 @@ export function LandingChat({ isInlineWidget = false }: LandingChatProps) {
   const [freeMessagesCount, setFreeMessagesCount] = useState(0);
   const [showSignUpPrompt, setShowSignUpPrompt] = useState(false);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!input.trim()) return;
 
     // Check if user has reached free message limit
@@ -60,26 +60,44 @@ export function LandingChat({ isInlineWidget = false }: LandingChatProps) {
       timestamp: new Date().toISOString()
     };
     setMessages(prev => [...prev, userMessage]);
+    setFreeMessagesCount(prev => prev + 1);
     
-    // Generate simple demo response
-    const responses = [
-      "Thanks for trying me out! I help golfers manage pressure and improve focus. Try box breathing: breathe in for 4, hold for 4, out for 4, hold for 4. This calms your nervous system instantly.",
-      "Great question! Focus on your pre-shot routine. Pick 3 specific steps and do them the same way every time. This gives your mind something productive to focus on instead of worry.",
-      "I understand that frustration. Try the 'next shot' technique: acknowledge the mistake, take a deep breath, and immediately focus on what you want for the next shot. Don't carry the past into your future.",
-      "Pressure moments are opportunities! Use the 'blue head' mindset: see the target clearly, trust your preparation, and commit fully to your shot. You've practiced for this moment.",
-      "Mental toughness is built through small wins. Set tiny, achievable goals each round and celebrate them. This builds confidence and momentum for bigger challenges."
-    ];
-    
-    const assistantMessage: Message = {
-      role: 'assistant',
-      content: responses[Math.floor(Math.random() * responses.length)],
-      timestamp: new Date().toISOString()
-    };
-    
-    setTimeout(() => {
+    // Call the actual AI chat API
+    try {
+      const response = await fetch('/api/landing-chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: input }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const assistantMessage: Message = {
+          role: 'assistant',
+          content: data.message || "I'm here to help with your mental game. What specific challenge are you facing?",
+          timestamp: new Date().toISOString()
+        };
+        setMessages(prev => [...prev, assistantMessage]);
+      } else {
+        // Fallback response if API fails
+        const assistantMessage: Message = {
+          role: 'assistant',
+          content: "I'm here to help with your mental game. What specific challenge are you facing on the course?",
+          timestamp: new Date().toISOString()
+        };
+        setMessages(prev => [...prev, assistantMessage]);
+      }
+    } catch (error) {
+      // Fallback response if API fails
+      const assistantMessage: Message = {
+        role: 'assistant',
+        content: "I'm here to help with your mental game. What specific challenge are you facing on the course?",
+        timestamp: new Date().toISOString()
+      };
       setMessages(prev => [...prev, assistantMessage]);
-      setFreeMessagesCount(prev => prev + 1);
-    }, 1000);
+    }
     
     setInput("");
   };

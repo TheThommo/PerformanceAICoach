@@ -513,6 +513,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Landing page chat for non-authenticated users
+  app.post("/api/landing-chat", async (req, res) => {
+    try {
+      const { message } = req.body;
+      
+      if (!message) {
+        return res.status(400).json({ message: "Message is required" });
+      }
+
+      // Use the Gemini AI for responses
+      const response = await getCoachingResponse(message, [], {
+        latestAssessment: null,
+        recentProgress: []
+      });
+
+      res.json({
+        message: response.message,
+        suggestions: response.suggestions || [],
+        urgencyLevel: response.urgencyLevel || "low"
+      });
+    } catch (error) {
+      console.error("Landing chat error:", error);
+      res.status(500).json({ 
+        message: "I'm here to help with your mental game. What specific challenge are you facing on the course?" 
+      });
+    }
+  });
+
   // Chat routes
   app.post("/api/chat", async (req, res) => {
     try {
