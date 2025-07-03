@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Brain, Send, MessageCircle } from "lucide-react";
+import { ErrorBoundary, ChatErrorFallback } from "@/components/error-boundary";
 
 interface Message {
   id: string;
@@ -14,7 +15,7 @@ interface LandingChatProps {
   isInlineWidget?: boolean;
 }
 
-export function LandingChatStableV2({ isInlineWidget = false }: LandingChatProps) {
+function ChatComponent({ isInlineWidget = false }: LandingChatProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'initial',
@@ -278,5 +279,13 @@ export function LandingChatStableV2({ isInlineWidget = false }: LandingChatProps
         </Card>
       )}
     </>
+  );
+}
+
+export function LandingChatStableV2({ isInlineWidget = false }: LandingChatProps) {
+  return (
+    <ErrorBoundary fallback={ChatErrorFallback}>
+      <ChatComponent isInlineWidget={isInlineWidget} />
+    </ErrorBoundary>
   );
 }

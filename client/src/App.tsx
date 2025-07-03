@@ -7,6 +7,7 @@ import { Navigation } from "@/components/navigation";
 import { FloatingChat } from "@/components/floating-chat";
 import { Footer } from "@/components/footer";
 import { useAuth } from "@/hooks/useAuth";
+import { ErrorBoundary, NavigationErrorFallback } from "@/components/error-boundary";
 import Landing from "@/pages/landing";
 import Home from "@/pages/home";
 import Dashboard from "@/pages/dashboard";
@@ -45,54 +46,72 @@ function Router() {
   }
 
   if (!user) {
-    return <Landing />;
+    return (
+      <ErrorBoundary>
+        <Landing />
+      </ErrorBoundary>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <Navigation />
-      <main className="flex-1">
-        <Switch>
-          <Route path="/" component={Home} />
-          <Route path="/dashboard" component={Dashboard} />
-          <Route path="/assessment" component={Assessment} />
-          <Route path="/techniques" component={Techniques} />
-          <Route path="/tools" component={Tools} />
-          <Route path="/recommendations" component={RecommendationsPage} />
-          <Route path="/goals" component={Goals} />
-          <Route path="/scenarios" component={Scenarios} />
-          <Route path="/coaching-tools" component={CoachingTools} />
-          <Route path="/human-coaching" component={HumanCoaching} />
-          <Route path="/community">
-            {() => <Community userId={user?.id || 1} />}
-          </Route>
-          <Route path="/profile" component={Profile} />
-          <Route path="/help" component={Help} />
-          <Route path="/features" component={Features} />
-          <Route path="/privacy-policy" component={PrivacyPolicy} />
-          <Route path="/terms-of-service" component={TermsOfService} />
-          <Route path="/refund-policy" component={RefundPolicy} />
-          {/* Admin/Coach only routes */}
-          {(user?.role === 'admin' || user?.role === 'coach') && (
-            <Route path="/coach" component={CoachDashboard} />
-          )}
-          <Route component={NotFound} />
-        </Switch>
-      </main>
-      <Footer />
-      <FloatingChat />
-    </div>
+    <ErrorBoundary>
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <ErrorBoundary fallback={NavigationErrorFallback}>
+          <Navigation />
+        </ErrorBoundary>
+        <main className="flex-1">
+          <ErrorBoundary fallback={NavigationErrorFallback}>
+            <Switch>
+              <Route path="/" component={Home} />
+              <Route path="/dashboard" component={Dashboard} />
+              <Route path="/assessment" component={Assessment} />
+              <Route path="/techniques" component={Techniques} />
+              <Route path="/tools" component={Tools} />
+              <Route path="/recommendations" component={RecommendationsPage} />
+              <Route path="/goals" component={Goals} />
+              <Route path="/scenarios" component={Scenarios} />
+              <Route path="/coaching-tools" component={CoachingTools} />
+              <Route path="/human-coaching" component={HumanCoaching} />
+              <Route path="/community">
+                {() => <Community userId={user?.id || 1} />}
+              </Route>
+              <Route path="/profile" component={Profile} />
+              <Route path="/help" component={Help} />
+              <Route path="/features" component={Features} />
+              <Route path="/privacy-policy" component={PrivacyPolicy} />
+              <Route path="/terms-of-service" component={TermsOfService} />
+              <Route path="/refund-policy" component={RefundPolicy} />
+              {/* Admin/Coach only routes */}
+              {(user?.role === 'admin' || user?.role === 'coach') && (
+                <Route path="/coach" component={CoachDashboard} />
+              )}
+              <Route component={NotFound} />
+            </Switch>
+          </ErrorBoundary>
+        </main>
+        <ErrorBoundary>
+          <Footer />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <FloatingChat />
+        </ErrorBoundary>
+      </div>
+    </ErrorBoundary>
   );
 }
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <ErrorBoundary>
+            <Router />
+          </ErrorBoundary>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   );
 }
 
