@@ -28,6 +28,8 @@ import PrivacyPolicy from "@/pages/privacy-policy";
 import TermsOfService from "@/pages/terms-of-service";
 import RefundPolicy from "@/pages/refund-policy";
 import NotFound from "@/pages/not-found";
+import FreeDashboard from "@/pages/free-dashboard";
+import { canAccessDashboard } from "@/lib/permissions";
 
 function Router() {
   const { user, isLoading } = useAuth();
@@ -62,29 +64,52 @@ function Router() {
         <main className="flex-1">
           <ErrorBoundary fallback={NavigationErrorFallback}>
             <Switch>
-              <Route path="/" component={Home} />
-              <Route path="/dashboard" component={Dashboard} />
-              <Route path="/assessment" component={Assessment} />
-              <Route path="/techniques" component={Techniques} />
-              <Route path="/tools" component={Tools} />
-              <Route path="/recommendations" component={RecommendationsPage} />
-              <Route path="/goals" component={Goals} />
-              <Route path="/scenarios" component={Scenarios} />
-              <Route path="/coaching-tools" component={CoachingTools} />
-              <Route path="/human-coaching" component={HumanCoaching} />
-              <Route path="/community">
-                {() => <Community userId={user?.id || 1} />}
+              {/* Home route - redirect based on tier */}
+              <Route path="/">
+                {() => canAccessDashboard(user) ? <Home /> : <FreeDashboard />}
               </Route>
+              
+              {/* Dashboard route - tier-dependent */}
+              <Route path="/dashboard">
+                {() => canAccessDashboard(user) ? <Dashboard /> : <FreeDashboard />}
+              </Route>
+              
+              {/* Assessment - available to all tiers but limited for free */}
+              <Route path="/assessment" component={Assessment} />
+              
+              {/* Premium/Ultimate only routes */}
+              {canAccessDashboard(user) && (
+                <>
+                  <Route path="/techniques" component={Techniques} />
+                  <Route path="/tools" component={Tools} />
+                  <Route path="/recommendations" component={RecommendationsPage} />
+                  <Route path="/goals" component={Goals} />
+                  <Route path="/scenarios" component={Scenarios} />
+                  <Route path="/coaching-tools" component={CoachingTools} />
+                  <Route path="/community">
+                    {() => <Community userId={user?.id || 1} />}
+                  </Route>
+                </>
+              )}
+              
+              {/* Ultimate only routes */}
+              {user?.subscriptionTier === 'ultimate' && (
+                <Route path="/human-coaching" component={HumanCoaching} />
+              )}
+              
+              {/* Available to all authenticated users */}
               <Route path="/profile" component={Profile} />
               <Route path="/help" component={Help} />
               <Route path="/features" component={Features} />
               <Route path="/privacy-policy" component={PrivacyPolicy} />
               <Route path="/terms-of-service" component={TermsOfService} />
               <Route path="/refund-policy" component={RefundPolicy} />
+              
               {/* Admin/Coach only routes */}
               {(user?.role === 'admin' || user?.role === 'coach') && (
                 <Route path="/coach" component={CoachDashboard} />
               )}
+              
               <Route component={NotFound} />
             </Switch>
           </ErrorBoundary>

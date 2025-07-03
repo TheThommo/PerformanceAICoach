@@ -212,7 +212,7 @@ export default function Landing() {
               <CardContent className="space-y-4">
                 <ul className="space-y-3">
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Basic assessment</li>
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Limited chat with Thommo</li>
+                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Limited chat with Flo</li>
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Master Your Moment PDF</li>
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Ability to Focus PDF</li>
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Mental Toughness PDF</li>

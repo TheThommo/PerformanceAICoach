@@ -6,6 +6,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
 import { apiRequest } from "@/lib/queryClient";
+import { canAccessDashboard } from "@/lib/permissions";
 
 export function Navigation() {
   const [location] = useLocation();
@@ -21,24 +22,32 @@ export function Navigation() {
     }
   };
 
-  const baseNavItems = [
-    { href: "/", label: "Home", icon: Home },
-    { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
-    { href: "/help", label: "Help", icon: HelpCircle },
-  ];
+  // Navigation items based on subscription tier
+  const getNavItems = () => {
+    const baseItems = [
+      { href: "/", label: "Home", icon: Home },
+      { href: "/help", label: "Help", icon: HelpCircle },
+    ];
 
-  // Add conditional items based on user type
-  const navItems = [
-    ...baseNavItems,
+    // Only show Dashboard for Premium/Ultimate users
+    if (canAccessDashboard(user)) {
+      baseItems.splice(1, 0, { href: "/dashboard", label: "Dashboard", icon: BarChart3 });
+    }
+
     // Add Human Coaching for Ultimate subscribers
-    ...(user?.subscriptionTier === 'ultimate' 
-      ? [{ href: "/human-coaching", label: "Human Coaching", icon: MessageCircle }] 
-      : []),
+    if (user?.subscriptionTier === 'ultimate') {
+      baseItems.push({ href: "/human-coaching", label: "Human Coaching", icon: MessageCircle });
+    }
+
     // Add admin/coach-only items
-    ...(user?.role === 'admin' || user?.role === 'coach' 
-      ? [{ href: "/coach", label: "Coach Dashboard", icon: Users }] 
-      : [])
-  ];
+    if (user?.role === 'admin' || user?.role === 'coach') {
+      baseItems.push({ href: "/coach", label: "Coach Dashboard", icon: Users });
+    }
+
+    return baseItems;
+  };
+
+  const navItems = getNavItems();
 
   return (
     <>
