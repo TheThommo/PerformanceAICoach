@@ -30,7 +30,7 @@ export function LandingChat() {
   ]);
   const [input, setInput] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
-  const [freeMessageUsed, setFreeMessageUsed] = useState(false);
+  const [freeMessagesCount, setFreeMessagesCount] = useState(0);
 
   // Check authentication status only when chat is opened
   const { data: user, isLoading } = useQuery({
@@ -50,7 +50,12 @@ export function LandingChat() {
   const chatMutation = useMutation({
     mutationFn: async (message: string) => {
       if (!isAuthenticated) {
-        throw new Error("Please sign in to chat with Flo");
+        // For non-authenticated users, provide a mock response for demo purposes
+        return {
+          response: {
+            message: "Thanks for trying me out! I'm Flo, your AI mental performance coach. I help golfers manage pressure and improve focus. Sign up to continue our conversation and access personalized coaching techniques."
+          }
+        };
       }
 
       const response = await apiRequest("POST", "/api/chat", {
@@ -66,7 +71,9 @@ export function LandingChat() {
         timestamp: new Date().toISOString()
       };
       setMessages(prev => [...prev, assistantMessage]);
-      setFreeMessageUsed(true);
+      if (!isAuthenticated) {
+        setFreeMessagesCount(prev => prev + 1);
+      }
     },
     onError: (error) => {
       if (error.message.includes("sign in")) {
@@ -90,8 +97,8 @@ export function LandingChat() {
   const handleSend = () => {
     if (!input.trim()) return;
 
-    // Check if user needs to sign in
-    if (!isAuthenticated) {
+    // Check if non-authenticated user has reached free message limit
+    if (!isAuthenticated && freeMessagesCount >= 5) {
       const userMessage: Message = {
         role: 'user',
         content: input,
@@ -99,18 +106,30 @@ export function LandingChat() {
       };
       setMessages(prev => [...prev, userMessage]);
       
-      const signInMessage: Message = {
+      const limitMessage: Message = {
         role: 'assistant',
-        content: "Please sign in to chat with me. I'm here to help with your mental game!",
+        content: "You've used your 5 free messages! Sign up to keep using Flo and unlock personalized coaching, assessments, and unlimited conversations.",
         timestamp: new Date().toISOString()
       };
-      setMessages(prev => [...prev, signInMessage]);
+      setMessages(prev => [...prev, limitMessage]);
       setInput("");
       return;
     }
 
-    // Check free tier limitations (1 message/response for non-subscribers)
-    if (!isSubscribed && freeMessageUsed) {
+    // Add user message to chat
+    const userMessage: Message = {
+      role: 'user',
+      content: input,
+      timestamp: new Date().toISOString()
+    };
+    setMessages(prev => [...prev, userMessage]);
+    setInput("");
+
+    // Send to chat API
+    chatMutation.mutate(input);
+
+    // Check free tier limitations for authenticated users
+    if (isAuthenticated && !isSubscribed && freeMessagesCount >= 5) {
       const userMessage: Message = {
         role: 'user',
         content: input,
@@ -231,7 +250,7 @@ export function LandingChat() {
             </div>
           )}
           
-          {isAuthenticated && !isSubscribed && freeMessageUsed && (
+          {isAuthenticated && !isSubscribed && freeMessagesCount >= 1 && (
             <div className="mb-3 p-3 bg-gradient-to-r from-blue-50 to-red-50 border border-blue-200 rounded-lg">
               <p className="text-sm text-gray-800 mb-2">Upgrade for unlimited AI coaching</p>
               <div className="flex space-x-2">
@@ -257,17 +276,19 @@ export function LandingChat() {
               onKeyPress={handleKeyPress}
               placeholder={
                 !isAuthenticated 
-                  ? "Sign in to chat..." 
-                  : (!isSubscribed && freeMessageUsed)
+                  ? freeMessagesCount >= 5 
+                    ? "Sign up to continue chatting..."
+                    : "Ask about mental game challenges..."
+                  : (!isSubscribed && freeMessagesCount >= 1)
                     ? "Upgrade to continue chatting..."
                     : "Ask about mental game challenges..."
               }
               className="flex-1"
-              disabled={chatMutation.isPending || (!isAuthenticated) || (!isSubscribed && freeMessageUsed)}
+              disabled={chatMutation.isPending || (!isAuthenticated && freeMessagesCount >= 5) || (isAuthenticated && !isSubscribed && freeMessagesCount >= 1)}
             />
             <Button
               onClick={handleSend}
-              disabled={!input.trim() || chatMutation.isPending || (!isAuthenticated) || (!isSubscribed && freeMessageUsed)}
+              disabled={!input.trim() || chatMutation.isPending || (!isAuthenticated && freeMessagesCount >= 5) || (isAuthenticated && !isSubscribed && freeMessagesCount >= 1)}
               className="bg-blue-600 hover:bg-blue-700"
             >
               <Send size={16} />

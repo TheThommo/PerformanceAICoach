@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Brain, Target, TrendingUp, Users, Shield, Check, Star } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { LandingChat } from "@/components/landing-chat";
+import { LandingChat } from "@/components/landing-chat-fixed";
 import { Footer } from "@/components/footer";
 
 export default function Landing() {
@@ -124,21 +124,23 @@ export default function Landing() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button 
                 size="lg" 
-                onClick={() => setShowSignUp(true)}
+                onClick={() => {
+                  const pricingSection = document.getElementById('pricing-section');
+                  if (pricingSection) {
+                    pricingSection.scrollIntoView({ behavior: 'smooth' });
+                  }
+                }}
                 className="bg-blue-600 hover:bg-blue-700 text-lg px-8 py-3"
               >
                 Start Your Journey
-              </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 py-3">
-                Watch Demo
               </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Floating Chat Component - Temporarily disabled for debugging */}
-      {/* <LandingChat /> */}
+      {/* Floating Chat Component */}
+      <LandingChat />
 
       {/* Features Section */}
       <section className="py-16 bg-white">
@@ -208,7 +210,7 @@ export default function Landing() {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-16 bg-gray-50">
+      <section id="pricing-section" className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
