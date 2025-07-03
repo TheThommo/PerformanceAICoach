@@ -86,27 +86,9 @@ export default function Landing() {
             </p>
           </div>
 
-          {/* Featured AI Chat Window */}
-          <div className="bg-white rounded-2xl shadow-2xl border-2 border-blue-100 max-w-4xl mx-auto mb-12">
-            <div className="bg-gradient-to-r from-blue-600 to-red-600 text-white p-6 rounded-t-2xl">
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                  <Brain size={24} />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold">Flo AI Coach</h3>
-                  <p className="text-blue-100">Red2Blue Mental Performance Expert</p>
-                </div>
-                <div className="ml-auto flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                  <span className="text-sm">Online</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="p-6" id="main-chat-widget">
-              <LandingChat isInlineWidget={true} />
-            </div>
+          {/* AI Chat Widget */}
+          <div className="max-w-4xl mx-auto mb-12" id="main-chat-widget">
+            <LandingChat isInlineWidget={true} />
           </div>
           
           <div className="text-center">
