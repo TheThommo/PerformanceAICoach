@@ -236,8 +236,8 @@ export default function FreeDashboard() {
       {/* Chat with Flo - Shows when user clicks Start Chatting */}
       {showChat && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg shadow-2xl max-w-md w-full max-h-[80vh] overflow-hidden">
-            <div className="flex justify-between items-center p-4 border-b">
+          <div className="bg-white rounded-lg shadow-2xl max-w-md w-full max-h-[80vh] overflow-hidden flex flex-col">
+            <div className="flex justify-between items-center p-4 border-b bg-white">
               <h3 className="text-lg font-semibold">Chat with Flo</h3>
               <Button 
                 variant="ghost" 
@@ -248,7 +248,7 @@ export default function FreeDashboard() {
                 ✕
               </Button>
             </div>
-            <div className="h-[500px]">
+            <div className="flex-1 min-h-0">
               <LandingChatStableV2 isInlineWidget={true} />
             </div>
           </div>

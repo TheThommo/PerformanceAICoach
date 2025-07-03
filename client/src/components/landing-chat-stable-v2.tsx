@@ -223,8 +223,8 @@ function ChatComponent({ isInlineWidget = false }: LandingChatProps) {
   // Inline widget version
   if (isInlineWidget) {
     return (
-      <Card className="w-full max-w-md mx-auto h-[500px] shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-blue-600 to-red-600 text-white p-4">
+      <Card className="w-full h-full flex flex-col shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-blue-600 to-red-600 text-white p-4 flex-shrink-0">
           <div className="flex items-center space-x-2">
             <Brain className="w-6 h-6" />
             <div>
@@ -233,7 +233,7 @@ function ChatComponent({ isInlineWidget = false }: LandingChatProps) {
             </div>
           </div>
         </CardHeader>
-        <CardContent className="p-0 h-[calc(100%-100px)]">
+        <CardContent className="p-0 flex-1 min-h-0">
           {chatContent}
         </CardContent>
       </Card>
