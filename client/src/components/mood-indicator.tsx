@@ -104,7 +104,7 @@ export function MoodIndicator() {
     if (value >= 80) return "rgb(34, 197, 94)"; // Green
     if (value >= 70) return "rgb(132, 204, 22)"; // Light green
     if (value >= 60) return "rgb(234, 179, 8)"; // Yellow
-    if (value >= 50) return "rgb(249, 115, 22)"; // Orange
+    if (value >= 50) return "rgb(147, 51, 234)"; // Purple
     if (value >= 40) return "rgb(239, 68, 68)"; // Red
     return "rgb(185, 28, 28)"; // Dark red
   };
