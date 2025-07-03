@@ -14,7 +14,7 @@ interface LandingChatProps {
   isInlineWidget?: boolean;
 }
 
-export function LandingChatRobust({ isInlineWidget = false }: LandingChatProps) {
+export function LandingChatFinal({ isInlineWidget = false }: LandingChatProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'initial',
@@ -28,48 +28,17 @@ export function LandingChatRobust({ isInlineWidget = false }: LandingChatProps) 
   const [isExpanded, setIsExpanded] = useState(isInlineWidget);
   const [isLoading, setIsLoading] = useState(false);
   const [creditCount, setCreditCount] = useState(0);
-  const [hasError, setHasError] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Reset error state when user tries again
-  const resetError = () => setHasError(false);
-
-  // Wrap the component in error boundary
-  if (hasError) {
-    return (
-      <Card className="w-full max-w-md mx-auto h-[500px] shadow-lg">
-        <CardHeader className="bg-gradient-to-r from-blue-600 to-red-600 text-white p-4">
-          <div className="flex items-center space-x-2">
-            <Brain className="w-6 h-6" />
-            <div>
-              <CardTitle className="text-lg">Chat with Flo</CardTitle>
-              <p className="text-sm text-blue-100">Your AI Mental Performance Coach</p>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent className="p-4 flex items-center justify-center h-[calc(100%-100px)]">
-          <div className="text-center">
-            <p className="text-gray-600 mb-4">Something went wrong with the chat.</p>
-            <Button onClick={resetError} className="bg-blue-600 hover:bg-blue-700">
-              Try Again
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  // Auto-scroll to bottom when messages change
+  // Auto-scroll only within chat area
   useEffect(() => {
     if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
   }, [messages]);
 
-  const handleSend = async () => {
+  const handleSendMessage = async () => {
     if (!input.trim() || isLoading) return;
-
-    try {
     
     // Check credit limit
     if (creditCount >= 5) {
@@ -90,13 +59,14 @@ export function LandingChatRobust({ isInlineWidget = false }: LandingChatProps) 
 
     // Add user message
     const userMessage: Message = {
-      id: `msg-${Date.now()}-user`,
+      id: `user-${Date.now()}`,
       role: 'user',
       content: userInput,
       timestamp: Date.now()
     };
     setMessages(prev => [...prev, userMessage]);
 
+    // Call API
     try {
       const response = await fetch('/api/landing-chat', {
         method: 'POST',
@@ -104,17 +74,17 @@ export function LandingChatRobust({ isInlineWidget = false }: LandingChatProps) 
         body: JSON.stringify({ message: userInput }),
       });
 
-      let assistantContent = "I'm here to help with your mental game. What specific challenge are you facing on the course?";
+      let content = "I'm here to help with your mental game. What specific challenge are you facing on the course?";
       
       if (response.ok) {
         const data = await response.json();
-        assistantContent = data.message || assistantContent;
+        content = data.message || content;
       }
 
       const assistantMessage: Message = {
-        id: `msg-${Date.now()}-assistant`,
+        id: `assistant-${Date.now()}`,
         role: 'assistant',
-        content: assistantContent,
+        content: content,
         timestamp: Date.now()
       };
       setMessages(prev => [...prev, assistantMessage]);
@@ -122,7 +92,7 @@ export function LandingChatRobust({ isInlineWidget = false }: LandingChatProps) 
     } catch (error) {
       console.error('Chat error:', error);
       const errorMessage: Message = {
-        id: `msg-${Date.now()}-error`,
+        id: `error-${Date.now()}`,
         role: 'assistant',
         content: "I'm here to help with your mental game. What specific challenge are you facing on the course?",
         timestamp: Date.now()
@@ -131,17 +101,19 @@ export function LandingChatRobust({ isInlineWidget = false }: LandingChatProps) 
     } finally {
       setIsLoading(false);
     }
-    } catch (componentError) {
-      console.error('Component error:', componentError);
-      setHasError(true);
-    }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleSendMessage();
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       e.stopPropagation();
-      handleSend();
+      handleSendMessage();
     }
   };
 
@@ -152,7 +124,7 @@ export function LandingChatRobust({ isInlineWidget = false }: LandingChatProps) 
   // Main chat content
   const chatContent = (
     <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto p-4">
+      <div className="flex-1 overflow-y-auto p-4 scroll-smooth">
         <div className="space-y-4">
           {messages.map((message) => (
             <div
@@ -221,19 +193,12 @@ export function LandingChatRobust({ isInlineWidget = false }: LandingChatProps) 
           </div>
         )}
         
-        <form 
-          onSubmit={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handleSend();
-          }}
-          className="flex space-x-2"
-        >
+        <form onSubmit={handleFormSubmit} className="flex space-x-2">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyPress}
+            onKeyDown={handleKeyDown}
             placeholder={
               creditCount >= 5 
                 ? "Sign up to continue..."
