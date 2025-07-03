@@ -246,9 +246,6 @@ export default function Landing() {
 
             {/* Premium Tier */}
             <Card className="border-2 border-blue-500 relative transform scale-105">
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <Badge className="bg-blue-600">Most Popular - 75% Savings</Badge>
-              </div>
               <CardHeader>
                 <CardTitle className="text-2xl flex items-center">
                   Premium Access
