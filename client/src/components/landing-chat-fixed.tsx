@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -29,9 +29,16 @@ export function LandingChat({ isInlineWidget = false }: LandingChatProps) {
   const [isExpanded, setIsExpanded] = useState(isInlineWidget);
   const [freeMessagesCount, setFreeMessagesCount] = useState(0);
   const [showSignUpPrompt, setShowSignUpPrompt] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages, isLoading]);
 
   const handleSend = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || isLoading) return;
 
     // Check if user has reached free message limit
     if (freeMessagesCount >= 5) {
@@ -53,10 +60,14 @@ export function LandingChat({ isInlineWidget = false }: LandingChatProps) {
       return;
     }
 
+    const currentInput = input;
+    setInput(""); // Clear input immediately
+    setIsLoading(true);
+
     // Add user message
     const userMessage: Message = {
       role: 'user',
-      content: input,
+      content: currentInput,
       timestamp: new Date().toISOString()
     };
     setMessages(prev => [...prev, userMessage]);
@@ -69,7 +80,7 @@ export function LandingChat({ isInlineWidget = false }: LandingChatProps) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: input }),
+        body: JSON.stringify({ message: currentInput }),
       });
       
       if (response.ok) {
@@ -90,6 +101,7 @@ export function LandingChat({ isInlineWidget = false }: LandingChatProps) {
         setMessages(prev => [...prev, assistantMessage]);
       }
     } catch (error) {
+      console.error('Chat error:', error);
       // Fallback response if API fails
       const assistantMessage: Message = {
         role: 'assistant',
@@ -97,9 +109,9 @@ export function LandingChat({ isInlineWidget = false }: LandingChatProps) {
         timestamp: new Date().toISOString()
       };
       setMessages(prev => [...prev, assistantMessage]);
+    } finally {
+      setIsLoading(false);
     }
-    
-    setInput("");
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -169,6 +181,17 @@ export function LandingChat({ isInlineWidget = false }: LandingChatProps) {
                     </div>
                   </div>
                 ))}
+                {isLoading && (
+                  <div className="flex justify-start">
+                    <div className="max-w-[80%] p-3 rounded-lg bg-gray-100 text-gray-800 border">
+                      <div className="flex items-center space-x-2">
+                        <div className="animate-spin w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+                        <p className="text-sm">Flo is thinking...</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
               </div>
             </ScrollArea>
             
@@ -221,11 +244,11 @@ export function LandingChat({ isInlineWidget = false }: LandingChatProps) {
                       : "Ask about mental game challenges..."
                   }
                   className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  disabled={freeMessagesCount >= 5}
+                  disabled={freeMessagesCount >= 5 || isLoading}
                 />
                 <Button
                   onClick={handleSend}
-                  disabled={!input.trim() || freeMessagesCount >= 5}
+                  disabled={!input.trim() || freeMessagesCount >= 5 || isLoading}
                   className="bg-blue-600 hover:bg-blue-700"
                 >
                   <Send size={16} />
