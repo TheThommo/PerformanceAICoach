@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Brain, Bell, Menu, X, Home, BarChart3, MessageCircle, Zap, Wrench, Users, Trophy, User, Settings, LogOut, Lightbulb, HelpCircle, Target, ClipboardCheck } from "lucide-react";
+import { Brain, Bell, Menu, X, BarChart3, MessageCircle, Zap, Wrench, Users, Trophy, User, Settings, LogOut, Lightbulb, HelpCircle, Target, ClipboardCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -25,13 +25,12 @@ export function Navigation() {
   // Navigation items based on subscription tier
   const getNavItems = () => {
     const baseItems = [
-      { href: "/", label: "Home", icon: Home },
       { href: "/help", label: "Help", icon: HelpCircle },
     ];
 
     // Only show Dashboard for Premium/Ultimate users
     if (canAccessDashboard(user)) {
-      baseItems.splice(1, 0, { href: "/dashboard", label: "Dashboard", icon: BarChart3 });
+      baseItems.splice(0, 0, { href: "/dashboard", label: "Dashboard", icon: BarChart3 });
     }
 
     // Add Human Coaching for Ultimate subscribers
