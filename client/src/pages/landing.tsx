@@ -104,23 +104,8 @@ export default function Landing() {
               </div>
             </div>
             
-            <div className="p-6 space-y-4">
-              {/* Sample conversation */}
-              <div className="bg-gray-100 p-4 rounded-lg max-w-[80%]">
-                <p className="text-gray-800">Hi! I'm Flo, your Red2Blue mental performance coach. Ask me about handling pressure, improving focus, or any mental game challenge you're facing on the course.</p>
-              </div>
-              
-              <div className="bg-blue-600 text-white p-4 rounded-lg max-w-[80%] ml-auto">
-                <p>I get nervous on the first tee. My heart races and I overthink every aspect of my swing. How can I stay calm?</p>
-              </div>
-              
-              <div className="bg-gray-100 p-4 rounded-lg max-w-[80%]">
-                <p className="text-gray-800">Let's tackle those first-tee nerves. Try box breathing: breathe in for 4 counts, hold for 4, out for 4, hold for 4. This calms your nervous system instantly. Before your shot, stick to your pre-shot routine religiously. Focus on your process, not the outcome.</p>
-              </div>
-              
-              <div className="flex items-center space-x-3 pt-4 border-t" id="main-chat-widget">
-                <LandingChat isInlineWidget={true} />
-              </div>
+            <div className="p-6" id="main-chat-widget">
+              <LandingChat isInlineWidget={true} />
             </div>
           </div>
           

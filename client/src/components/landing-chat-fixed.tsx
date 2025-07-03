@@ -161,6 +161,36 @@ export function LandingChat({ isInlineWidget = false }: LandingChatProps) {
                 </div>
               )}
               
+              {/* Example prompts - only show for fresh conversations */}
+              {messages.length === 1 && (
+                <div className="mb-3 space-y-2">
+                  <p className="text-xs text-gray-500 text-center">Try asking about:</p>
+                  <div className="flex flex-wrap gap-2">
+                    <button 
+                      onClick={() => setInput("I get nervous on the first tee. My heart races and I overthink every aspect of my swing. How can I stay calm?")}
+                      className="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-1 rounded-full border border-blue-200 transition-colors"
+                      disabled={freeMessagesCount >= 5}
+                    >
+                      First tee nerves
+                    </button>
+                    <button 
+                      onClick={() => setInput("I missed a short putt and got frustrated")}
+                      className="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-1 rounded-full border border-blue-200 transition-colors"
+                      disabled={freeMessagesCount >= 5}
+                    >
+                      Missed putts
+                    </button>
+                    <button 
+                      onClick={() => setInput("How do I handle pressure?")}
+                      className="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-1 rounded-full border border-blue-200 transition-colors"
+                      disabled={freeMessagesCount >= 5}
+                    >
+                      Pressure situations
+                    </button>
+                  </div>
+                </div>
+              )}
+              
               <div className="flex space-x-2">
                 <input
                   type="text"
