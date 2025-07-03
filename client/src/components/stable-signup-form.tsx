@@ -12,7 +12,14 @@ export function StableSignUpForm({ onBack }: StableSignUpFormProps) {
     username: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    dateOfBirth: '',
+    dexterity: '',
+    gender: '',
+    golfHandicap: '',
+    golfExperience: '',
+    goals: '',
+    bio: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -54,11 +61,13 @@ export function StableSignUpForm({ onBack }: StableSignUpFormProps) {
           username: formData.username,
           email: formData.email,
           password: formData.password,
-          dateOfBirth: '',
-          dexterity: 'right',
-          gender: '',
-          golfHandicap: '0',
-          bio: ''
+          dateOfBirth: formData.dateOfBirth,
+          dexterity: formData.dexterity,
+          gender: formData.gender,
+          golfHandicap: parseInt(formData.golfHandicap) || null,
+          golfExperience: formData.golfExperience,
+          goals: formData.goals,
+          bio: formData.bio
         }),
       });
 
@@ -190,7 +199,113 @@ export function StableSignUpForm({ onBack }: StableSignUpFormProps) {
                 />
               </div>
 
-              <div className="flex space-x-3 pt-4">
+              {/* Personal Information Section */}
+              <div className="pt-4 border-t border-gray-200">
+                <h3 className="text-lg font-medium text-gray-900 mb-3">Personal Information</h3>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                  <input
+                    type="date"
+                    value={formData.dateOfBirth}
+                    onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    disabled={isLoading}
+                  />
+                </div>
+
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                  <select
+                    value={formData.gender}
+                    onChange={(e) => handleInputChange('gender', e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    disabled={isLoading}
+                  >
+                    <option value="">Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                    <option value="prefer-not-to-say">Prefer not to say</option>
+                  </select>
+                </div>
+
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Dexterity (Playing Hand)</label>
+                  <select
+                    value={formData.dexterity}
+                    onChange={(e) => handleInputChange('dexterity', e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    disabled={isLoading}
+                  >
+                    <option value="">Select playing hand</option>
+                    <option value="right">Right-handed</option>
+                    <option value="left">Left-handed</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Golf Information Section */}
+              <div className="pt-4 border-t border-gray-200">
+                <h3 className="text-lg font-medium text-gray-900 mb-3">Golf Information</h3>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Golf Handicap</label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="54"
+                    value={formData.golfHandicap}
+                    onChange={(e) => handleInputChange('golfHandicap', e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Enter your handicap (0-54)"
+                    disabled={isLoading}
+                  />
+                </div>
+
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Golf Experience Level</label>
+                  <select
+                    value={formData.golfExperience}
+                    onChange={(e) => handleInputChange('golfExperience', e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    disabled={isLoading}
+                  >
+                    <option value="">Select experience level</option>
+                    <option value="beginner">Beginner (0-2 years)</option>
+                    <option value="intermediate">Intermediate (3-5 years)</option>
+                    <option value="advanced">Advanced (6-10 years)</option>
+                    <option value="expert">Expert (10+ years)</option>
+                    <option value="professional">Professional/Competitive</option>
+                  </select>
+                </div>
+
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Goals</label>
+                  <textarea
+                    value={formData.goals}
+                    onChange={(e) => handleInputChange('goals', e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    placeholder="What are your main golf and mental performance goals?"
+                    rows={3}
+                    disabled={isLoading}
+                  />
+                </div>
+
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">About You</label>
+                  <textarea
+                    value={formData.bio}
+                    onChange={(e) => handleInputChange('bio', e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    placeholder="Tell us a bit about yourself and your background..."
+                    rows={3}
+                    disabled={isLoading}
+                  />
+                </div>
+              </div>
+
+              <div className="flex space-x-3 pt-6">
                 <Button
                   type="button"
                   variant="outline"
