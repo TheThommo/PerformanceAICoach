@@ -9,6 +9,7 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { LandingChatStableV2 as LandingChat } from "@/components/landing-chat-stable-v2";
 import { Footer } from "@/components/footer";
+import { StableSignUpForm } from "@/components/stable-signup-form";
 
 export default function Landing() {
   const [showSignUp, setShowSignUp] = useState(false);
@@ -34,7 +35,7 @@ export default function Landing() {
   }, []);
 
   if (showSignUp) {
-    return <SignUpForm onBack={() => setShowSignUp(false)} />;
+    return <StableSignUpForm onBack={() => setShowSignUp(false)} />;
   }
 
   if (showSignIn) {
@@ -361,28 +362,54 @@ export default function Landing() {
 }
 
 function SignUpForm({ onBack }: { onBack: () => void }) {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl w-full">
-        <Card className="shadow-2xl">
-          <CardHeader className="text-center">
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 gradient-red-blue rounded-full flex items-center justify-center">
-                <Brain className="text-white" size={32} />
+  try {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl w-full">
+          <Card className="shadow-2xl">
+            <CardHeader className="text-center">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 gradient-red-blue rounded-full flex items-center justify-center">
+                  <Brain className="text-white" size={32} />
+                </div>
               </div>
-            </div>
-            <CardTitle className="text-3xl">Create Your Account</CardTitle>
-            <CardDescription className="text-lg">
-              Join the Red2Blue mental performance community
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <SignUpFormFields onBack={onBack} />
-          </CardContent>
-        </Card>
+              <CardTitle className="text-3xl">Create Your Account</CardTitle>
+              <CardDescription className="text-lg">
+                Join the Red2Blue mental performance community
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <SignUpFormFields onBack={onBack} />
+            </CardContent>
+          </Card>
+        </div>
       </div>
-    </div>
-  );
+    );
+  } catch (error) {
+    console.error('SignUpForm error:', error);
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-2xl w-full">
+          <Card className="shadow-2xl">
+            <CardHeader className="text-center">
+              <CardTitle className="text-3xl text-red-600">Something went wrong</CardTitle>
+              <CardDescription className="text-lg">
+                Please refresh the page and try again
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="text-center space-y-4">
+              <Button onClick={() => window.location.reload()} className="bg-blue-600 hover:bg-blue-700">
+                Refresh Page
+              </Button>
+              <Button variant="outline" onClick={onBack}>
+                Back to Landing
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 }
 
 function SignUpFormFields({ onBack }: { onBack: () => void }) {
@@ -400,55 +427,102 @@ function SignUpFormFields({ onBack }: { onBack: () => void }) {
     bio: ''
   });
 
+  // Add error boundary for this component
+  const [hasError, setHasError] = useState(false);
+
+  if (hasError) {
+    return (
+      <div className="text-center space-y-4">
+        <p className="text-red-600">Registration form encountered an error</p>
+        <Button onClick={() => {
+          setHasError(false);
+          window.location.reload();
+        }} className="bg-blue-600 hover:bg-blue-700">
+          Try Again
+        </Button>
+        <Button variant="outline" onClick={onBack}>
+          Back to Landing
+        </Button>
+      </div>
+    );
+  }
+
   const registerMutation = useMutation({
     mutationFn: async (data: typeof formData) => {
-      const response = await apiRequest("POST", "/api/auth/register", data);
-      return response.json();
+      try {
+        console.log('Starting registration request with data:', data);
+        const response = await apiRequest("POST", "/api/auth/register", data);
+        const result = await response.json();
+        console.log('Registration response:', result);
+        return result;
+      } catch (error) {
+        console.error('Registration mutation error:', error);
+        setHasError(true);
+        throw error;
+      }
     },
     onSuccess: (user) => {
-      // Invalidate auth queries to refresh user state
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
-      // Show success message
-      toast({
-        title: "Account Created Successfully!",
-        description: `Welcome to Red2Blue, ${user.username}! Your AI profile is being generated.`,
-      });
-      // Redirect will happen automatically via useAuth hook
+      try {
+        console.log('Registration successful for user:', user);
+        // Invalidate auth queries to refresh user state
+        queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+        // Show success message
+        toast({
+          title: "Account Created Successfully!",
+          description: `Welcome to Red2Blue, ${user?.username || 'User'}! Your AI profile is being generated.`,
+        });
+        // Redirect will happen automatically via useAuth hook
+      } catch (error) {
+        console.error('Registration success handler error:', error);
+        setHasError(true);
+      }
     },
     onError: (error: any) => {
-      toast({
-        title: "Registration Failed",
-        description: error.message || "An error occurred during registration",
-        variant: "destructive",
-      });
+      try {
+        console.error('Registration error:', error);
+        toast({
+          title: "Registration Failed",
+          description: error?.message || "An error occurred during registration",
+          variant: "destructive",
+        });
+      } catch (toastError) {
+        console.error('Toast error:', toastError);
+        setHasError(true);
+      }
     },
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Validate passwords match
-    if (formData.password !== formData.confirmPassword) {
-      toast({
-        title: "Password Mismatch",
-        description: "Passwords do not match. Please try again.",
-        variant: "destructive",
-      });
-      return;
-    }
+    try {
+      e.preventDefault();
+      console.log('Form submission started');
+      
+      // Validate passwords match
+      if (formData.password !== formData.confirmPassword) {
+        toast({
+          title: "Password Mismatch",
+          description: "Passwords do not match. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
 
-    // Validate required fields
-    if (!formData.username || !formData.email || !formData.password) {
-      toast({
-        title: "Missing Information",
-        description: "Please fill in all required fields.",
-        variant: "destructive",
-      });
-      return;
-    }
+      // Validate required fields
+      if (!formData.username || !formData.email || !formData.password) {
+        toast({
+          title: "Missing Information",
+          description: "Please fill in all required fields.",
+          variant: "destructive",
+        });
+        return;
+      }
 
-    console.log('Registration data:', formData);
-    registerMutation.mutate(formData);
+      console.log('Registration data:', formData);
+      registerMutation.mutate(formData);
+    } catch (error) {
+      console.error('Form submission error:', error);
+      setHasError(true);
+    }
   };
 
   if (showSignIn) {
