@@ -9,7 +9,8 @@ interface StableSignUpFormProps {
 
 export function StableSignUpForm({ onBack }: StableSignUpFormProps) {
   const [formData, setFormData] = useState({
-    username: '',
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -32,7 +33,7 @@ export function StableSignUpForm({ onBack }: StableSignUpFormProps) {
 
     try {
       // Basic validation
-      if (!formData.username || !formData.email || !formData.password) {
+      if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
         setError("Please fill in all required fields");
         setIsLoading(false);
         return;
@@ -45,7 +46,8 @@ export function StableSignUpForm({ onBack }: StableSignUpFormProps) {
       }
 
       console.log('Submitting registration with data:', {
-        username: formData.username,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
         email: formData.email,
         // Don't log password
       });
@@ -58,7 +60,9 @@ export function StableSignUpForm({ onBack }: StableSignUpFormProps) {
         },
         credentials: 'include',
         body: JSON.stringify({
-          username: formData.username,
+          username: `${formData.firstName.toLowerCase()}${formData.lastName.toLowerCase()}`,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
           email: formData.email,
           password: formData.password,
           dateOfBirth: formData.dateOfBirth,
@@ -147,17 +151,31 @@ export function StableSignUpForm({ onBack }: StableSignUpFormProps) {
                 </div>
               )}
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.username}
-                  onChange={(e) => handleInputChange('username', e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Choose a username"
-                  disabled={isLoading}
-                />
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.firstName}
+                    onChange={(e) => handleInputChange('firstName', e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="First name"
+                    disabled={isLoading}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.lastName}
+                    onChange={(e) => handleInputChange('lastName', e.target.value)}
+                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    placeholder="Last name"
+                    disabled={isLoading}
+                  />
+                </div>
               </div>
 
               <div>

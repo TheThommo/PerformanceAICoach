@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import session from 'express-session';
 import { Request, Response, NextFunction } from 'express';
 import { storage } from './storage';
-import { generateAIProfile } from './gemini';
+import { generateAIProfile } from './openai';
 
 declare module 'express-session' {
   interface SessionData {
@@ -96,12 +96,16 @@ export async function verifyPassword(password: string, hashedPassword: string): 
 
 export async function registerUser(userData: {
   username: string;
+  firstName?: string;
+  lastName?: string;
   email: string;
   password: string;
   dateOfBirth?: string;
   dexterity?: string;
   gender?: string;
   golfHandicap?: number;
+  golfExperience?: string;
+  goals?: string;
   bio?: string;
 }) {
   // Check if user already exists by username or email
@@ -120,29 +124,34 @@ export async function registerUser(userData: {
 
   // Generate AI profile from bio if provided
   let aiGeneratedProfile = null;
-  if (userData.bio) {
-    try {
-      aiGeneratedProfile = await generateAIProfile(userData.bio, {
-        username: userData.username,
-        dexterity: userData.dexterity,
-        gender: userData.gender,
-        golfHandicap: userData.golfHandicap
-      });
-    } catch (error) {
-      console.error('Failed to generate AI profile:', error);
-      // Continue without AI profile if generation fails
-    }
-  }
+  // TODO: Fix AI profile generation - temporarily disabled
+  // if (userData.bio) {
+  //   try {
+  //     aiGeneratedProfile = await generateAIProfile(userData.bio, {
+  //       username: userData.username,
+  //       dexterity: userData.dexterity,
+  //       gender: userData.gender,
+  //       golfHandicap: userData.golfHandicap
+  //     });
+  //   } catch (error) {
+  //     console.error('Failed to generate AI profile:', error);
+  //     // Continue without AI profile if generation fails
+  //   }
+  // }
 
   // Create user
   const newUser = await storage.createUser({
     username: userData.username,
+    firstName: userData.firstName || null,
+    lastName: userData.lastName || null,
     email: userData.email,
     password: hashedPassword,
     dateOfBirth: userData.dateOfBirth ? new Date(userData.dateOfBirth) : null,
     dexterity: userData.dexterity || null,
     gender: userData.gender || null,
     golfHandicap: userData.golfHandicap || null,
+    golfExperience: userData.golfExperience || null,
+    goals: userData.goals || null,
     bio: userData.bio || null,
     aiGeneratedProfile,
     isSubscribed: false,
