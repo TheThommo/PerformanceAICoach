@@ -32,10 +32,12 @@ export function LandingChat({ isInlineWidget = false }: LandingChatProps) {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom when messages change
+  // Auto-scroll to bottom only when new messages arrive (not when loading starts)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isLoading]);
+    if (!isLoading) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
@@ -102,13 +104,26 @@ export function LandingChat({ isInlineWidget = false }: LandingChatProps) {
       }
     } catch (error) {
       console.error('Chat error:', error);
-      // Fallback response if API fails
+      // More detailed error handling
+      let errorMessage = "I'm here to help with your mental game. What specific challenge are you facing on the course?";
+      
+      if (error instanceof Error) {
+        console.error('Error details:', error.message, error.stack);
+        // Don't show technical error to user, but log it
+      }
+      
       const assistantMessage: Message = {
         role: 'assistant',
-        content: "I'm here to help with your mental game. What specific challenge are you facing on the course?",
+        content: errorMessage,
         timestamp: new Date().toISOString()
       };
-      setMessages(prev => [...prev, assistantMessage]);
+      
+      // Use functional update to ensure state consistency
+      setMessages(prev => {
+        const newMessages = [...prev, assistantMessage];
+        console.log('Messages after error:', newMessages.length);
+        return newMessages;
+      });
     } finally {
       setIsLoading(false);
     }
@@ -165,22 +180,35 @@ export function LandingChat({ isInlineWidget = false }: LandingChatProps) {
           <CardContent className="p-0 flex flex-col h-[calc(100%-80px)]">
             <ScrollArea className="flex-1 p-4">
               <div className="space-y-4">
-                {messages.map((message, index) => (
-                  <div
-                    key={index}
-                    className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div
-                      className={`max-w-[80%] p-3 rounded-lg ${
-                        message.role === 'user'
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-gray-100 text-gray-800 border'
-                      }`}
-                    >
-                      <p className="text-sm">{message.content}</p>
-                    </div>
-                  </div>
-                ))}
+                {messages.map((message, index) => {
+                  try {
+                    return (
+                      <div
+                        key={`message-${index}-${message.timestamp}`}
+                        className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                      >
+                        <div
+                          className={`max-w-[80%] p-3 rounded-lg ${
+                            message.role === 'user'
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-gray-100 text-gray-800 border'
+                          }`}
+                        >
+                          <p className="text-sm">{message.content || "..."}</p>
+                        </div>
+                      </div>
+                    );
+                  } catch (error) {
+                    console.error('Error rendering message:', error, message);
+                    return (
+                      <div key={`error-${index}`} className="flex justify-start">
+                        <div className="max-w-[80%] p-3 rounded-lg bg-red-100 text-red-800 border border-red-200">
+                          <p className="text-sm">Message rendering error</p>
+                        </div>
+                      </div>
+                    );
+                  }
+                })}
                 {isLoading && (
                   <div className="flex justify-start">
                     <div className="max-w-[80%] p-3 rounded-lg bg-gray-100 text-gray-800 border">
