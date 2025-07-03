@@ -14,8 +14,8 @@ interface LandingChatProps {
   isInlineWidget?: boolean;
 }
 
-export function LandingChatFinal({ isInlineWidget = false }: LandingChatProps) {
-  const [messages, setMessages] = useState<Message[]>([
+function ChatCore({ isInlineWidget = false }: LandingChatProps) {
+  const [messages, setMessages] = useState<Message[]>(() => [
     {
       id: 'initial',
       role: 'assistant',
@@ -30,12 +30,7 @@ export function LandingChatFinal({ isInlineWidget = false }: LandingChatProps) {
   const [creditCount, setCreditCount] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll only within chat area
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    }
-  }, [messages]);
+  // No auto-scroll to prevent page scrolling issues
 
   const handleSendMessage = async () => {
     if (!input.trim() || isLoading) return;
@@ -126,9 +121,9 @@ export function LandingChatFinal({ isInlineWidget = false }: LandingChatProps) {
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-y-auto p-4 scroll-smooth">
         <div className="space-y-4">
-          {messages.map((message) => (
+          {messages.map((message, index) => (
             <div
-              key={message.id}
+              key={`${message.id}-${index}`}
               className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               <div
@@ -138,7 +133,7 @@ export function LandingChatFinal({ isInlineWidget = false }: LandingChatProps) {
                     : 'bg-gray-100 text-gray-800 border'
                 }`}
               >
-                <p className="text-sm">{message.content}</p>
+                <p className="text-sm">{String(message.content || '')}</p>
               </div>
             </div>
           ))}
@@ -279,4 +274,36 @@ export function LandingChatFinal({ isInlineWidget = false }: LandingChatProps) {
       )}
     </>
   );
+}
+
+export function LandingChatFinal({ isInlineWidget = false }: LandingChatProps) {
+  try {
+    return <ChatCore isInlineWidget={isInlineWidget} />;
+  } catch (error) {
+    console.error('Chat component error:', error);
+    return (
+      <Card className="w-full max-w-md mx-auto h-[500px] shadow-lg">
+        <CardHeader className="bg-gradient-to-r from-blue-600 to-red-600 text-white p-4">
+          <div className="flex items-center space-x-2">
+            <Brain className="w-6 h-6" />
+            <div>
+              <CardTitle className="text-lg">Chat with Flo</CardTitle>
+              <p className="text-sm text-blue-100">Your AI Mental Performance Coach</p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="p-4 flex items-center justify-center h-[calc(100%-100px)]">
+          <div className="text-center">
+            <p className="text-gray-600 mb-4">Chat temporarily unavailable</p>
+            <Button 
+              onClick={() => window.location.reload()}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              Refresh Page
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 }
