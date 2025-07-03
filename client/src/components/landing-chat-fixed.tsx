@@ -40,7 +40,7 @@ export function LandingChat() {
       
       const limitMessage: Message = {
         role: 'assistant',
-        content: "You've used your 5 free messages! Sign up to keep using Flo and unlock personalized coaching, assessments, and unlimited conversations.",
+        content: "You've used your 5 free credits! Sign up to keep using Flo and unlock personalized coaching, assessments, and unlimited conversations.",
         timestamp: new Date().toISOString()
       };
       setMessages(prev => [...prev, limitMessage]);
@@ -151,7 +151,7 @@ export function LandingChat() {
             <div className="border-t p-4">
               {freeMessagesCount >= 4 && (
                 <div className="mb-3 p-2 bg-yellow-50 border border-yellow-200 rounded text-sm text-yellow-800">
-                  {5 - freeMessagesCount} free message{5 - freeMessagesCount !== 1 ? 's' : ''} remaining
+                  {5 - freeMessagesCount} credit{5 - freeMessagesCount !== 1 ? 's' : ''} remaining
                 </div>
               )}
               
@@ -179,7 +179,7 @@ export function LandingChat() {
               </div>
               
               <p className="text-xs text-gray-500 mt-2 text-center">
-                {freeMessagesCount}/{5} free messages used
+                {freeMessagesCount}/5 credits used
               </p>
             </div>
           </CardContent>

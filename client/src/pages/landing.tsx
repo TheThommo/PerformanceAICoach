@@ -100,18 +100,17 @@ export default function Landing() {
               </div>
               
               <div className="flex items-center space-x-3 pt-4 border-t">
-                <input 
-                  type="text" 
-                  placeholder="Try: 'I missed a short putt and got frustrated' or 'How do I handle pressure?'" 
-                  className="flex-1 p-3 border rounded-lg bg-gray-50"
-                  disabled
-                />
-                <Button 
-                  className="bg-blue-600 hover:bg-blue-700 px-6"
-                  onClick={() => setShowSignUp(true)}
-                >
-                  Try Now
-                </Button>
+                <div className="text-center text-gray-600 text-sm flex-1">
+                  <p className="mb-3">Ready to try Flo? Click the chat button in the bottom-right corner!</p>
+                  <div className="flex justify-center space-x-3">
+                    <Button 
+                      className="bg-blue-600 hover:bg-blue-700"
+                      onClick={() => setShowSignUp(true)}
+                    >
+                      Sign Up Free
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
