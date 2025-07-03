@@ -23,9 +23,9 @@ export default function FreeDashboard() {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Welcome to Red2Blue, {user?.username}!
           </h1>
-          <p className="text-lg text-gray-600 mb-4">
+          <div className="text-lg text-gray-600 mb-4">
             You're on the <Badge variant="outline">Free Plan</Badge>
-          </p>
+          </div>
           <p className="text-gray-600">
             Get started with your mental performance journey using our basic tools
           </p>
@@ -131,7 +131,7 @@ export default function FreeDashboard() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
               {/* Premium Features */}
               <div>
                 <h4 className="font-semibold text-gray-900 mb-3">Premium Features You're Missing:</h4>
@@ -163,14 +163,42 @@ export default function FreeDashboard() {
                 </ul>
               </div>
 
-              {/* Pricing */}
+              {/* Premium Pricing */}
               <div className="text-center">
-                <div className="bg-white rounded-lg p-6 shadow-lg">
-                  <h4 className="text-2xl font-bold text-gray-900 mb-2">Premium Access</h4>
+                <div className="bg-white rounded-lg p-6 shadow-lg border-2 border-blue-200">
+                  <h4 className="text-xl font-bold text-gray-900 mb-2">Premium Access</h4>
                   <div className="text-3xl font-bold text-blue-600 mb-2">$490</div>
                   <p className="text-sm text-gray-500 mb-4">One-time payment • Lifetime access</p>
                   <Button className="w-full bg-blue-600 hover:bg-blue-700 mb-3">
                     Upgrade to Premium
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                  <p className="text-xs text-gray-500">
+                    30-day money-back guarantee
+                  </p>
+                </div>
+              </div>
+
+              {/* Ultimate Pricing */}
+              <div className="text-center">
+                <div className="bg-white rounded-lg p-6 shadow-lg border-2 border-purple-300 relative">
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                    <Badge className="bg-purple-600">Human Coaching</Badge>
+                  </div>
+                  <h4 className="text-xl font-bold text-gray-900 mb-2 mt-2">Ultimate Access</h4>
+                  <div className="text-3xl font-bold text-purple-600 mb-2">$2190</div>
+                  <p className="text-sm text-gray-500 mb-3">One-time payment • Lifetime access</p>
+                  <div className="bg-purple-50 p-3 rounded-lg mb-4">
+                    <p className="text-xs font-medium text-purple-800 mb-2">Everything in Premium plus:</p>
+                    <ul className="text-xs text-purple-700 space-y-1">
+                      <li>• 1-on-1 private coaching sessions</li>
+                      <li>• Personal human coach matching</li>
+                      <li>• Custom training programs</li>
+                      <li>• VIP priority support</li>
+                    </ul>
+                  </div>
+                  <Button className="w-full bg-purple-600 hover:bg-purple-700 mb-3">
+                    Upgrade to Ultimate
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                   <p className="text-xs text-gray-500">
