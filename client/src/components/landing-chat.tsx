@@ -130,13 +130,6 @@ export function LandingChat() {
 
     // Check free tier limitations for authenticated users
     if (isAuthenticated && !isSubscribed && freeMessagesCount >= 5) {
-      const userMessage: Message = {
-        role: 'user',
-        content: input,
-        timestamp: new Date().toISOString()
-      };
-      setMessages(prev => [...prev, userMessage]);
-      
       const upgradeMessage: Message = {
         role: 'assistant',
         content: "You've used your free chat message! Upgrade to Premium ($690) or Ultimate ($1590) for unlimited AI coaching sessions.",
@@ -146,12 +139,6 @@ export function LandingChat() {
       setInput("");
       return;
     }
-
-    const userMessage: Message = {
-      role: 'user',
-      content: input,
-      timestamp: new Date().toISOString()
-    };
 
     setMessages(prev => [...prev, userMessage]);
     chatMutation.mutate(input);

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,26 @@ import { Footer } from "@/components/footer";
 
 export default function Landing() {
   const [showSignUp, setShowSignUp] = useState(false);
+  const [showFloatingChat, setShowFloatingChat] = useState(false);
   const [showSignIn, setShowSignIn] = useState(false);
+
+  // Smart visibility logic for floating chat
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Show floating chat when main widget is not visible
+        setShowFloatingChat(!entry.isIntersecting);
+      },
+      { threshold: 0.1 }
+    );
+
+    const mainWidget = document.getElementById('main-chat-widget');
+    if (mainWidget) {
+      observer.observe(mainWidget);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   if (showSignUp) {
     return <SignUpForm onBack={() => setShowSignUp(false)} />;
@@ -99,18 +118,8 @@ export default function Landing() {
                 <p className="text-gray-800">Let's tackle those first-tee nerves. Try box breathing: breathe in for 4 counts, hold for 4, out for 4, hold for 4. This calms your nervous system instantly. Before your shot, stick to your pre-shot routine religiously. Focus on your process, not the outcome.</p>
               </div>
               
-              <div className="flex items-center space-x-3 pt-4 border-t">
-                <div className="text-center text-gray-600 text-sm flex-1">
-                  <p className="mb-3">Ready to try Flo? Click the chat button in the bottom-right corner!</p>
-                  <div className="flex justify-center space-x-3">
-                    <Button 
-                      className="bg-blue-600 hover:bg-blue-700"
-                      onClick={() => setShowSignUp(true)}
-                    >
-                      Sign Up Free
-                    </Button>
-                  </div>
-                </div>
+              <div className="flex items-center space-x-3 pt-4 border-t" id="main-chat-widget">
+                <LandingChat isInlineWidget={true} />
               </div>
             </div>
           </div>
@@ -365,6 +374,9 @@ export default function Landing() {
       </section>
 
       <Footer />
+      
+      {/* Floating Chat - only shows when main widget is not visible */}
+      {showFloatingChat && <LandingChat />}
     </div>
   );
 }

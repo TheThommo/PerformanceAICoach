@@ -13,7 +13,11 @@ interface Message {
   timestamp: string;
 }
 
-export function LandingChat() {
+interface LandingChatProps {
+  isInlineWidget?: boolean;
+}
+
+export function LandingChat({ isInlineWidget = false }: LandingChatProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
@@ -22,7 +26,7 @@ export function LandingChat() {
     }
   ]);
   const [input, setInput] = useState("");
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(isInlineWidget);
   const [freeMessagesCount, setFreeMessagesCount] = useState(0);
   const [showSignUpPrompt, setShowSignUpPrompt] = useState(false);
 
@@ -87,7 +91,7 @@ export function LandingChat() {
     }
   };
 
-  if (!isExpanded) {
+  if (!isExpanded && !isInlineWidget) {
     return (
       <div className="fixed bottom-6 right-6 z-50">
         <Button
@@ -102,8 +106,8 @@ export function LandingChat() {
 
   return (
     <>
-      <div className="fixed bottom-6 right-6 z-50">
-        <Card className="w-96 h-[500px] shadow-2xl border-2 border-blue-200">
+      <div className={isInlineWidget ? "" : "fixed bottom-6 right-6 z-50"}>
+        <Card className={isInlineWidget ? "w-full h-[500px] shadow-lg border-2 border-gray-200" : "w-96 h-[500px] shadow-2xl border-2 border-blue-200"}>
           <CardHeader className="bg-gradient-to-r from-blue-600 to-red-600 text-white p-4 rounded-t-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
@@ -115,14 +119,16 @@ export function LandingChat() {
                   <p className="text-sm text-blue-100">Try me out!</p>
                 </div>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsExpanded(false)}
-                className="text-white hover:bg-white/20"
-              >
-                ×
-              </Button>
+              {!isInlineWidget && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsExpanded(false)}
+                  className="text-white hover:bg-white/20"
+                >
+                  ×
+                </Button>
+              )}
             </div>
           </CardHeader>
           
