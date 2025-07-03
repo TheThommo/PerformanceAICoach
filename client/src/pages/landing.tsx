@@ -416,7 +416,8 @@ function SignUpFormFields({ onBack }: { onBack: () => void }) {
   const { toast } = useToast();
   const [showSignIn, setShowSignIn] = useState(false);
   const [formData, setFormData] = useState({
-    username: '',
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -424,6 +425,8 @@ function SignUpFormFields({ onBack }: { onBack: () => void }) {
     dexterity: '',
     gender: '',
     golfHandicap: '',
+    golfExperience: '',
+    goals: '',
     bio: ''
   });
 
@@ -451,7 +454,11 @@ function SignUpFormFields({ onBack }: { onBack: () => void }) {
     mutationFn: async (data: typeof formData) => {
       try {
         console.log('Starting registration request with data:', data);
-        const response = await apiRequest("POST", "/api/auth/register", data);
+        const requestData = {
+          ...data,
+          username: `${data.firstName.toLowerCase()}${data.lastName.toLowerCase()}`
+        };
+        const response = await apiRequest("POST", "/api/auth/register", requestData);
         const result = await response.json();
         console.log('Registration response:', result);
         return result;
@@ -508,7 +515,7 @@ function SignUpFormFields({ onBack }: { onBack: () => void }) {
       }
 
       // Validate required fields
-      if (!formData.username || !formData.email || !formData.password) {
+      if (!formData.firstName || !formData.lastName || !formData.email || !formData.password) {
         toast({
           title: "Missing Information",
           description: "Please fill in all required fields.",
@@ -534,16 +541,30 @@ function SignUpFormFields({ onBack }: { onBack: () => void }) {
       {/* Basic Information */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
           <input
             type="text"
             required
-            value={formData.username}
-            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
+            value={formData.firstName}
+            onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            placeholder="Choose a username"
+            placeholder="First name"
           />
         </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+          <input
+            type="text"
+            required
+            value={formData.lastName}
+            onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="Last name"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
           <input
@@ -619,18 +640,46 @@ function SignUpFormFields({ onBack }: { onBack: () => void }) {
         </div>
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Golf Handicap (optional)
+          </label>
+          <input
+            type="number"
+            min="0"
+            max="54"
+            value={formData.golfHandicap}
+            onChange={(e) => setFormData({ ...formData, golfHandicap: e.target.value })}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="Enter your golf handicap"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Golf Experience</label>
+          <select
+            value={formData.golfExperience}
+            onChange={(e) => setFormData({ ...formData, golfExperience: e.target.value })}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="">Select experience level</option>
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced</option>
+            <option value="expert">Expert</option>
+            <option value="professional">Professional</option>
+          </select>
+        </div>
+      </div>
+
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Golf Handicap (optional)
-        </label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Goals</label>
         <input
-          type="number"
-          min="0"
-          max="54"
-          value={formData.golfHandicap}
-          onChange={(e) => setFormData({ ...formData, golfHandicap: e.target.value })}
+          type="text"
+          value={formData.goals}
+          onChange={(e) => setFormData({ ...formData, goals: e.target.value })}
           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="Enter your golf handicap"
+          placeholder="What do you want to achieve? (e.g., improve putting, manage pressure, build confidence)"
         />
       </div>
 
