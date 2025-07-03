@@ -60,7 +60,10 @@ export default function Landing() {
               <Button variant="ghost" onClick={() => setShowSignIn(true)} className="text-gray-600">
                 Sign In
               </Button>
-              <Button onClick={() => setShowSignUp(true)} className="bg-blue-600 hover:bg-blue-700">
+              <Button onClick={() => {
+                window.scrollTo(0, 0);
+                setShowSignUp(true);
+              }} className="bg-blue-600 hover:bg-blue-700">
                 Get Started
               </Button>
             </div>
@@ -213,7 +216,10 @@ export default function Landing() {
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Ability to Focus PDF</li>
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Mental Toughness PDF</li>
                 </ul>
-                <Button variant="outline" className="w-full" onClick={() => setShowSignUp(true)}>
+                <Button variant="outline" className="w-full" onClick={() => {
+                  window.scrollTo(0, 0);
+                  setShowSignUp(true);
+                }}>
                   Get Started Free
                 </Button>
               </CardContent>
@@ -242,7 +248,10 @@ export default function Landing() {
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />All assessment tools</li>
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Priority support</li>
                 </ul>
-                <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => setShowSignUp(true)}>
+                <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => {
+                  window.scrollTo(0, 0);
+                  setShowSignUp(true);
+                }}>
                   Get Premium Access
                 </Button>
                 <p className="text-xs text-center text-gray-500">One-time payment, lifetime access</p>
@@ -274,7 +283,10 @@ export default function Landing() {
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Custom training programs</li>
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />VIP support channel</li>
                 </ul>
-                <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={() => setShowSignUp(true)}>
+                <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={() => {
+                  window.scrollTo(0, 0);
+                  setShowSignUp(true);
+                }}>
                   Get Ultimate Access
                 </Button>
                 <p className="text-xs text-center text-gray-500">One-time payment, lifetime access</p>
