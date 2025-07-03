@@ -94,7 +94,7 @@ export function MoodTracker({ userId }: MoodTrackerProps) {
 
   const getMoodLabel = (score: number) => {
     if (score <= 20) return { label: "Red Head - High Stress", color: "bg-red-500", icon: Brain };
-    if (score <= 40) return { label: "Orange - Moderate Stress", color: "bg-orange-500", icon: Heart };
+    if (score <= 40) return { label: "Pink - Transitioning", color: "bg-pink-500", icon: Heart };
     if (score <= 60) return { label: "Purple - Neutral", color: "bg-purple-500", icon: Heart };
     if (score <= 80) return { label: "Light Blue - Calm", color: "bg-blue-400", icon: Zap };
     return { label: "Blue Head - Peak Focus", color: "bg-blue-600", icon: Zap };
