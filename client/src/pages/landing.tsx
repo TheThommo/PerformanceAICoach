@@ -63,8 +63,11 @@ export default function Landing() {
                 Sign In
               </Button>
               <Button onClick={() => {
-                window.scrollTo(0, 0);
-                setShowSignUp(true);
+                // Scroll to pricing section instead of direct signup
+                const pricingSection = document.getElementById('pricing-section');
+                if (pricingSection) {
+                  pricingSection.scrollIntoView({ behavior: 'smooth' });
+                }
               }} className="bg-blue-600 hover:bg-blue-700">
                 Get Started
               </Button>
