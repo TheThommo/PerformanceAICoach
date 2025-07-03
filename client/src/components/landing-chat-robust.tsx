@@ -1,7 +1,6 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Brain, Send, MessageCircle } from "lucide-react";
 
 interface Message {
@@ -15,7 +14,7 @@ interface LandingChatProps {
   isInlineWidget?: boolean;
 }
 
-export function LandingChatStable({ isInlineWidget = false }: LandingChatProps) {
+export function LandingChatRobust({ isInlineWidget = false }: LandingChatProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'initial',
@@ -29,56 +28,45 @@ export function LandingChatStable({ isInlineWidget = false }: LandingChatProps) 
   const [isExpanded, setIsExpanded] = useState(isInlineWidget);
   const [isLoading, setIsLoading] = useState(false);
   const [creditCount, setCreditCount] = useState(0);
-  const [showSignUpPrompt, setShowSignUpPrompt] = useState(false);
-  const [hasError, setHasError] = useState(false);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom of chat when new messages are added
+  // Auto-scroll to bottom when messages change
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages, isLoading]);
+  }, [messages]);
 
-  const addMessage = useCallback((message: Omit<Message, 'id' | 'timestamp'>) => {
-    const newMessage: Message = {
-      id: `msg-${Date.now()}-${Math.random()}`,
-      timestamp: Date.now(),
-      ...message
-    };
-    setMessages(prev => [...prev, newMessage]);
-    return newMessage;
-  }, []);
-
-  const handleSend = useCallback(async () => {
-    if (!input.trim() || isLoading || hasError) return;
+  const handleSend = async () => {
+    if (!input.trim() || isLoading) return;
     
+    // Check credit limit
+    if (creditCount >= 5) {
+      const creditMessage: Message = {
+        id: `msg-${Date.now()}`,
+        role: 'assistant',
+        content: "You've used your 5 free credits! Sign up to keep using Flo and unlock personalized coaching, assessments, and unlimited conversations.",
+        timestamp: Date.now()
+      };
+      setMessages(prev => [...prev, creditMessage]);
+      return;
+    }
+
+    const userInput = input.trim();
+    setInput("");
+    setIsLoading(true);
+    setCreditCount(prev => prev + 1);
+
+    // Add user message
+    const userMessage: Message = {
+      id: `msg-${Date.now()}-user`,
+      role: 'user',
+      content: userInput,
+      timestamp: Date.now()
+    };
+    setMessages(prev => [...prev, userMessage]);
+
     try {
-      setHasError(false);
-      
-      // Check credit limit
-      if (creditCount >= 5) {
-        addMessage({
-          role: 'assistant',
-          content: "You've used your 5 free credits! Sign up to keep using Flo and unlock personalized coaching, assessments, and unlimited conversations."
-        });
-        setShowSignUpPrompt(true);
-        return;
-      }
-
-      const userInput = input.trim();
-      setInput("");
-      setIsLoading(true);
-      setCreditCount(prev => prev + 1);
-
-      // Add user message
-      addMessage({
-        role: 'user',
-        content: userInput
-      });
-
-      // Make API call
       const response = await fetch('/api/landing-chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -92,68 +80,60 @@ export function LandingChatStable({ isInlineWidget = false }: LandingChatProps) 
         assistantContent = data.message || assistantContent;
       }
 
-      addMessage({
+      const assistantMessage: Message = {
+        id: `msg-${Date.now()}-assistant`,
         role: 'assistant',
-        content: assistantContent
-      });
+        content: assistantContent,
+        timestamp: Date.now()
+      };
+      setMessages(prev => [...prev, assistantMessage]);
 
     } catch (error) {
       console.error('Chat error:', error);
-      setHasError(true);
-      addMessage({
+      const errorMessage: Message = {
+        id: `msg-${Date.now()}-error`,
         role: 'assistant',
-        content: "I'm here to help with your mental game. What specific challenge are you facing on the course?"
-      });
+        content: "I'm here to help with your mental game. What specific challenge are you facing on the course?",
+        timestamp: Date.now()
+      };
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
       setIsLoading(false);
     }
-  }, [input, isLoading, creditCount, addMessage, hasError]);
+  };
 
-  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
+  const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
-  }, [handleSend]);
+  };
 
-  const setPrompt = useCallback((prompt: string) => {
+  const setPrompt = (prompt: string) => {
     setInput(prompt);
-  }, []);
+  };
 
   // Main chat content
   const chatContent = (
     <div className="flex flex-col h-full">
-      <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
+      <div className="flex-1 overflow-y-auto p-4">
         <div className="space-y-4">
-          {messages.map((message) => {
-            try {
-              return (
-                <div
-                  key={message.id}
-                  className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div
-                    className={`max-w-[80%] p-3 rounded-lg ${
-                      message.role === 'user'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-100 text-gray-800 border'
-                    }`}
-                  >
-                    <p className="text-sm">{String(message.content || '')}</p>
-                  </div>
-                </div>
-              );
-            } catch (error) {
-              console.error('Error rendering message:', error);
-              return (
-                <div key={message.id} className="flex justify-start">
-                  <div className="max-w-[80%] p-3 rounded-lg bg-red-100 text-red-800 border border-red-200">
-                    <p className="text-sm">Error displaying message</p>
-                  </div>
-                </div>
-              );
-            }
-          })}
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            >
+              <div
+                className={`max-w-[80%] p-3 rounded-lg ${
+                  message.role === 'user'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-800 border'
+                }`}
+              >
+                <p className="text-sm">{message.content}</p>
+              </div>
+            </div>
+          ))}
           {isLoading && (
             <div className="flex justify-start">
               <div className="max-w-[80%] p-3 rounded-lg bg-gray-100 text-gray-800 border">
@@ -166,7 +146,7 @@ export function LandingChatStable({ isInlineWidget = false }: LandingChatProps) 
           )}
           <div ref={messagesEndRef} />
         </div>
-      </ScrollArea>
+      </div>
 
       <div className="border-t p-4">
         {creditCount >= 4 && (

@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Brain, Target, TrendingUp, Users, Shield, Check, Star } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { LandingChatStable as LandingChat } from "@/components/landing-chat-stable";
+import { LandingChatRobust as LandingChat } from "@/components/landing-chat-robust";
 import { Footer } from "@/components/footer";
 
 export default function Landing() {
