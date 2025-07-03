@@ -6,11 +6,47 @@ import { Badge } from "@/components/ui/badge";
 import { Brain, FileText, MessageCircle, Star, ArrowRight, Lock } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { LandingChatStableV2 } from "@/components/landing-chat-stable-v2";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import { queryClient } from "@/lib/queryClient";
 
 export default function FreeDashboard() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [isUpgrading, setIsUpgrading] = useState(false);
+
+  const upgradeUser = async (tier: string) => {
+    setIsUpgrading(true);
+    try {
+      const response = await apiRequest("POST", "/api/auth/upgrade-tier", { tier });
+      const result = await response.json();
+      
+      // Refresh user data
+      queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
+      
+      toast({
+        title: "Upgrade Successful!",
+        description: `You now have ${tier} access. Redirecting to your dashboard...`,
+      });
+      
+      // Redirect after upgrade
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 1500);
+      
+    } catch (error) {
+      console.error('Upgrade error:', error);
+      toast({
+        title: "Upgrade Failed",
+        description: "There was an error upgrading your account. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsUpgrading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -23,7 +59,7 @@ export default function FreeDashboard() {
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome to Red2Blue, {user?.username}!
+            Welcome to Red2Blue, {user?.firstName}!
           </h1>
           <div className="text-lg text-gray-600 mb-4">
             You're on the <Badge variant="outline">Free Plan</Badge>
@@ -229,6 +265,27 @@ export default function FreeDashboard() {
             >
               Chat with Flo
             </Button>
+          </div>
+          
+          {/* Demo Upgrade Buttons */}
+          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+            <p className="text-sm text-blue-800 mb-3">Demo: Upgrade Your Access</p>
+            <div className="flex gap-3 justify-center">
+              <Button 
+                onClick={() => upgradeUser('premium')}
+                className="bg-blue-600 hover:bg-blue-700"
+                disabled={isUpgrading}
+              >
+                {isUpgrading ? 'Upgrading...' : 'Get Premium Access'}
+              </Button>
+              <Button 
+                onClick={() => upgradeUser('ultimate')}
+                className="bg-purple-600 hover:bg-purple-700"
+                disabled={isUpgrading}
+              >
+                {isUpgrading ? 'Upgrading...' : 'Get Ultimate Access'}
+              </Button>
+            </div>
           </div>
         </div>
       </div>

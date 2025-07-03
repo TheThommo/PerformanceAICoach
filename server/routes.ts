@@ -87,6 +87,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Demo route to upgrade subscription tier
+  app.post("/api/auth/upgrade-tier", async (req: AuthRequest, res) => {
+    if (!req.session.userId) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    try {
+      const { tier } = req.body;
+      if (!['free', 'premium', 'ultimate'].includes(tier)) {
+        return res.status(400).json({ message: 'Invalid tier' });
+      }
+      
+      const updatedUser = await storage.updateUser(req.session.userId, { 
+        subscriptionTier: tier,
+        isSubscribed: tier !== 'free'
+      });
+      
+      const { password, ...userWithoutPassword } = updatedUser;
+      res.json(userWithoutPassword);
+    } catch (error) {
+      console.error('Upgrade tier error:', error);
+      res.status(500).json({ message: 'Failed to upgrade tier' });
+    }
+  });
+
   // User profile update endpoint
   app.patch("/api/users/:id", requireAuth, async (req: AuthRequest, res) => {
     try {
