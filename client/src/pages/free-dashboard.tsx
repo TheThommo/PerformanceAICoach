@@ -5,10 +5,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Brain, FileText, MessageCircle, Star, ArrowRight, Lock } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { LandingChatStableV2 } from "@/components/landing-chat-stable-v2";
 
 export default function FreeDashboard() {
   const { user } = useAuth();
   const [showUpgrade, setShowUpgrade] = useState(false);
+  const [showChat, setShowChat] = useState(false);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -73,11 +75,10 @@ export default function FreeDashboard() {
               <p className="text-sm text-gray-600 mb-4">
                 Get basic mental performance advice from Flo, your AI coach.
               </p>
-              <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => {
-                // Trigger floating chat
-                const chatEvent = new CustomEvent('openFloatingChat');
-                window.dispatchEvent(chatEvent);
-              }}>
+              <Button 
+                className="w-full bg-blue-600 hover:bg-blue-700" 
+                onClick={() => setShowChat(true)}
+              >
                 Start Chatting
               </Button>
             </CardContent>
@@ -224,17 +225,35 @@ export default function FreeDashboard() {
             <Button 
               size="lg" 
               variant="outline"
-              onClick={() => {
-                // Trigger floating chat
-                const chatEvent = new CustomEvent('openFloatingChat');
-                window.dispatchEvent(chatEvent);
-              }}
+              onClick={() => setShowChat(true)}
             >
               Chat with Flo
             </Button>
           </div>
         </div>
       </div>
+
+      {/* Chat with Flo - Shows when user clicks Start Chatting */}
+      {showChat && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-2xl max-w-md w-full max-h-[80vh] overflow-hidden">
+            <div className="flex justify-between items-center p-4 border-b">
+              <h3 className="text-lg font-semibold">Chat with Flo</h3>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setShowChat(false)}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </Button>
+            </div>
+            <div className="h-[500px]">
+              <LandingChatStableV2 isInlineWidget={true} />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
