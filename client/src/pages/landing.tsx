@@ -13,6 +13,7 @@ import { StableSignUpForm } from "@/components/stable-signup-form";
 
 export default function Landing() {
   const [showSignUp, setShowSignUp] = useState(false);
+  const [selectedTier, setSelectedTier] = useState<string>('free');
   const [showFloatingChat, setShowFloatingChat] = useState(false);
   const [showSignIn, setShowSignIn] = useState(false);
 
@@ -35,7 +36,7 @@ export default function Landing() {
   }, []);
 
   if (showSignUp) {
-    return <StableSignUpForm onBack={() => setShowSignUp(false)} />;
+    return <StableSignUpForm onBack={() => setShowSignUp(false)} selectedTier={selectedTier} />;
   }
 
   if (showSignIn) {
@@ -219,6 +220,7 @@ export default function Landing() {
                 </ul>
                 <Button variant="outline" className="w-full" onClick={() => {
                   window.scrollTo(0, 0);
+                  setSelectedTier('free');
                   setShowSignUp(true);
                 }}>
                   Get Started Free
@@ -251,6 +253,7 @@ export default function Landing() {
                 </ul>
                 <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => {
                   window.scrollTo(0, 0);
+                  setSelectedTier('premium');
                   setShowSignUp(true);
                 }}>
                   Get Premium Access
@@ -286,6 +289,7 @@ export default function Landing() {
                 </ul>
                 <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={() => {
                   window.scrollTo(0, 0);
+                  setSelectedTier('ultimate');
                   setShowSignUp(true);
                 }}>
                   Get Ultimate Access

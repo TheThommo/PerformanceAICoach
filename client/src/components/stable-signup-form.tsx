@@ -5,9 +5,10 @@ import { Brain } from "lucide-react";
 
 interface StableSignUpFormProps {
   onBack: () => void;
+  selectedTier?: string;
 }
 
-export function StableSignUpForm({ onBack }: StableSignUpFormProps) {
+export function StableSignUpForm({ onBack, selectedTier = 'free' }: StableSignUpFormProps) {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -71,7 +72,9 @@ export function StableSignUpForm({ onBack }: StableSignUpFormProps) {
           golfHandicap: parseInt(formData.golfHandicap) || null,
           golfExperience: formData.golfExperience,
           goals: formData.goals,
-          bio: formData.bio
+          bio: formData.bio,
+          subscriptionTier: selectedTier,
+          isSubscribed: selectedTier !== 'free'
         }),
       });
 
