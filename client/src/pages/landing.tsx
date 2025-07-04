@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +13,7 @@ import { StableSignUpForm } from "@/components/stable-signup-form";
 import Checkout from "./checkout";
 
 export default function Landing() {
+  const [, setLocation] = useLocation();
   const [showSignUp, setShowSignUp] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const [selectedTier, setSelectedTier] = useState<string>('free');
@@ -261,9 +262,7 @@ export default function Landing() {
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Priority support</li>
                 </ul>
                 <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => {
-                  window.scrollTo(0, 0);
-                  setSelectedTier('premium');
-                  setShowCheckout(true);
+                  setLocation('/checkout-simple?tier=premium');
                 }}>
                   Get Premium Access
                 </Button>
@@ -297,9 +296,7 @@ export default function Landing() {
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />VIP support channel</li>
                 </ul>
                 <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={() => {
-                  window.scrollTo(0, 0);
-                  setSelectedTier('ultimate');
-                  setShowCheckout(true);
+                  setLocation('/checkout-simple?tier=ultimate');
                 }}>
                   Get Ultimate Access
                 </Button>
