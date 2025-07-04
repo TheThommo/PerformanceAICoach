@@ -25,6 +25,16 @@ function CheckoutForm({ amount, tier }: CheckoutFormProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [, setLocation] = useLocation();
 
+  // Debug the state changes
+  useEffect(() => {
+    console.log('CheckoutForm render:', { 
+      stripe: !!stripe, 
+      elements: !!elements, 
+      amount, 
+      tier 
+    });
+  }, [stripe, elements, amount, tier]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -87,6 +97,15 @@ export default function CheckoutFinal() {
   const [error, setError] = useState<string | null>(null);
   const [tier, setTier] = useState<"premium" | "ultimate">("premium");
   const [, setLocation] = useLocation();
+
+  // Debug main component state
+  useEffect(() => {
+    console.log('CheckoutFinal state:', { 
+      clientSecret: !!clientSecret, 
+      error, 
+      tier 
+    });
+  }, [clientSecret, error, tier]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -186,6 +205,7 @@ export default function CheckoutFinal() {
           </CardHeader>
           <CardContent>
             <Elements 
+              key={`elements-${clientSecret}`}
               stripe={stripePromise} 
               options={{
                 clientSecret,

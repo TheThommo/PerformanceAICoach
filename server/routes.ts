@@ -113,6 +113,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Stripe hosted checkout session for tier purchases
+  app.post("/api/create-checkout-session", async (req, res) => {
+    try {
+      const { tier, amount, success_url, cancel_url } = req.body;
+      
+      if (!tier || !amount) {
+        return res.status(400).json({ message: "Tier and amount are required" });
+      }
+
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price_data: {
+              currency: 'usd',
+              product_data: {
+                name: tier === 'ultimate' ? 'Red2Blue Ultimate Access' : 'Red2Blue Premium Access',
+                description: tier === 'ultimate' 
+                  ? 'Lifetime access to all Red2Blue tools + human coaching' 
+                  : 'Lifetime access to all Red2Blue tools and AI coaching',
+              },
+              unit_amount: Math.round(amount * 100), // Convert to cents
+            },
+            quantity: 1,
+          },
+        ],
+        mode: 'payment',
+        success_url: success_url || `${req.headers.origin}/signup-after-payment?tier=${tier}`,
+        cancel_url: cancel_url || `${req.headers.origin}/checkout-hosted?tier=${tier}`,
+        metadata: {
+          tier: tier,
+          product: 'red2blue_access'
+        }
+      });
+      
+      res.json({ url: session.url });
+    } catch (error: any) {
+      console.error('Checkout session creation error:', error);
+      res.status(500).json({ 
+        message: "Error creating checkout session: " + error.message 
+      });
+    }
+  });
+
   // Demo route to upgrade subscription tier
   app.post("/api/auth/upgrade-tier", async (req: AuthRequest, res) => {
     if (!req.session.userId) {
