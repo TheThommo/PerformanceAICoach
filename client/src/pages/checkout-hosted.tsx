@@ -36,8 +36,16 @@ export default function CheckoutHosted() {
       const data = await response.json();
       
       if (data.url) {
-        // Redirect to Stripe Checkout
-        window.location.href = data.url;
+        console.log('Redirecting to Stripe URL:', data.url);
+        console.log('URL type:', typeof data.url);
+        console.log('URL length:', data.url.length);
+        console.log('URL starts with https:', data.url.startsWith('https://'));
+        
+        // Add a small delay to ensure logs are captured
+        setTimeout(() => {
+          console.log('Attempting redirect now...');
+          window.location.href = data.url;
+        }, 100);
       } else {
         throw new Error('Failed to create checkout session');
       }
