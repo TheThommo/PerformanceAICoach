@@ -31,6 +31,7 @@ import NotFound from "@/pages/not-found";
 import FreeDashboard from "@/pages/free-dashboard";
 import SignupAfterPayment from "@/pages/signup-after-payment";
 import CheckoutSimple from "@/pages/checkout-simple";
+import CheckoutFinal from "@/pages/checkout-final";
 import { canAccessDashboard } from "@/lib/permissions";
 
 function Router() {
@@ -56,6 +57,7 @@ function Router() {
           <Route path="/signup-after-payment" component={SignupAfterPayment} />
           <Route path="/signup-success" component={SignupAfterPayment} />
           <Route path="/checkout-simple" component={CheckoutSimple} />
+          <Route path="/checkout" component={CheckoutFinal} />
           <Route component={Landing} />
         </Switch>
       </ErrorBoundary>

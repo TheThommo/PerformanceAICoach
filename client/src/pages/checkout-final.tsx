@@ -8,29 +8,28 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Brain } from "lucide-react";
 
-// Make sure to call `loadStripe` outside of a component's render to avoid
-// recreating the `Stripe` object on every render.
 if (!import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
   throw new Error('Missing required Stripe key: VITE_STRIPE_PUBLIC_KEY');
 }
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
-const CheckoutForm = ({ amount, tier }: { amount: number; tier: string }) => {
+interface CheckoutFormProps {
+  amount: number;
+  tier: string;
+}
+
+function CheckoutForm({ amount, tier }: CheckoutFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
   const [, setLocation] = useLocation();
 
-  // Debug logging
-  useEffect(() => {
-    console.log('CheckoutForm mounted with:', { stripe: !!stripe, elements: !!elements, amount, tier });
-  }, [stripe, elements, amount, tier]);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!stripe || !elements) {
+      console.log('Stripe not ready:', { stripe: !!stripe, elements: !!elements });
       return;
     }
 
@@ -45,21 +44,18 @@ const CheckoutForm = ({ amount, tier }: { amount: number; tier: string }) => {
       });
 
       if (error) {
+        console.error('Payment error:', error);
         toast({
           title: "Payment Failed",
           description: error.message,
           variant: "destructive",
         });
       } else {
-        toast({
-          title: "Payment Successful",
-          description: "Thank you for your purchase!",
-        });
-        // Store the tier info for post-payment signup
         sessionStorage.setItem('paidTier', tier);
         setLocation(`/signup-after-payment?tier=${tier}`);
       }
     } catch (error) {
+      console.error('Payment exception:', error);
       toast({
         title: "Payment Error",
         description: "An unexpected error occurred. Please try again.",
@@ -70,48 +66,27 @@ const CheckoutForm = ({ amount, tier }: { amount: number; tier: string }) => {
     }
   };
 
-  if (!stripe || !elements) {
-    return (
-      <div className="space-y-6">
-        <div className="min-h-[200px] border border-gray-200 rounded-md p-4 flex items-center justify-center">
-          <p className="text-gray-500">Loading payment form...</p>
-        </div>
-        <Button disabled className="w-full bg-gray-400">
-          Loading...
-        </Button>
-      </div>
-    );
-  }
-
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="min-h-[200px] border border-gray-200 rounded-md p-4">
-        <PaymentElement 
-          onReady={() => console.log('PaymentElement is ready')}
-          onChange={(event) => console.log('PaymentElement changed:', event)}
-        />
+      <div className="min-h-[200px] p-4">
+        <PaymentElement />
       </div>
       <Button 
         type="submit" 
-        disabled={!stripe || isProcessing}
+        disabled={!stripe || !elements || isProcessing}
         className="w-full bg-blue-600 hover:bg-blue-700"
       >
         {isProcessing ? "Processing..." : `Pay $${amount} - Complete Purchase`}
       </Button>
     </form>
   );
-};
+}
 
-export default function CheckoutSimple() {
-  const [clientSecret, setClientSecret] = useState("");
+export default function CheckoutFinal() {
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [tier, setTier] = useState<"premium" | "ultimate">("premium");
-  const [loading, setLoading] = useState(true);
   const [, setLocation] = useLocation();
-
-  // Debug logging
-  useEffect(() => {
-    console.log('CheckoutSimple state:', { clientSecret: !!clientSecret, tier, loading });
-  }, [clientSecret, tier, loading]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -122,7 +97,6 @@ export default function CheckoutSimple() {
 
     const amount = tierParam === "ultimate" ? 2190 : 490;
     
-    // Create PaymentIntent as soon as the page loads
     apiRequest("POST", "/api/create-payment-intent", { 
       amount, 
       tier: tierParam || "premium",
@@ -130,18 +104,38 @@ export default function CheckoutSimple() {
     })
       .then((res) => res.json())
       .then((data) => {
-        setClientSecret(data.clientSecret);
-        setLoading(false);
+        if (data.clientSecret) {
+          setClientSecret(data.clientSecret);
+        } else {
+          setError('Failed to initialize payment');
+        }
       })
       .catch((error) => {
         console.error("Error creating payment intent:", error);
-        setLoading(false);
-        // Show error in the UI
-        setClientSecret("");
+        setError('Failed to initialize payment');
       });
-  }, []); // Empty dependency array to run only once
+  }, []);
 
-  if (loading) {
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-red-600">Payment Setup Error</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-gray-600 mb-4">{error}</p>
+            <Button onClick={() => setLocation("/")} variant="outline" className="w-full">
+              <ArrowLeft className="mr-2" size={16} />
+              Back to Pricing
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (!clientSecret) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center">
         <div className="text-center">
@@ -150,25 +144,6 @@ export default function CheckoutSimple() {
           </div>
           <p className="text-gray-600">Setting up secure payment...</p>
         </div>
-      </div>
-    );
-  }
-
-  if (!clientSecret) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle className="text-red-600">Payment Setup Error</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-600 mb-4">Unable to initialize payment. Please try again.</p>
-            <Button onClick={() => setLocation("/")} variant="outline" className="w-full">
-              <ArrowLeft className="mr-2" size={16} />
-              Back to Pricing
-            </Button>
-          </CardContent>
-        </Card>
       </div>
     );
   }
@@ -210,26 +185,23 @@ export default function CheckoutSimple() {
             </p>
           </CardHeader>
           <CardContent>
-            {clientSecret && (
-              <Elements 
-                key={clientSecret} // Force remount when clientSecret changes
-                stripe={stripePromise} 
-                options={{
-                  clientSecret,
-                  appearance: {
-                    theme: 'stripe' as const,
-                    variables: {
-                      colorPrimary: '#2563eb',
-                    }
+            <Elements 
+              stripe={stripePromise} 
+              options={{
+                clientSecret,
+                appearance: {
+                  theme: 'stripe' as const,
+                  variables: {
+                    colorPrimary: '#2563eb',
                   }
-                }}
-              >
-                <CheckoutForm 
-                  amount={currentTier.amount} 
-                  tier={tier}
-                />
-              </Elements>
-            )}
+                }
+              }}
+            >
+              <CheckoutForm 
+                amount={currentTier.amount} 
+                tier={tier}
+              />
+            </Elements>
           </CardContent>
         </Card>
       </div>
