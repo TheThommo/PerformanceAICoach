@@ -6,9 +6,10 @@ import { Brain } from "lucide-react";
 interface StableSignUpFormProps {
   onBack: () => void;
   selectedTier?: string;
+  isPaidUser?: boolean;
 }
 
-export function StableSignUpForm({ onBack, selectedTier = 'free' }: StableSignUpFormProps) {
+export function StableSignUpForm({ onBack, selectedTier = 'free', isPaidUser = false }: StableSignUpFormProps) {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',

@@ -29,6 +29,7 @@ import TermsOfService from "@/pages/terms-of-service";
 import RefundPolicy from "@/pages/refund-policy";
 import NotFound from "@/pages/not-found";
 import FreeDashboard from "@/pages/free-dashboard";
+import SignupAfterPayment from "@/pages/signup-after-payment";
 import { canAccessDashboard } from "@/lib/permissions";
 
 function Router() {
@@ -50,7 +51,11 @@ function Router() {
   if (!user) {
     return (
       <ErrorBoundary>
-        <Landing />
+        <Switch>
+          <Route path="/signup-after-payment" component={SignupAfterPayment} />
+          <Route path="/signup-success" component={SignupAfterPayment} />
+          <Route component={Landing} />
+        </Switch>
       </ErrorBoundary>
     );
   }

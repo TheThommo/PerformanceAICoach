@@ -87,6 +87,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Stripe payment route for tier purchases
+  app.post("/api/create-payment-intent", async (req, res) => {
+    try {
+      const { amount, tier, description } = req.body;
+      
+      if (!amount || !tier) {
+        return res.status(400).json({ message: "Amount and tier are required" });
+      }
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(amount * 100), // Convert to cents
+        currency: "usd",
+        description: description || `Red2Blue ${tier} Access`,
+        metadata: {
+          tier: tier,
+          product: 'red2blue_access'
+        }
+      });
+
+      res.json({ clientSecret: paymentIntent.client_secret });
+    } catch (error: any) {
+      console.error('Payment intent creation error:', error);
+      res.status(500).json({ message: "Error creating payment intent: " + error.message });
+    }
+  });
+
   // Demo route to upgrade subscription tier
   app.post("/api/auth/upgrade-tier", async (req: AuthRequest, res) => {
     if (!req.session.userId) {

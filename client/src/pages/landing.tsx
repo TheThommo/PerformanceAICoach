@@ -10,9 +10,11 @@ import { useToast } from "@/hooks/use-toast";
 import { LandingChatStableV2 as LandingChat } from "@/components/landing-chat-stable-v2";
 import { Footer } from "@/components/footer";
 import { StableSignUpForm } from "@/components/stable-signup-form";
+import Checkout from "./checkout";
 
 export default function Landing() {
   const [showSignUp, setShowSignUp] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
   const [selectedTier, setSelectedTier] = useState<string>('free');
   const [showFloatingChat, setShowFloatingChat] = useState(false);
   const [showSignIn, setShowSignIn] = useState(false);
@@ -34,6 +36,10 @@ export default function Landing() {
 
     return () => observer.disconnect();
   }, []);
+
+  if (showCheckout) {
+    return <Checkout tier={selectedTier} onBack={() => setShowCheckout(false)} />;
+  }
 
   if (showSignUp) {
     return <StableSignUpForm onBack={() => setShowSignUp(false)} selectedTier={selectedTier} />;
@@ -257,7 +263,7 @@ export default function Landing() {
                 <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => {
                   window.scrollTo(0, 0);
                   setSelectedTier('premium');
-                  setShowSignUp(true);
+                  setShowCheckout(true);
                 }}>
                   Get Premium Access
                 </Button>
@@ -293,7 +299,7 @@ export default function Landing() {
                 <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={() => {
                   window.scrollTo(0, 0);
                   setSelectedTier('ultimate');
-                  setShowSignUp(true);
+                  setShowCheckout(true);
                 }}>
                   Get Ultimate Access
                 </Button>
