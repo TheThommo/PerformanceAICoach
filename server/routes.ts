@@ -118,11 +118,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { tier, amount, success_url, cancel_url } = req.body;
       
+      console.log('Creating checkout session with:', { tier, amount, success_url, cancel_url });
+      
       if (!tier || !amount) {
         return res.status(400).json({ message: "Tier and amount are required" });
       }
 
-      const session = await stripe.checkout.sessions.create({
+      const sessionConfig = {
         payment_method_types: ['card'],
         line_items: [
           {
@@ -139,14 +141,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
             quantity: 1,
           },
         ],
-        mode: 'payment',
-        success_url: success_url || `${req.headers.origin}/signup-after-payment?tier=${tier}`,
-        cancel_url: cancel_url || `${req.headers.origin}/checkout-hosted?tier=${tier}`,
+        mode: 'payment' as const,
+        success_url: success_url || `https://${req.headers.host}/signup-after-payment?tier=${tier}&session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: cancel_url || `https://${req.headers.host}/checkout-hosted?tier=${tier}`,
         metadata: {
           tier: tier,
           product: 'red2blue_access'
         }
-      });
+      };
+
+      console.log('Session config:', JSON.stringify(sessionConfig, null, 2));
+
+      const session = await stripe.checkout.sessions.create(sessionConfig as any);
+      
+      console.log('Session created successfully:', { id: session.id, url: session.url });
       
       res.json({ url: session.url });
     } catch (error: any) {
