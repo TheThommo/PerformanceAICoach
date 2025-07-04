@@ -22,6 +22,11 @@ const CheckoutForm = ({ amount, tier }: { amount: number; tier: string }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [, setLocation] = useLocation();
 
+  // Debug logging
+  useEffect(() => {
+    console.log('CheckoutForm mounted with:', { stripe: !!stripe, elements: !!elements, amount, tier });
+  }, [stripe, elements, amount, tier]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -65,6 +70,19 @@ const CheckoutForm = ({ amount, tier }: { amount: number; tier: string }) => {
     }
   };
 
+  if (!stripe || !elements) {
+    return (
+      <div className="space-y-6">
+        <div className="min-h-[200px] border border-gray-200 rounded-md p-4 flex items-center justify-center">
+          <p className="text-gray-500">Loading payment form...</p>
+        </div>
+        <Button disabled className="w-full bg-gray-400">
+          Loading...
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="min-h-[200px] border border-gray-200 rounded-md p-4">
@@ -77,6 +95,8 @@ const CheckoutForm = ({ amount, tier }: { amount: number; tier: string }) => {
               spacedAccordionItems: false
             }
           }}
+          onReady={() => console.log('PaymentElement is ready')}
+          onChange={(event) => console.log('PaymentElement changed:', event)}
         />
       </div>
       <Button 
@@ -95,6 +115,11 @@ export default function CheckoutSimple() {
   const [tier, setTier] = useState<"premium" | "ultimate">("premium");
   const [loading, setLoading] = useState(true);
   const [, setLocation] = useLocation();
+
+  // Debug logging
+  useEffect(() => {
+    console.log('CheckoutSimple state:', { clientSecret: !!clientSecret, tier, loading });
+  }, [clientSecret, tier, loading]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
