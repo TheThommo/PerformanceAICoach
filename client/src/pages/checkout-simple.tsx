@@ -95,7 +95,11 @@ export default function CheckoutSimple() {
     const amount = tierParam === "ultimate" ? 2190 : 490;
     
     // Create PaymentIntent as soon as the page loads
-    apiRequest("POST", "/api/create-payment-intent", { amount })
+    apiRequest("POST", "/api/create-payment-intent", { 
+      amount, 
+      tier: tierParam || "premium",
+      description: `Red2Blue ${tierParam === "ultimate" ? "Ultimate" : "Premium"} Access - Lifetime`
+    })
       .then((res) => res.json())
       .then((data) => {
         setClientSecret(data.clientSecret);
