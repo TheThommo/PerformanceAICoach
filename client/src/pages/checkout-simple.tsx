@@ -67,7 +67,18 @@ const CheckoutForm = ({ amount, tier }: { amount: number; tier: string }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <PaymentElement />
+      <div className="min-h-[200px] border border-gray-200 rounded-md p-4">
+        <PaymentElement 
+          options={{
+            layout: {
+              type: 'tabs',
+              defaultCollapsed: false,
+              radios: false,
+              spacedAccordionItems: false
+            }
+          }}
+        />
+      </div>
       <Button 
         type="submit" 
         disabled={!stripe || isProcessing}
@@ -108,6 +119,8 @@ export default function CheckoutSimple() {
       .catch((error) => {
         console.error("Error creating payment intent:", error);
         setLoading(false);
+        // Show error in the UI
+        setClientSecret("");
       });
   }, []); // Empty dependency array to run only once
 
@@ -180,23 +193,26 @@ export default function CheckoutSimple() {
             </p>
           </CardHeader>
           <CardContent>
-            <Elements 
-              stripe={stripePromise} 
-              options={{
-                clientSecret,
-                appearance: {
-                  theme: 'stripe' as const,
-                  variables: {
-                    colorPrimary: '#2563eb',
+            {clientSecret && (
+              <Elements 
+                key={clientSecret} // Force remount when clientSecret changes
+                stripe={stripePromise} 
+                options={{
+                  clientSecret,
+                  appearance: {
+                    theme: 'stripe' as const,
+                    variables: {
+                      colorPrimary: '#2563eb',
+                    }
                   }
-                }
-              }}
-            >
-              <CheckoutForm 
-                amount={currentTier.amount} 
-                tier={tier}
-              />
-            </Elements>
+                }}
+              >
+                <CheckoutForm 
+                  amount={currentTier.amount} 
+                  tier={tier}
+                />
+              </Elements>
+            )}
           </CardContent>
         </Card>
       </div>
