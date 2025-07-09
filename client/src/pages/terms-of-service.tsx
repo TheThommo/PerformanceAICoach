@@ -45,7 +45,7 @@ export default function TermsOfService() {
           <div>
             <h4 className="font-semibold mb-2">Platform Features</h4>
             <ul className="list-disc list-inside space-y-1 text-gray-700">
-              <li>AI-powered mental performance coaching through "Thommo" coach</li>
+              <li>AI-powered mental performance coaching through "Flo" coach</li>
               <li>Mental skills assessments and progress tracking</li>
               <li>Comprehensive library of proven mental techniques</li>
               <li>Daily mood tracking and performance correlation analysis</li>

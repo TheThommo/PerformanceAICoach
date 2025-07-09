@@ -126,7 +126,7 @@ export default function Home() {
       {/* Main Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {/* Thommo Introduction */}
+        {/* Flo Introduction */}
         <div className="lg:col-span-2">
           <Card className="shadow-lg border-blue-200 bg-gradient-to-br from-blue-50 to-white">
             <CardHeader className="pb-4">

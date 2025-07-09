@@ -77,7 +77,7 @@ export default function Techniques() {
     onSuccess: () => {
       toast({
         title: "Idea Shared Successfully",
-        description: "Your technique has been shared with Thommo and the community. Thank you!",
+        description: "Your technique has been shared with Flo and the community. Thank you!",
       });
       setIdeaText("");
       setIdeaDialogOpen(false);
@@ -333,7 +333,7 @@ export default function Techniques() {
                   </div>
                   <h3 className="font-medium text-gray-900 mb-2">Suggest a Technique</h3>
                   <p className="text-gray-600 text-sm mb-4">
-                    Have a technique that works for you? Share it with Thommo.
+                    Have a technique that works for you? Share it with Flo.
                   </p>
                   <Button 
                     variant="outline" 
@@ -546,7 +546,7 @@ export default function Techniques() {
               Share Your Technique Idea
             </DialogTitle>
             <DialogDescription>
-              Share a technique that works for you. Thommo will review it and it may be added to our anonymous community collection.
+              Share a technique that works for you. Flo will review it and it may be added to our anonymous community collection.
             </DialogDescription>
           </DialogHeader>
           
@@ -566,7 +566,7 @@ export default function Techniques() {
             
             <div className="bg-blue-light rounded-lg p-3">
               <p className="text-sm text-blue-primary">
-                <strong>Privacy:</strong> Your idea will be shared anonymously with the community and sent to Thommo for potential integration into coaching sessions.
+                <strong>Privacy:</strong> Your idea will be shared anonymously with the community and sent to Flo for potential integration into coaching sessions.
               </p>
             </div>
             

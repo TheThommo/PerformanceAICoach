@@ -1372,13 +1372,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Idea content is required" });
       }
 
-      // Get user info for Thommo integration
+      // Get user info for Flo integration
       const user = await storage.getUser(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
 
-      // Create a chat session with Thommo about the shared idea
+      // Create a chat session with Flo about the shared idea
       const chatSession = await storage.createChatSession({
         userId,
         message: `User shared technique idea: "${idea}"`,
@@ -1413,7 +1413,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       res.json({ 
-        message: "Idea shared successfully with Thommo and community",
+        message: "Idea shared successfully with Flo and community",
         chatSessionId: chatSession.id
       });
     } catch (error) {

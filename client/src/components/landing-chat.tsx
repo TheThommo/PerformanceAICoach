@@ -173,7 +173,7 @@ export function LandingChat() {
           <div className="flex items-center space-x-2">
             <Brain size={20} />
             <div>
-              <CardTitle className="text-lg">Thommo AI Coach</CardTitle>
+              <CardTitle className="text-lg">Flo AI Coach</CardTitle>
               <p className="text-xs opacity-90">Red2Blue Mental Performance</p>
             </div>
           </div>

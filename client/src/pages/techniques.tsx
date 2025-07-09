@@ -73,7 +73,7 @@ export default function Techniques() {
     onSuccess: () => {
       toast({
         title: "Idea Shared Successfully",
-        description: "Your technique has been shared with Thommo and the community. Thank you!",
+        description: "Your technique has been shared with Flo and the community. Thank you!",
       });
       setIdeaText("");
       setIdeaDialogOpen(false);
@@ -314,7 +314,7 @@ export default function Techniques() {
                   </div>
                   <h3 className="font-medium text-gray-900 mb-2">Suggest a Technique</h3>
                   <p className="text-gray-600 text-sm mb-4">
-                    Have a technique that works for you? Share it with Thommo.
+                    Have a technique that works for you? Share it with Flo.
                   </p>
                   <Button 
                     variant="outline" 
@@ -628,7 +628,7 @@ export default function Techniques() {
                 disabled={!ideaText.trim() || ideaMutation.isPending}
                 className="flex-1"
               >
-                {ideaMutation.isPending ? "Sharing..." : "Share with Thommo"}
+                {ideaMutation.isPending ? "Sharing..." : "Share with Flo"}
               </Button>
               <Button 
                 variant="outline"

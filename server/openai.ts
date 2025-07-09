@@ -31,7 +31,7 @@ export async function getCoachingResponse(
   }
 ): Promise<CoachingResponse> {
   try {
-    const systemPrompt = `You are Thommo, an expert Red2Blue mental performance coach for elite golfers. Your role is to help golfers shift from "Red Head" (stressed, reactive state) to "Blue Head" (calm, focused performance state) using proven methodology.
+    const systemPrompt = `You are Flo, an expert Red2Blue mental performance coach for elite golfers. Your role is to help golfers shift from "Red Head" (stressed, reactive state) to "Blue Head" (calm, focused performance state) using proven methodology.
 
 COMPREHENSIVE RED2BLUE KNOWLEDGE BASE:
 
@@ -225,7 +225,7 @@ export async function generateAIProfile(
   }
 ): Promise<string> {
   const prompt = `
-    As Thommo, an expert Red2Blue mental performance coach, analyze this student's background and create a comprehensive, professional profile that will enhance their coaching experience.
+    As Flo, an expert Red2Blue mental performance coach, analyze this student's background and create a comprehensive, professional profile that will enhance their coaching experience.
 
     Student Information:
     - Username: ${userInfo.username}
@@ -254,7 +254,7 @@ export async function generateAIProfile(
       messages: [
         {
           role: "system",
-          content: "You are Thommo, an expert Red2Blue mental performance coach specializing in creating personalized athlete profiles."
+          content: "You are Flo, an expert Red2Blue mental performance coach specializing in creating personalized athlete profiles."
         },
         {
           role: "user",

@@ -121,7 +121,7 @@ export function AIChat({ userId }: AIChatProps) {
                 >
                   {msg.role === "assistant" && (
                     <div className="w-8 h-8 bg-blue-primary rounded-full flex items-center justify-center flex-shrink-0">
-                      <span className="text-white text-xs font-bold">T</span>
+                      <span className="text-white text-xs font-bold">F</span>
                     </div>
                   )}
                   
@@ -169,12 +169,12 @@ export function AIChat({ userId }: AIChatProps) {
             {mutation.isPending && (
               <div className="flex items-start space-x-3">
                 <div className="w-8 h-8 bg-blue-primary rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white text-xs font-bold">T</span>
+                  <span className="text-white text-xs font-bold">F</span>
                 </div>
                 <div className="bg-blue-light rounded-2xl rounded-tl-md p-4 max-w-xs">
                   <div className="flex items-center space-x-2">
                     <Loader2 className="animate-spin" size={16} />
-                    <span className="text-sm text-gray-600">Thommo is thinking...</span>
+                    <span className="text-sm text-gray-600">Flo is thinking...</span>
                   </div>
                 </div>
               </div>

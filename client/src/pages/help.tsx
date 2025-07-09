@@ -42,7 +42,7 @@ const faqData: FAQItem[] = [
   {
     id: "2", 
     question: "How do I get started with the platform?",
-    answer: "After creating your account, start with the Mental Skills X-Check assessment to establish your baseline. Then explore the techniques library, set up your daily mood tracking, and begin chatting with Thommo, your AI coach. The platform will generate personalized recommendations based on your usage patterns.",
+    answer: "After creating your account, start with the Mental Skills X-Check assessment to establish your baseline. Then explore the techniques library, set up your daily mood tracking, and begin chatting with Flo, your AI coach. The platform will generate personalized recommendations based on your usage patterns.",
     category: "getting-started",
     tags: ["onboarding", "first-steps", "assessment"]
   },
@@ -150,7 +150,7 @@ const faqData: FAQItem[] = [
   {
     id: "16",
     question: "What's included in the Premium ($490) subscription?",
-    answer: "Premium includes unlimited Thommo conversations, full access to all assessment tools, comprehensive progress tracking, personalized recommendations, all mental techniques, mood correlation analysis, and priority customer support.",
+    answer: "Premium includes unlimited Flo conversations, full access to all assessment tools, comprehensive progress tracking, personalized recommendations, all mental techniques, mood correlation analysis, and priority customer support.",
     category: "subscription",
     tags: ["premium", "pricing", "features", "unlimited"]
   },
@@ -180,7 +180,7 @@ const faqData: FAQItem[] = [
   {
     id: "20",
     question: "Who can see my assessment results and conversations?",
-    answer: "Only you can access your complete assessment results and Thommo conversations. Aggregated, anonymized data may be used to improve AI coaching effectiveness, but no individual user data is ever identifiable or shared.",
+    answer: "Only you can access your complete assessment results and Flo conversations. Aggregated, anonymized data may be used to improve AI coaching effectiveness, but no individual user data is ever identifiable or shared.",
     category: "privacy",
     tags: ["confidentiality", "assessments", "conversations", "privacy"]
   }

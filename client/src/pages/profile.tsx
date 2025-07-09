@@ -285,7 +285,7 @@ export default function Profile() {
                 <li>Practice your pre-shot routine daily</li>
                 <li>Complete mental skills assessments regularly</li>
                 <li>Use pressure scenarios to build confidence</li>
-                <li>Work with AI Coach Thommo for personalized guidance</li>
+                <li>Work with AI Coach Flo for personalized guidance</li>
               </ul>
             </div>
           </CardContent>

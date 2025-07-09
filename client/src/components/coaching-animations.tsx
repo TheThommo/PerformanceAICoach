@@ -187,7 +187,7 @@ export function CoachingAnimations({ context, userName, onComplete }: CoachingAn
             >
               {isTyping ? (
                 <div className="flex items-center space-x-1 text-gray-500">
-                  <span className="text-sm">Coach Thommo is typing</span>
+                  <span className="text-sm">Coach Flo is typing</span>
                   <motion.div
                     animate={{ opacity: [0, 1, 0] }}
                     transition={{ duration: 1, repeat: Infinity }}

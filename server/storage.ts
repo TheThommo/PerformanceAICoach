@@ -358,7 +358,7 @@ export class MemStorage implements IStorage {
 
     const testAssessment2: Assessment = {
       id: this.currentId++,
-      userId: 3, // thethommo user
+      userId: 3, // theflo user
       intensityScore: 82,
       decisionMakingScore: 78,
       diversionsScore: 85,

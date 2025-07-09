@@ -118,6 +118,7 @@ Red2Blue is a comprehensive AI-powered mental performance coaching platform desi
 
 ## Changelog
 
+- July 09, 2025. Completed comprehensive branding update - replaced all instances of "Thommo" with "Flo" throughout the entire platform, including server files, client components, pages, and documentation to ensure consistent AI coach branding
 - July 01, 2025. Initial setup
 
 ## User Preferences

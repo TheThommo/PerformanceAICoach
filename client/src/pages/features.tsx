@@ -167,7 +167,7 @@ const subscriptionTiers = [
     price: "$0",
     description: "Try the platform with basic features",
     features: [
-      "1 Thommo conversation",
+      "1 Flo conversation",
       "Mental Skills X-Check",
       "Control Circles Tool",
       "Daily mood tracking",
@@ -181,7 +181,7 @@ const subscriptionTiers = [
     price: "$490",
     description: "Full access to AI coaching and analytics (75% savings)",
     features: [
-      "Unlimited Thommo conversations",
+      "Unlimited Flo conversations",
       "AI recommendation engine",
       "Progress analytics dashboard",
       "All assessment tools",
