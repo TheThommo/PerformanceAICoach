@@ -27,6 +27,9 @@ import Features from "@/pages/features";
 import PrivacyPolicy from "@/pages/privacy-policy";
 import TermsOfService from "@/pages/terms-of-service";
 import RefundPolicy from "@/pages/refund-policy";
+import CookiePolicy from "@/pages/cookie-policy";
+import DataProcessing from "@/pages/data-processing";
+import AcceptableUse from "@/pages/acceptable-use";
 import NotFound from "@/pages/not-found";
 import FreeDashboard from "@/pages/free-dashboard";
 import SignupAfterPayment from "@/pages/signup-after-payment";
@@ -62,6 +65,13 @@ function Router() {
           <Route path="/checkout" component={CheckoutFinal} />
           <Route path="/checkout-hosted" component={CheckoutHosted} />
           <Route path="/payment-redirect" component={PaymentRedirect} />
+          {/* Legal pages - accessible to everyone */}
+          <Route path="/privacy-policy" component={PrivacyPolicy} />
+          <Route path="/terms-of-service" component={TermsOfService} />
+          <Route path="/refund-policy" component={RefundPolicy} />
+          <Route path="/cookie-policy" component={CookiePolicy} />
+          <Route path="/data-processing" component={DataProcessing} />
+          <Route path="/acceptable-use" component={AcceptableUse} />
           <Route component={Landing} />
         </Switch>
       </ErrorBoundary>
@@ -117,6 +127,9 @@ function Router() {
               <Route path="/privacy-policy" component={PrivacyPolicy} />
               <Route path="/terms-of-service" component={TermsOfService} />
               <Route path="/refund-policy" component={RefundPolicy} />
+              <Route path="/cookie-policy" component={CookiePolicy} />
+              <Route path="/data-processing" component={DataProcessing} />
+              <Route path="/acceptable-use" component={AcceptableUse} />
               <Route path="/payment-redirect" component={PaymentRedirect} />
               
               {/* Admin/Coach only routes */}
