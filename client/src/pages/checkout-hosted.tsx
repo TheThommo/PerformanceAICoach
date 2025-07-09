@@ -9,6 +9,7 @@ export default function CheckoutHosted() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [tier, setTier] = useState<"premium" | "ultimate">("premium");
+  const [checkoutUrl, setCheckoutUrl] = useState<string | null>(null);
   const [, setLocation] = useLocation();
 
   useEffect(() => {
@@ -37,15 +38,13 @@ export default function CheckoutHosted() {
       
       if (data.url) {
         console.log('Redirecting to Stripe URL:', data.url);
-        console.log('URL type:', typeof data.url);
-        console.log('URL length:', data.url.length);
-        console.log('URL starts with https:', data.url.startsWith('https://'));
         
-        // Add a small delay to ensure logs are captured
-        setTimeout(() => {
-          console.log('Attempting redirect now...');
-          window.location.href = data.url;
-        }, 100);
+        // Store the URL for manual link fallback
+        setCheckoutUrl(data.url);
+        
+        // Use the payment redirect page as an intermediate step
+        const redirectUrl = `/payment-redirect?url=${encodeURIComponent(data.url)}`;
+        setLocation(redirectUrl);
       } else {
         throw new Error('Failed to create checkout session');
       }
@@ -104,6 +103,19 @@ export default function CheckoutHosted() {
             {error && (
               <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
                 <p className="text-red-700">{error}</p>
+                {checkoutUrl && (
+                  <div className="mt-3">
+                    <a 
+                      href={checkoutUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                      <CreditCard className="mr-2" size={16} />
+                      Click here to continue payment
+                    </a>
+                  </div>
+                )}
               </div>
             )}
 

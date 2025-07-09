@@ -33,6 +33,7 @@ import SignupAfterPayment from "@/pages/signup-after-payment";
 import CheckoutSimple from "@/pages/checkout-simple";
 import CheckoutFinal from "@/pages/checkout-final";
 import CheckoutHosted from "@/pages/checkout-hosted";
+import PaymentRedirect from "@/pages/payment-redirect";
 import { canAccessDashboard } from "@/lib/permissions";
 
 function Router() {
@@ -60,6 +61,7 @@ function Router() {
           <Route path="/checkout-simple" component={CheckoutSimple} />
           <Route path="/checkout" component={CheckoutFinal} />
           <Route path="/checkout-hosted" component={CheckoutHosted} />
+          <Route path="/payment-redirect" component={PaymentRedirect} />
           <Route component={Landing} />
         </Switch>
       </ErrorBoundary>
@@ -115,6 +117,7 @@ function Router() {
               <Route path="/privacy-policy" component={PrivacyPolicy} />
               <Route path="/terms-of-service" component={TermsOfService} />
               <Route path="/refund-policy" component={RefundPolicy} />
+              <Route path="/payment-redirect" component={PaymentRedirect} />
               
               {/* Admin/Coach only routes */}
               {(user?.role === 'admin' || user?.role === 'coach') && (
