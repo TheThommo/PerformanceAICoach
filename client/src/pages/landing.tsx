@@ -262,7 +262,7 @@ export default function Landing() {
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Priority support</li>
                 </ul>
                 <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => {
-                  setLocation('/checkout-hosted?tier=premium');
+                  setLocation('/checkout?tier=premium');
                 }}>
                   Get Premium Access
                 </Button>
@@ -296,7 +296,7 @@ export default function Landing() {
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />VIP support channel</li>
                 </ul>
                 <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={() => {
-                  setLocation('/checkout-hosted?tier=ultimate');
+                  setLocation('/checkout?tier=ultimate');
                 }}>
                   Get Ultimate Access
                 </Button>
