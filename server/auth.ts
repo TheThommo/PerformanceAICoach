@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import session from 'express-session';
+import connectPg from 'connect-pg-simple';
 import { Request, Response, NextFunction } from 'express';
 import { storage } from './storage';
 import { generateAIProfile } from './openai';
@@ -10,7 +11,16 @@ declare module 'express-session' {
   }
 }
 
+// PostgreSQL session store to prevent memory leaks
+const PgSession = connectPg(session);
+const sessionStore = new PgSession({
+  conString: process.env.DATABASE_URL,
+  createTableIfMissing: true,
+  tableName: 'sessions',
+});
+
 export const sessionConfig = {
+  store: sessionStore,
   secret: process.env.SESSION_SECRET || 'your-secret-key-here',
   resave: false,
   saveUninitialized: false,
