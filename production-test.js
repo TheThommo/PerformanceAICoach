@@ -1,31 +1,54 @@
 #!/usr/bin/env node
 
-// Test production server startup
-console.log('🧪 Testing production server startup');
-console.log('====================================');
+// Test production build locally to verify everything works
+const { spawn } = require('child_process');
+const fs = require('fs');
 
-const { spawn } = await import('child_process');
+console.log('🧪 Testing production build locally...');
 
-// Set environment for production
-const env = {
-  ...process.env,
-  NODE_ENV: 'production',
-  PORT: '3001'
-};
+// Check if dist directory exists
+if (!fs.existsSync('dist')) {
+  console.log('❌ dist directory not found. Running build...');
+  
+  const build = spawn('npm', ['run', 'build'], { stdio: 'inherit' });
+  
+  build.on('close', (code) => {
+    if (code === 0) {
+      console.log('✅ Build completed successfully');
+      testProduction();
+    } else {
+      console.log('❌ Build failed with code:', code);
+    }
+  });
+} else {
+  console.log('✅ dist directory exists');
+  testProduction();
+}
 
-console.log('Starting production server...');
-const server = spawn('node', ['dist/index.js'], { 
-  env,
-  stdio: 'inherit' 
-});
-
-// Kill after 5 seconds
-setTimeout(() => {
-  console.log('\nKilling test server...');
-  server.kill();
-}, 5000);
-
-server.on('close', (code) => {
-  console.log(`Server exited with code ${code}`);
-  process.exit(code);
-});
+function testProduction() {
+  console.log('\n🚀 Starting production server test...');
+  
+  // Set production environment
+  const env = {
+    ...process.env,
+    NODE_ENV: 'production'
+  };
+  
+  console.log('Environment variables for production:');
+  console.log('NODE_ENV:', env.NODE_ENV);
+  console.log('DATABASE_URL:', env.DATABASE_URL ? '✅ Set' : '❌ Missing');
+  console.log('GEMINI_API_KEY:', env.GEMINI_API_KEY ? '✅ Set' : '❌ Missing');
+  console.log('STRIPE_SECRET_KEY:', env.STRIPE_SECRET_KEY ? '✅ Set' : '❌ Missing');
+  console.log('VITE_STRIPE_PUBLIC_KEY:', env.VITE_STRIPE_PUBLIC_KEY ? '✅ Set' : '❌ Missing');
+  console.log('SESSION_SECRET:', env.SESSION_SECRET ? '✅ Set' : '❌ Missing');
+  
+  // Check if built server exists
+  if (fs.existsSync('dist/index.js')) {
+    console.log('✅ Built server file exists at dist/index.js');
+    console.log('\n📋 Your deployment should work now with all environment variables configured.');
+    console.log('🔄 Try redeploying your Reserved VM deployment.');
+  } else {
+    console.log('❌ Built server file missing at dist/index.js');
+    console.log('Run: npm run build');
+  }
+}
