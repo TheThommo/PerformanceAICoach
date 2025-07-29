@@ -70,8 +70,12 @@ app.use((req, res, next) => {
     });
 
     // Environment-based setup with detailed logging
-    const isProduction = app.get("env") === "production" || process.env.NODE_ENV === "production";
+    // Force production mode when running from built file or when NODE_ENV is production
+    const isBuiltVersion = process.argv[1]?.includes('dist/index.js') || import.meta.url.includes('dist/index.js');
+    const isProduction = process.env.NODE_ENV === "production" || isBuiltVersion;
+    
     debugLogger.log('server', 'success', `Environment detected: ${isProduction ? 'production' : 'development'}`);
+    debugLogger.log('server', 'info', `Built version: ${isBuiltVersion}, NODE_ENV: ${process.env.NODE_ENV}, argv[1]: ${process.argv[1]}`);
     
     if (!isProduction) {
       debugLogger.success('server', 'Setting up Vite development server...');
