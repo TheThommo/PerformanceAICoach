@@ -4,6 +4,7 @@ import connectPg from 'connect-pg-simple';
 import { Request, Response, NextFunction } from 'express';
 import { storage } from './storage';
 import { generateAIProfile } from './openai';
+import { debugLogger, withErrorLogging } from './debug';
 
 declare module 'express-session' {
   interface SessionData {
@@ -13,15 +14,40 @@ declare module 'express-session' {
 
 // PostgreSQL session store to prevent memory leaks
 const PgSession = connectPg(session);
+
+try {
+  debugLogger.success('auth', 'Initializing PostgreSQL session store...');
+  const sessionStore = new PgSession({
+    conString: process.env.DATABASE_URL,
+    createTableIfMissing: true,
+    tableName: 'sessions',
+  });
+  debugLogger.success('auth', 'PostgreSQL session store initialized successfully');
+} catch (error: any) {
+  debugLogger.error('auth', 'Failed to initialize PostgreSQL session store', {
+    error: error.message,
+    databaseUrl: process.env.DATABASE_URL ? 'SET' : 'MISSING'
+  });
+  throw error;
+}
+
 const sessionStore = new PgSession({
   conString: process.env.DATABASE_URL,
   createTableIfMissing: true,
   tableName: 'sessions',
 });
 
+// Session configuration with logging
+const sessionSecret = process.env.SESSION_SECRET;
+if (!sessionSecret) {
+  debugLogger.error('auth', 'SESSION_SECRET environment variable is missing - using fallback');
+} else {
+  debugLogger.success('auth', 'SESSION_SECRET found and configured');
+}
+
 export const sessionConfig = {
   store: sessionStore,
-  secret: process.env.SESSION_SECRET || 'your-secret-key-here',
+  secret: sessionSecret || 'your-secret-key-here',
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -36,24 +62,45 @@ export interface AuthRequest extends Request {
   user?: any;
 }
 
-export const requireAuth = async (req: AuthRequest, res: Response, next: NextFunction) => {
+export const requireAuth = withErrorLogging('auth', 'authentication check', async (req: AuthRequest, res: Response, next: NextFunction) => {
+  debugLogger.log('auth', 'success', `Auth check for ${req.method} ${req.path}`, {
+    sessionId: req.session.id,
+    hasUserId: !!req.session.userId,
+    userAgent: req.get('User-Agent')
+  });
+
   if (!req.session.userId) {
+    debugLogger.warning('auth', 'Authentication required - no session userId', {
+      sessionId: req.session.id,
+      path: req.path
+    });
     return res.status(401).json({ message: 'Authentication required' });
   }
 
   try {
+    debugLogger.log('auth', 'success', `Looking up user ${req.session.userId}`);
     const user = await storage.getUser(req.session.userId);
     if (!user) {
+      debugLogger.warning('auth', 'User not found in database', {
+        userId: req.session.userId,
+        sessionId: req.session.id
+      });
       return res.status(401).json({ message: 'User not found' });
     }
 
     req.userId = user.id;
     req.user = user;
+    debugLogger.success('auth', `User authenticated: ${user.email} (ID: ${user.id})`);
     next();
-  } catch (error) {
+  } catch (error: any) {
+    debugLogger.error('auth', 'Authentication error during user lookup', {
+      userId: req.session.userId,
+      error: error.message,
+      stack: error.stack
+    });
     return res.status(500).json({ message: 'Authentication error' });
   }
-};
+});
 
 export const requirePremium = async (req: AuthRequest, res: Response, next: NextFunction) => {
   if (!req.user) {

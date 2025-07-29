@@ -8,17 +8,38 @@ import { insertAssessmentSchema, insertChatSessionSchema, insertUserProgressSche
 import { getCoachingResponse, analyzeAssessmentResults, generatePersonalizedPlan } from "./gemini";
 import { sessionConfig, requireAuth, requirePremium, requireAdmin, requireCoach, registerUser, loginUser, AuthRequest } from "./auth";
 import { recommendationEngine } from "./recommendationEngine";
+import { debugLogger, withErrorLogging } from "./debug";
 
 if (!process.env.STRIPE_SECRET_KEY) {
+  debugLogger.error('stripe', 'Missing required Stripe secret: STRIPE_SECRET_KEY');
   throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
 }
+
+debugLogger.success('stripe', 'Initializing Stripe with secret key');
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: "2025-05-28.basil",
 });
+debugLogger.success('stripe', 'Stripe initialized successfully');
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Session middleware
+  debugLogger.success('routes', 'Starting route registration...');
+  
+  // Session middleware with logging
+  debugLogger.success('routes', 'Configuring session middleware');
   app.use(session(sessionConfig));
+  
+  // Client error reporting endpoint for deployment debugging
+  app.post('/api/client-error', (req, res) => {
+    const { diagnostic, userAgent, url, timestamp } = req.body;
+    debugLogger.error('client-error', `Client error reported: ${diagnostic.message}`, {
+      component: diagnostic.component,
+      userAgent,
+      url,
+      timestamp,
+      details: diagnostic.details
+    });
+    res.json({ received: true });
+  });
 
   // Authentication routes
   app.post("/api/auth/register", async (req, res) => {
