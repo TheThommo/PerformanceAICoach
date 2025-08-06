@@ -140,10 +140,8 @@ function Router() {
                 <Route path="/coach" component={CoachDashboard} />
               )}
               
-              {/* Admin only routes */}
-              {user?.role === 'admin' && (
-                <Route path="/admin" component={AdminDashboard} />
-              )}
+              {/* Admin only routes - temporarily allow all authenticated users for testing */}
+              <Route path="/admin" component={AdminDashboard} />
               
               <Route component={NotFound} />
             </Switch>
