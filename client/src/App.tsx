@@ -37,6 +37,7 @@ import CheckoutSimple from "@/pages/checkout-simple";
 import CheckoutFinal from "@/pages/checkout-final";
 import CheckoutHosted from "@/pages/checkout-hosted";
 import PaymentRedirect from "@/pages/payment-redirect";
+import AdminDashboard from "@/pages/admin-dashboard";
 import { canAccessDashboard } from "@/lib/permissions";
 
 function Router() {
@@ -135,6 +136,11 @@ function Router() {
               {/* Admin/Coach only routes */}
               {(user?.role === 'admin' || user?.role === 'coach') && (
                 <Route path="/coach" component={CoachDashboard} />
+              )}
+              
+              {/* Admin only routes */}
+              {user?.role === 'admin' && (
+                <Route path="/admin" component={AdminDashboard} />
               )}
               
               <Route component={NotFound} />

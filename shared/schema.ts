@@ -515,3 +515,29 @@ export const insertUserGoalSchema = createInsertSchema(userGoals).omit({
 
 export type UserGoal = typeof userGoals.$inferSelect;
 export type InsertUserGoal = z.infer<typeof insertUserGoalSchema>;
+
+// Admin interface types
+export interface AdminStats {
+  totalUsers: number;
+  activeSubscriptions: number;
+  monthlyRevenue: number;
+  totalRevenue: number;
+  freeUsers: number;
+  premiumUsers: number;
+  ultimateUsers: number;
+  newUsersThisMonth: number;
+  churnRate: number;
+}
+
+export interface PaymentRecord {
+  id: string;
+  userId: number;
+  amount: number;
+  currency: string;
+  status: string;
+  description: string;
+  subscriptionTier: string;
+  createdAt: string;
+  userEmail: string;
+  userName: string;
+}

@@ -42,6 +42,11 @@ export function Navigation() {
     if (user?.role === 'admin' || user?.role === 'coach') {
       baseItems.push({ href: "/coach", label: "Coach Dashboard", icon: Users });
     }
+    
+    // Add admin-only items
+    if (user?.role === 'admin') {
+      baseItems.push({ href: "/admin", label: "Admin Panel", icon: Settings });
+    }
 
     return baseItems;
   };

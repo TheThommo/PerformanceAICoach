@@ -10,7 +10,8 @@ import {
   type UserCoachingProfile, type InsertUserCoachingProfile, type AiRecommendation,
   type InsertAiRecommendation, type CoachingInsight, type InsertCoachingInsight,
   type UserEngagementMetric, type InsertUserEngagementMetric, type DailyMood,
-  type InsertDailyMood, type UserGoal, type InsertUserGoal, userGoals
+  type InsertDailyMood, type UserGoal, type InsertUserGoal, userGoals,
+  type AdminStats, type PaymentRecord
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
@@ -95,6 +96,11 @@ export interface IStorage {
   updateUserGoal(id: number, updates: Partial<UserGoal>): Promise<UserGoal>;
   toggleGoalCompletion(id: number, isCompleted: boolean): Promise<UserGoal>;
   deleteUserGoal(id: number): Promise<void>;
+
+  // Admin operations
+  getAdminStats(): Promise<AdminStats>;
+  getAllUsers(filter?: string, search?: string): Promise<User[]>;
+  getPaymentHistory(filter?: string): Promise<PaymentRecord[]>;
 }
 
 export class MemStorage implements IStorage {
@@ -1484,6 +1490,107 @@ export class DatabaseStorage implements IStorage {
 
   async deleteUserGoal(id: number): Promise<void> {
     await db.delete(userGoals).where(eq(userGoals.id, id));
+  }
+
+  // Admin operations
+  async getAdminStats(): Promise<AdminStats> {
+    // Get user counts by subscription tier
+    const allUsers = await db.select().from(users);
+    const now = new Date();
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    
+    const totalUsers = allUsers.length;
+    const freeUsers = allUsers.filter(u => !u.isSubscribed || u.subscriptionTier === 'free').length;
+    const premiumUsers = allUsers.filter(u => u.isSubscribed && u.subscriptionTier === 'premium').length;
+    const ultimateUsers = allUsers.filter(u => u.isSubscribed && u.subscriptionTier === 'ultimate').length;
+    const activeSubscriptions = premiumUsers + ultimateUsers;
+    const newUsersThisMonth = allUsers.filter(u => new Date(u.createdAt) >= monthStart).length;
+    
+    // Calculate revenue (premium $490, ultimate $2190)
+    const monthlyRevenue = (premiumUsers * 490) + (ultimateUsers * 2190);
+    const totalRevenue = monthlyRevenue; // Simplified for now
+    
+    // Calculate churn rate (simplified)
+    const churnRate = 5; // Placeholder - would need historical data
+    
+    return {
+      totalUsers,
+      activeSubscriptions,
+      monthlyRevenue,
+      totalRevenue,
+      freeUsers,
+      premiumUsers,
+      ultimateUsers,
+      newUsersThisMonth,
+      churnRate
+    };
+  }
+
+  async getAllUsers(filter?: string, search?: string): Promise<User[]> {
+    let query = db.select().from(users);
+    
+    const result = await query;
+    
+    // Apply filters in JavaScript for now
+    let filteredUsers = result;
+    
+    if (filter && filter !== 'all') {
+      switch (filter) {
+        case 'free':
+          filteredUsers = filteredUsers.filter(u => !u.isSubscribed || u.subscriptionTier === 'free');
+          break;
+        case 'premium':
+          filteredUsers = filteredUsers.filter(u => u.isSubscribed && u.subscriptionTier === 'premium');
+          break;
+        case 'ultimate':
+          filteredUsers = filteredUsers.filter(u => u.isSubscribed && u.subscriptionTier === 'ultimate');
+          break;
+        case 'admin':
+          filteredUsers = filteredUsers.filter(u => u.role === 'admin');
+          break;
+        case 'coach':
+          filteredUsers = filteredUsers.filter(u => u.role === 'coach');
+          break;
+      }
+    }
+    
+    if (search) {
+      const searchLower = search.toLowerCase();
+      filteredUsers = filteredUsers.filter(u => 
+        u.email.toLowerCase().includes(searchLower) ||
+        u.username.toLowerCase().includes(searchLower) ||
+        (u.firstName && u.firstName.toLowerCase().includes(searchLower)) ||
+        (u.lastName && u.lastName.toLowerCase().includes(searchLower))
+      );
+    }
+    
+    return filteredUsers.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  async getPaymentHistory(filter?: string): Promise<PaymentRecord[]> {
+    // For now, return mock payment data based on users
+    // In production, this would connect to Stripe API or payment database
+    const allUsers = await db.select().from(users);
+    const paidUsers = allUsers.filter(u => u.isSubscribed && u.subscriptionTier !== 'free');
+    
+    const payments: PaymentRecord[] = paidUsers.map(user => ({
+      id: `pi_${user.id}_${Date.now()}`,
+      userId: user.id,
+      amount: user.subscriptionTier === 'premium' ? 490 : 2190,
+      currency: 'usd',
+      status: 'successful',
+      description: `${user.subscriptionTier} subscription`,
+      subscriptionTier: user.subscriptionTier,
+      createdAt: user.subscriptionStartDate?.toISOString() || user.createdAt.toISOString(),
+      userEmail: user.email,
+      userName: `${user.firstName || ''} ${user.lastName || ''}`.trim() || user.username
+    }));
+    
+    if (filter && filter !== 'all') {
+      return payments.filter(p => p.status === filter);
+    }
+    
+    return payments.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }
 }
 

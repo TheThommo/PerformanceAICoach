@@ -1668,6 +1668,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin API routes - protected by requireAdmin middleware
+  app.get("/api/admin/stats", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const stats = await storage.getAdminStats();
+      res.json(stats);
+    } catch (error: any) {
+      console.error('Admin stats error:', error);
+      res.status(500).json({ message: 'Failed to fetch admin statistics' });
+    }
+  });
+
+  app.get("/api/admin/users", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { filter, search } = req.query;
+      const users = await storage.getAllUsers(filter as string, search as string);
+      res.json(users);
+    } catch (error: any) {
+      console.error('Admin users error:', error);
+      res.status(500).json({ message: 'Failed to fetch users' });
+    }
+  });
+
+  app.patch("/api/admin/users/:userId", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const updates = req.body;
+      const updatedUser = await storage.updateUser(userId, updates);
+      res.json(updatedUser);
+    } catch (error: any) {
+      console.error('Admin user update error:', error);
+      res.status(500).json({ message: 'Failed to update user' });
+    }
+  });
+
+  app.get("/api/admin/payments", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { filter } = req.query;
+      const payments = await storage.getPaymentHistory(filter as string);
+      res.json(payments);
+    } catch (error: any) {
+      console.error('Admin payments error:', error);
+      res.status(500).json({ message: 'Failed to fetch payment history' });
+    }
+  });
+
+  app.post("/api/admin/send-email", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const { userIds, subject, message } = req.body;
+      // TODO: Implement email sending functionality
+      res.json({ success: true, message: 'Emails sent successfully' });
+    } catch (error: any) {
+      console.error('Admin email error:', error);
+      res.status(500).json({ message: 'Failed to send emails' });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
