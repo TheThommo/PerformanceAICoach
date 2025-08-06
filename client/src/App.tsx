@@ -38,6 +38,7 @@ import CheckoutFinal from "@/pages/checkout-final";
 import CheckoutHosted from "@/pages/checkout-hosted";
 import PaymentRedirect from "@/pages/payment-redirect";
 import AdminDashboard from "@/pages/admin-dashboard";
+import AdminLogin from "@/pages/admin-login";
 import { canAccessDashboard } from "@/lib/permissions";
 
 function Router() {
@@ -66,6 +67,7 @@ function Router() {
           <Route path="/checkout" component={CheckoutFinal} />
           <Route path="/checkout-hosted" component={CheckoutHosted} />
           <Route path="/payment-redirect" component={PaymentRedirect} />
+          <Route path="/admin-login" component={AdminLogin} />
           {/* Legal pages - accessible to everyone */}
           <Route path="/privacy-policy" component={PrivacyPolicy} />
           <Route path="/terms-of-service" component={TermsOfService} />
