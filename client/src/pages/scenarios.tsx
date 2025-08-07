@@ -39,7 +39,7 @@ export default function Scenarios() {
         return Target;
       case "recovery":
         return AlertTriangle;
-      case "putting":
+      case "execution":
         return CheckCircle2;
       default:
         return Brain;
@@ -78,7 +78,7 @@ export default function Scenarios() {
             Pressure Scenarios
           </h1>
           <p className="text-gray-600 text-lg">
-            Practice mental resilience with realistic golf pressure situations. Each scenario helps you recognize Red Head triggers and apply Blue Head techniques.
+            Practice mental resilience with realistic competitive pressure situations. Each scenario helps you recognize Red Head triggers and apply Blue Head techniques.
           </p>
         </div>
 

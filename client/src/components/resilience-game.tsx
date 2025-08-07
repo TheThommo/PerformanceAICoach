@@ -46,9 +46,9 @@ interface GameState {
 const gameScenarios: GameScenario[] = [
   {
     id: 1,
-    title: "Pressure Putt",
-    description: "You're facing a crucial 6-foot putt to win the tournament",
-    situation: "Standing over the final putt, you notice the gallery has gone silent. Your hands feel slightly shaky, and negative thoughts creep in about missing.",
+    title: "Pressure Moment",
+    description: "You're facing a crucial moment to win the competition",
+    situation: "Standing ready for the decisive play, you notice the crowd has gone silent. Your hands feel slightly shaky, and negative thoughts creep in about failing.",
     options: [
       {
         id: "a",
@@ -59,7 +59,7 @@ const gameScenarios: GameScenario[] = [
       },
       {
         id: "b",
-        text: "Think about all the putts you've made before",
+        text: "Think about all the successful plays you've made before",
         resilienceImpact: 10,
         explanation: "Good positive thinking, but focusing on past performance can sometimes add pressure. Present-moment awareness is better.",
         colorCode: "yellow"
@@ -73,7 +73,7 @@ const gameScenarios: GameScenario[] = [
       },
       {
         id: "d",
-        text: "Rush the putt to get it over with",
+        text: "Rush the play to get it over with",
         resilienceImpact: -5,
         explanation: "Rushing breaks your rhythm and increases mistake likelihood. Slowing down builds confidence.",
         colorCode: "red"
@@ -83,9 +83,9 @@ const gameScenarios: GameScenario[] = [
   },
   {
     id: 2,
-    title: "Bad Weather Challenge",
-    description: "Heavy rain and wind are affecting your game significantly",
-    situation: "You're 3 strokes behind with 6 holes left. The weather has turned nasty, and you just hit two poor shots in a row due to the conditions.",
+    title: "Adverse Conditions",
+    description: "Difficult conditions are affecting your performance significantly",
+    situation: "You're behind with limited time left. The conditions have turned challenging, and you just made two poor plays in a row due to the circumstances.",
     options: [
       {
         id: "a",
@@ -96,7 +96,7 @@ const gameScenarios: GameScenario[] = [
       },
       {
         id: "b",
-        text: "Get frustrated and blame the weather",
+        text: "Get frustrated and blame the conditions",
         resilienceImpact: -8,
         explanation: "Blaming external factors wastes mental energy and keeps you stuck in negativity.",
         colorCode: "red"
@@ -121,12 +121,12 @@ const gameScenarios: GameScenario[] = [
   {
     id: 3,
     title: "Equipment Malfunction",
-    description: "Your favorite driver breaks during the round",
-    situation: "On the 8th tee, your trusted driver shaft snaps. You're having a great round and this could derail your momentum completely.",
+    description: "Your favorite equipment breaks during competition",
+    situation: "Midway through, your trusted equipment fails. You're having a great performance and this could derail your momentum completely.",
     options: [
       {
         id: "a",
-        text: "Stay calm and adapt with available clubs",
+        text: "Stay calm and adapt with available options",
         resilienceImpact: 14,
         explanation: "Perfect resilience response! Staying calm and adapting quickly shows excellent mental flexibility.",
         colorCode: "green"
@@ -135,14 +135,14 @@ const gameScenarios: GameScenario[] = [
         id: "b",
         text: "Get angry and let it affect your attitude",
         resilienceImpact: -10,
-        explanation: "Understandable but destructive. Anger clouds judgment and affects subsequent shots.",
+        explanation: "Understandable but destructive. Anger clouds judgment and affects subsequent performance.",
         colorCode: "red"
       },
       {
         id: "c",
-        text: "Worry about how this will impact your score",
+        text: "Worry about how this will impact your performance",
         resilienceImpact: -3,
-        explanation: "Natural concern but worrying about future holes takes you out of the present moment.",
+        explanation: "Natural concern but worrying about future plays takes you out of the present moment.",
         colorCode: "orange"
       },
       {
