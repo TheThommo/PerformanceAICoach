@@ -1,21 +1,58 @@
-import { useState } from "react";
-import { Link } from "wouter";
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Brain, FileText, MessageCircle, Star, ArrowRight, Lock } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Brain, FileText, MessageCircle, Star, ArrowRight, Lock, TrendingUp, Calendar, CheckCircle } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { LandingChatStableV2 } from "@/components/landing-chat-stable-v2";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { queryClient } from "@/lib/queryClient";
+import { useQuery } from "@tanstack/react-query";
 
 export default function FreeDashboard() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const [location] = useLocation();
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [isUpgrading, setIsUpgrading] = useState(false);
+  const [showAssessmentSuccess, setShowAssessmentSuccess] = useState(false);
+
+  // Check if user just completed assessment
+  useEffect(() => {
+    const params = new URLSearchParams(location.split('?')[1] || '');
+    if (params.get('assessment') === 'completed') {
+      setShowAssessmentSuccess(true);
+      // Clean up URL without page refresh
+      window.history.replaceState({}, '', '/');
+      // Hide success message after 8 seconds
+      setTimeout(() => setShowAssessmentSuccess(false), 8000);
+    }
+  }, [location]);
+
+  // Fetch user's assessment data
+  const { data: latestAssessment } = useQuery<{
+    id: number;
+    userId: number;
+    intensityScore: number;
+    decisionMakingScore: number;
+    diversionsScore: number;
+    executionScore: number;
+    createdAt: string;
+  }>({
+    queryKey: ["/api/assessments/latest", user?.id],
+    enabled: !!user?.id,
+  });
+
+  // Fetch user's progress data
+  const { data: progressData } = useQuery({
+    queryKey: ["/api/progress", user?.id],
+    enabled: !!user?.id,
+  });
 
   const upgradeUser = async (tier: string) => {
     setIsUpgrading(true);
@@ -69,6 +106,144 @@ export default function FreeDashboard() {
           </p>
         </div>
 
+        {/* Assessment Completion Success Message */}
+        {showAssessmentSuccess && (
+          <Alert className="mb-6 border-green-200 bg-green-50">
+            <CheckCircle className="h-4 w-4 text-green-600" />
+            <AlertDescription className="text-green-800">
+              <strong>Assessment Complete!</strong> Great job completing your mental skills evaluation. 
+              Your results are now displayed below. Scroll down to see your detailed performance breakdown and personalized recommendations.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Assessment Results Section - Show if user has completed assessment */}
+        {latestAssessment && (
+          <div className="mb-8">
+            <div className="bg-white rounded-lg border shadow-sm p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                  <TrendingUp className="w-6 h-6 text-blue-600" />
+                  Your Assessment Results
+                </h2>
+                <Badge variant="outline" className="text-green-600 border-green-600">
+                  <Calendar className="w-3 h-3 mr-1" />
+                  Completed {new Date(latestAssessment.createdAt).toLocaleDateString()}
+                </Badge>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                {/* Intensity Score */}
+                <Card className="border-l-4 border-l-red-500">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600">Intensity Management</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-2xl font-bold text-gray-900">{latestAssessment.intensityScore}</span>
+                      <span className="text-sm text-gray-500">/10</span>
+                    </div>
+                    <Progress value={latestAssessment.intensityScore * 10} className="h-2" />
+                  </CardContent>
+                </Card>
+
+                {/* Decision Making Score */}
+                <Card className="border-l-4 border-l-blue-500">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600">Decision Making</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-2xl font-bold text-gray-900">{latestAssessment.decisionMakingScore}</span>
+                      <span className="text-sm text-gray-500">/10</span>
+                    </div>
+                    <Progress value={latestAssessment.decisionMakingScore * 10} className="h-2" />
+                  </CardContent>
+                </Card>
+
+                {/* Diversions Score */}
+                <Card className="border-l-4 border-l-yellow-500">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600">Diversion Control</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-2xl font-bold text-gray-900">{latestAssessment.diversionsScore}</span>
+                      <span className="text-sm text-gray-500">/10</span>
+                    </div>
+                    <Progress value={latestAssessment.diversionsScore * 10} className="h-2" />
+                  </CardContent>
+                </Card>
+
+                {/* Execution Score */}
+                <Card className="border-l-4 border-l-green-500">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-sm font-medium text-gray-600">Execution</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-2xl font-bold text-gray-900">{latestAssessment.executionScore}</span>
+                      <span className="text-sm text-gray-500">/10</span>
+                    </div>
+                    <Progress value={latestAssessment.executionScore * 10} className="h-2" />
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Overall Score */}
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 mb-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">Overall Mental Performance Score</h3>
+                    <p className="text-sm text-gray-600">Based on your Red2Blue assessment</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-3xl font-bold text-purple-600">
+                      {Math.round((latestAssessment.intensityScore + latestAssessment.decisionMakingScore + latestAssessment.diversionsScore + latestAssessment.executionScore) / 4 * 10)}%
+                    </div>
+                    <p className="text-sm text-gray-500">Performance Level</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Recommendations Preview */}
+              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <h4 className="font-semibold text-gray-900 mb-2">🎯 Key Improvement Areas</h4>
+                <p className="text-sm text-gray-700 mb-3">
+                  Based on your assessment, we recommend focusing on areas where you scored below 7/10.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {latestAssessment.intensityScore < 7 && (
+                    <Badge variant="outline" className="text-red-600 border-red-200 bg-red-50">
+                      Intensity Management
+                    </Badge>
+                  )}
+                  {latestAssessment.decisionMakingScore < 7 && (
+                    <Badge variant="outline" className="text-blue-600 border-blue-200 bg-blue-50">
+                      Decision Making
+                    </Badge>
+                  )}
+                  {latestAssessment.diversionsScore < 7 && (
+                    <Badge variant="outline" className="text-yellow-600 border-yellow-200 bg-yellow-50">
+                      Diversion Control
+                    </Badge>
+                  )}
+                  {latestAssessment.executionScore < 7 && (
+                    <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">
+                      Execution
+                    </Badge>
+                  )}
+                </div>
+                <div className="mt-3 pt-3 border-t border-yellow-200">
+                  <p className="text-xs text-gray-600">
+                    💡 <strong>Upgrade to Premium</strong> to get personalized coaching, detailed recommendations, and access to advanced training techniques.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Available Features */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {/* Basic Assessment */}
@@ -89,7 +264,7 @@ export default function FreeDashboard() {
               </p>
               <Link href="/assessment">
                 <Button className="w-full bg-green-600 hover:bg-green-700">
-                  Take Assessment
+                  {latestAssessment ? "Retake Assessment" : "Take Assessment"}
                 </Button>
               </Link>
             </CardContent>

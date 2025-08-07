@@ -183,7 +183,8 @@ export default function Assessment() {
         title: "Assessment Complete!",
         description: "Your mental skills have been analyzed. Check your dashboard for insights.",
       });
-      setLocation("/");
+      // Redirect to dashboard with a success indicator
+      setLocation("/?assessment=completed");
     },
     onError: (error) => {
       toast({
