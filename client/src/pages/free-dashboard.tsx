@@ -85,6 +85,36 @@ export default function FreeDashboard() {
     }
   };
 
+  const handleUpgrade = async (tier: 'premium' | 'ultimate') => {
+    setIsUpgrading(true);
+    try {
+      const amount = tier === 'premium' ? 490 : 2190;
+      const response = await apiRequest("POST", "/api/create-checkout-session", {
+        tier,
+        amount,
+        success_url: `${window.location.origin}/dashboard?upgrade=success&tier=${tier}`,
+        cancel_url: `${window.location.origin}/dashboard?upgrade=cancelled`
+      });
+      
+      const result = await response.json();
+      
+      if (result.url) {
+        // Redirect to Stripe Checkout
+        window.location.href = result.url;
+      } else {
+        throw new Error('No checkout URL received');
+      }
+    } catch (error) {
+      console.error('Upgrade error:', error);
+      toast({
+        title: "Upgrade Failed",
+        description: "There was an error starting the upgrade process. Please try again.",
+        variant: "destructive",
+      });
+      setIsUpgrading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -398,8 +428,12 @@ export default function FreeDashboard() {
                   <h4 className="text-xl font-bold text-gray-900 mb-2">Premium Access</h4>
                   <div className="text-3xl font-bold text-blue-600 mb-2">$490</div>
                   <p className="text-sm text-gray-500 mb-4">One-time payment • Lifetime access</p>
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 mb-3">
-                    Upgrade to Premium
+                  <Button 
+                    className="w-full bg-blue-600 hover:bg-blue-700 mb-3"
+                    onClick={() => handleUpgrade('premium')}
+                    disabled={isUpgrading}
+                  >
+                    {isUpgrading ? 'Processing...' : 'Upgrade to Premium'}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                   <p className="text-xs text-gray-500">
@@ -426,8 +460,12 @@ export default function FreeDashboard() {
                       <li>• VIP priority support</li>
                     </ul>
                   </div>
-                  <Button className="w-full bg-purple-600 hover:bg-purple-700 mb-3">
-                    Upgrade to Ultimate
+                  <Button 
+                    className="w-full bg-purple-600 hover:bg-purple-700 mb-3"
+                    onClick={() => handleUpgrade('ultimate')}
+                    disabled={isUpgrading}
+                  >
+                    {isUpgrading ? 'Processing...' : 'Upgrade to Ultimate'}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                   <p className="text-xs text-gray-500">
