@@ -45,15 +45,7 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Support */}
-          <div className="space-y-4">
-            <h4 className="text-lg font-semibold">Support</h4>
-            <ul className="space-y-2 text-sm text-gray-300">
-              <li><Link href="/help" className="hover:text-white transition-colors">FAQs</Link></li>
-              <li><Link href="/help" className="hover:text-white transition-colors">Troubleshooting</Link></li>
-              <li><a href="mailto:support@red2blue.me" className="hover:text-white transition-colors">Contact Support</a></li>
-            </ul>
-          </div>
+
 
           {/* Legal */}
           <div className="space-y-4">
