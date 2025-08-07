@@ -39,6 +39,7 @@ import CheckoutHosted from "@/pages/checkout-hosted";
 import PaymentRedirect from "@/pages/payment-redirect";
 import AdminDashboard from "@/pages/admin-dashboard";
 import AdminLogin from "@/pages/admin-login";
+import DemoAccess from "@/pages/demo-access";
 import { canAccessDashboard } from "@/lib/permissions";
 
 function Router() {
@@ -125,6 +126,7 @@ function Router() {
               
               {/* Available to all authenticated users */}
               <Route path="/profile" component={Profile} />
+              <Route path="/demo" component={DemoAccess} />
               <Route path="/help" component={Help} />
               <Route path="/features" component={Features} />
               <Route path="/privacy-policy" component={PrivacyPolicy} />

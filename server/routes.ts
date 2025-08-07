@@ -350,6 +350,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   }
 
+  // DEMO ACCESS ROUTES - For testing premium/ultimate features without payment
+  app.post("/api/demo/upgrade", async (req: AuthRequest, res) => {
+    if (!req.session.userId) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    try {
+      const { tier } = req.body; // 'premium' or 'ultimate'
+      
+      if (!tier || !['premium', 'ultimate'].includes(tier)) {
+        return res.status(400).json({ message: "Valid tier required: 'premium' or 'ultimate'" });
+      }
+
+      // Update user to demo tier
+      await storage.updateUser(req.session.userId, {
+        isSubscribed: true,
+        subscriptionTier: tier,
+        subscriptionStartDate: new Date(),
+        subscriptionEndDate: null, // Lifetime access
+      });
+
+      res.json({ 
+        message: `Demo access granted for ${tier} tier`,
+        tier: tier,
+        note: "This is for testing purposes only"
+      });
+    } catch (error) {
+      console.error('Demo upgrade error:', error);
+      res.status(500).json({ message: "Failed to grant demo access" });
+    }
+  });
+
+  app.post("/api/demo/reset", async (req: AuthRequest, res) => {
+    if (!req.session.userId) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    try {
+      // Reset user to free tier
+      await storage.updateUser(req.session.userId, {
+        isSubscribed: false,
+        subscriptionTier: 'free',
+        subscriptionStartDate: null,
+        subscriptionEndDate: null,
+      });
+
+      res.json({ 
+        message: "Account reset to free tier",
+        tier: "free"
+      });
+    } catch (error) {
+      console.error('Demo reset error:', error);
+      res.status(500).json({ message: "Failed to reset account" });
+    }
+  });
+
   // Document download routes for Free tier
   app.get("/api/downloads/master-your-moment", (req, res) => {
     const filePath = "/home/runner/workspace/attached_assets/Master Your Moment by Cero Golf.pdf";
