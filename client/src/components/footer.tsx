@@ -40,12 +40,8 @@ export function Footer() {
           <div className="space-y-4">
             <h4 className="text-lg font-semibold">Platform</h4>
             <ul className="space-y-2 text-sm text-gray-300">
-              <li><Link href="/features" className="hover:text-white transition-colors">Features Overview</Link></li>
               <li><Link href="/help" className="hover:text-white transition-colors">Help & FAQ</Link></li>
-              <li><Link href="/assessment" className="hover:text-white transition-colors">Mental Assessment</Link></li>
-              <li><Link href="/techniques" className="hover:text-white transition-colors">Techniques Library</Link></li>
               <li><Link href="/community" className="hover:text-white transition-colors">Community</Link></li>
-              <li><Link href="/recommendations" className="hover:text-white transition-colors">AI Recommendations</Link></li>
             </ul>
           </div>
 
@@ -53,12 +49,9 @@ export function Footer() {
           <div className="space-y-4">
             <h4 className="text-lg font-semibold">Support</h4>
             <ul className="space-y-2 text-sm text-gray-300">
-              <li><Link href="/help" className="hover:text-white transition-colors">Getting Started</Link></li>
-              <li><Link href="/help" className="hover:text-white transition-colors">User Guide</Link></li>
+              <li><Link href="/help" className="hover:text-white transition-colors">FAQs</Link></li>
               <li><Link href="/help" className="hover:text-white transition-colors">Troubleshooting</Link></li>
               <li><a href="mailto:support@red2blue.me" className="hover:text-white transition-colors">Contact Support</a></li>
-              <li><a href="mailto:coaching@red2blue.me" className="hover:text-white transition-colors">Coach Consultation</a></li>
-              <li><Link href="/help" className="hover:text-white transition-colors">System Status</Link></li>
             </ul>
           </div>
 
