@@ -35,7 +35,7 @@ const questions = {
   intensity: [
     {
       id: "intensityQ1",
-      text: "When facing a crucial shot, how often do you feel your heart racing or hands shaking?",
+      text: "When facing a critical moment in competition, how often do you feel your heart racing or hands shaking?",
       options: [
         { value: "25", label: "Almost always (Red Head)" },
         { value: "50", label: "Often" },
@@ -67,7 +67,7 @@ const questions = {
   decision: [
     {
       id: "decisionQ1",
-      text: "How confident are you in your shot selection under pressure?",
+      text: "How confident are you in your strategic decisions under pressure?",
       options: [
         { value: "25", label: "Very uncertain - second-guess myself" },
         { value: "50", label: "Somewhat uncertain" },
@@ -77,7 +77,7 @@ const questions = {
     },
     {
       id: "decisionQ2",
-      text: "When facing a difficult lie, how clear is your thinking?",
+      text: "When facing a challenging situation, how clear is your thinking?",
       options: [
         { value: "25", label: "Mind races, can't think clearly" },
         { value: "50", label: "Somewhat cloudy thinking" },
@@ -131,7 +131,7 @@ const questions = {
   execution: [
     {
       id: "executionQ1",
-      text: "How often do you execute your intended shot under pressure?",
+      text: "How often do you execute your intended action under pressure?",
       options: [
         { value: "25", label: "Rarely - pressure affects execution" },
         { value: "50", label: "Sometimes" },

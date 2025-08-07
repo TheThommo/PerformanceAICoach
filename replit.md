@@ -2,7 +2,7 @@
 
 ## Overview
 
-Red2Blue is a comprehensive AI-powered mental performance coaching platform designed specifically for elite golfers and high performers. The platform helps users transition from "Red Head" (stressed, reactive state) to "Blue Head" (calm, focused performance state) through personalized coaching, assessments, and proven psychological techniques.
+Red2Blue is a comprehensive AI-powered mental performance coaching platform designed for athletes and high performers across all sports. The platform helps users transition from "Red Head" (stressed, reactive state) to "Blue Head" (calm, focused performance state) through personalized coaching, assessments, and proven psychological techniques.
 
 ## System Architecture
 
@@ -47,7 +47,7 @@ Red2Blue is a comprehensive AI-powered mental performance coaching platform desi
 - **Daily Mood Tracking**: Continuous mental state monitoring
 
 ### 3. Coaching Tools & Techniques
-- **Pre-Shot Routine Builder**: Customizable routine creation and practice
+- **Pre-Performance Routine Builder**: Customizable routine creation and practice
 - **Breathing Techniques**: Guided breathing exercises for stress management
 - **Scenario Training**: Pressure situation simulation and response training
 - **Progress Tracking**: Visual performance metrics and improvement trends
@@ -120,6 +120,7 @@ Red2Blue is a comprehensive AI-powered mental performance coaching platform desi
 
 - July 29, 2025. **RESERVED VM DEPLOYMENT CONFIGURED** - Successfully changed deployment type from Autoscale to Reserved VM for better full-stack app support. Production server verified working correctly - serves static files and detects production mode properly. "Internal Server Error" in deployment identified as environment variable configuration issue, not code issue. Ready for redeploy with proper environment variables configured.
 - July 29, 2025. **DEPLOYMENT READY** - Implemented comprehensive debugging and monitoring system with server/client diagnostics, health checks, error logging, deployment verification scripts, and production build optimization. All systems verified and ready for deployment to https://performance-ai-coach-markesthompson.replit.app
+- August 07, 2025. **PLATFORM PIVOT COMPLETED** - Successfully transformed entire platform from golf-specific to universal sports/high-performance focus. Updated assessment questions, AI coach Flo prompts, and all system messaging to be applicable across all sports and competitive contexts. Platform now truly generic for broader market appeal.
 - July 09, 2025. Completed comprehensive branding update - replaced all instances of "Thommo" with "Flo" throughout the entire platform, including server files, client components, pages, and documentation to ensure consistent AI coach branding
 - July 01, 2025. Initial setup
 

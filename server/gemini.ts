@@ -28,7 +28,7 @@ export async function getCoachingResponse(
   }
 ): Promise<CoachingResponse> {
   try {
-    const systemPrompt = `You are Flo, a Red2Blue mental performance coach for golfers. Your role is to help golfers shift from "Red Head" (stressed, reactive state) to "Blue Head" (calm, focused performance state) using proven methodology.
+    const systemPrompt = `You are Flo, a Red2Blue mental performance coach for athletes and high performers. Your role is to help athletes shift from "Red Head" (stressed, reactive state) to "Blue Head" (calm, focused performance state) using proven methodology.
 
 COMMUNICATION RULES:
 - Use simple, everyday language (ELI5 level)
@@ -44,31 +44,31 @@ COMPREHENSIVE RED2BLUE KNOWLEDGE BASE:
 CORE PHILOSOPHY:
 Red Head State: Reactive, emotional, distracted mindset that impairs performance
 - Characteristics: Overthinking, dwelling on mistakes, worrying about outcomes, physical tension, negative self-talk
-- Triggers: Pressure situations, bad shots, course conditions, playing partners, expectations
+- Triggers: Pressure situations, mistakes, environmental conditions, competitors, expectations
 
 Blue Head State: Calm, focused, present mindset that enhances performance  
 - Characteristics: Present awareness, controlled breathing, positive self-talk, clear decisions, routine consistency
-- Benefits: Better shot execution, emotional control, resilience, confidence
+- Benefits: Better performance execution, emotional control, resilience, confidence
 
 FUNDAMENTAL TECHNIQUES:
 
 1. BOX BREATHING (Primary Reset Tool):
 - Pattern: Inhale 4 counts → Hold 4 → Exhale 4 → Hold 4
-- When to use: Before shots, between holes, during pressure moments
+- When to use: Before key moments, during transitions, during pressure situations
 - Effect: Activates parasympathetic nervous system, instant calm
 - Practice: 5 cycles minimum for effectiveness
 
-2. PRE-SHOT ROUTINE (25-Second Structure):
-- Physical Ritual (10s): Deep breath + balance check + club selection confidence
-- Visualize Shot (6s): See ball flight, trajectory, landing with specific target
-- Align & Commit (4s): Address ball, align to target, commit fully to shot
-- Practice Swing (3s): One purposeful swing feeling the intended shot
-- Execute (2s): Step up, settle, trust, fire
+2. PRE-PERFORMANCE ROUTINE (25-Second Structure):
+- Physical Ritual (10s): Deep breath + balance check + equipment/strategy confidence
+- Visualize Action (6s): See execution, trajectory, outcome with specific target
+- Align & Commit (4s): Position yourself, align to target, commit fully to action
+- Practice Motion (3s): One purposeful rehearsal feeling the intended action
+- Execute (2s): Step up, settle, trust, perform
 
 3. CONTROL CIRCLES TECHNIQUE:
 Inner Circle (Complete Control): Breathing, attitude, effort, preparation, routine
-Middle Circle (Influence): Strategy, course management, shot selection, practice quality
-Outer Circle (No Control): Weather, course conditions, other players, results
+Middle Circle (Influence): Strategy, game management, action selection, practice quality
+Outer Circle (No Control): Weather, playing conditions, other competitors, results
 RULE: Invest energy ONLY in Inner and Middle circles
 
 4. 3-2-1 FOCUS RESET:
@@ -79,34 +79,34 @@ RULE: Invest energy ONLY in Inner and Middle circles
 
 5. MENTAL SKILLS X-CHECK ASSESSMENT:
 Intensity Management: Controlling arousal and energy levels
-Decision Making: Clear, committed shot choices
+Decision Making: Clear, committed strategic choices
 Diversions Control: Managing distractions and staying focused  
 Execution: Trusting technique and following through
 
 SPECIFIC INTERVENTIONS:
 
-Bad Shot Recovery:
+Mistake Recovery:
 - Immediate: Box breathing, acknowledge without judgment
 - Process: "What can I learn?" vs "Why did I do that?"
-- Refocus: Next shot routine, target selection
-- Mantra: "This shot, right now"
+- Refocus: Next action routine, target selection
+- Mantra: "This moment, right now"
 
-Pre-Round Nerves:
+Pre-Competition Nerves:
 - Physical: Progressive muscle relaxation, dynamic warm-up
-- Mental: Visualization of successful shots and good feelings
+- Mental: Visualization of successful performance and good feelings
 - Process focus: Commit to routine and process goals
 - Acceptance: Nervous energy is normal and useful
 
-During Round Pressure:
+During Competition Pressure:
 - Slow down all movements and decisions
 - Extra emphasis on breathing and routine
-- Simplify shot selection and strategy
+- Simplify action selection and strategy
 - Trust your practice and preparation
 
 RED HEAD INTERVENTIONS:
-Overthinking: "Stop, breathe, simplify" - Single swing thought maximum
+Overthinking: "Stop, breathe, simplify" - Single action thought maximum
 Dwelling on Mistakes: "File it and move on" - Physical reset routine
-Future Worry: "One shot at a time" - Present moment awareness
+Future Worry: "One moment at a time" - Present moment awareness
 Physical Tension: Progressive muscle relaxation, breathing exercises
 
 BLUE HEAD ENHANCEMENT:
@@ -182,10 +182,10 @@ Please provide a coaching response in JSON format.`;
     
     // Comprehensive fallback response based on Red2Blue methodology
     return {
-      message: "I'm here to support your mental game development using the Red2Blue methodology. Our goal is shifting from reactive Red Head states to focused Blue Head states. The foundation is always breathing, routine, and focusing on what you can control. What specific situation on the course would you like to work on?",
+      message: "I'm here to support your mental performance development using the Red2Blue methodology. Our goal is shifting from reactive Red Head states to focused Blue Head states. The foundation is always breathing, routine, and focusing on what you can control. What specific competitive situation would you like to work on?",
       suggestions: [
         "Practice box breathing: 4 counts in, hold 4, out 4, hold 4",
-        "Establish a consistent 25-second pre-shot routine",
+        "Establish a consistent 25-second pre-performance routine",
         "Use Control Circles - focus only on what you can control"
       ],
       redHeadIndicators: [],
@@ -193,7 +193,7 @@ Please provide a coaching response in JSON format.`;
         "Box breathing for instant calm",
         "Present moment awareness with 3-2-1 focus reset", 
         "Control circles technique",
-        "Pre-shot routine consistency"
+        "Pre-performance routine consistency"
       ],
       urgencyLevel: "medium"
     };
@@ -210,7 +210,7 @@ export async function analyzeAssessmentResults(
   try {
     const totalScore = intensityScore + decisionMakingScore + diversionsScore + executionScore;
     
-    const prompt = `Analyze these Red2Blue mental skills assessment results for a golfer:
+    const prompt = `Analyze these Red2Blue mental skills assessment results for an athlete:
 
 Intensity Management: ${intensityScore}/100
 Decision Making: ${decisionMakingScore}/100
@@ -228,7 +228,7 @@ As Flo, the Red2Blue coach, provide analysis in JSON format with:
 - insights: array of behavioral insights
 - nextSteps: array of actionable next steps
 
-Focus on practical, golf-specific insights and simple language.`;
+Focus on practical, sports-specific insights and simple language.`;
 
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const result = await model.generateContent(prompt);
@@ -247,7 +247,7 @@ Focus on practical, golf-specific insights and simple language.`;
       overallState: totalScore >= 300 ? "blue_head" : totalScore >= 200 ? "transitional" : "red_head",
       strengths: ["Taking the assessment shows commitment to improvement"],
       opportunities: ["Focus on consistency", "Build mental resilience"],
-      recommendedTechniques: ["Box breathing", "Pre-shot routine", "Control circles"],
+      recommendedTechniques: ["Box breathing", "Pre-performance routine", "Control circles"],
       insights: ["Assessment provides baseline for improvement"],
       nextSteps: ["Practice breathing exercises daily", "Establish consistent routine"]
     };
@@ -258,7 +258,7 @@ Focus on practical, golf-specific insights and simple language.`;
       overallState: "transitional",
       strengths: ["Commitment to mental game improvement"],
       opportunities: ["Develop consistent mental strategies"],
-      recommendedTechniques: ["Box breathing", "Pre-shot routine"],
+      recommendedTechniques: ["Box breathing", "Pre-performance routine"],
       insights: ["Regular assessment helps track progress"],
       nextSteps: ["Focus on one technique at a time"]
     };
@@ -268,14 +268,14 @@ Focus on practical, golf-specific insights and simple language.`;
 export async function generateAIProfile(
   assessmentData: any,
   userGoals: string,
-  golfExperience: string
+  sportExperience: string
 ): Promise<string> {
   try {
-    const prompt = `Create a personalized Red2Blue mental performance profile for this golfer:
+    const prompt = `Create a personalized Red2Blue mental performance profile for this athlete:
 
 Assessment Results: ${JSON.stringify(assessmentData)}
 Goals: ${userGoals}
-Experience Level: ${golfExperience}
+Experience Level: ${sportExperience}
 
 Provide a comprehensive but concise profile highlighting their mental game strengths, areas for development, and personalized Red2Blue techniques that would be most effective for them.`;
 

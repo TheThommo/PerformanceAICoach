@@ -157,7 +157,7 @@ export default function Landing() {
                 <ul className="space-y-2">
                   <li className="flex items-center"><Check className="w-4 h-4 text-green-500 mr-2" />Mental Skills X-Check</li>
                   <li className="flex items-center"><Check className="w-4 h-4 text-green-500 mr-2" />Control Circles</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-green-500 mr-2" />Pre-Shot Routines</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-green-500 mr-2" />Pre-Performance Routines</li>
                 </ul>
               </CardContent>
             </Card>

@@ -1403,7 +1403,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const chatSession = await storage.createChatSession({
         userId,
         message: `User shared technique idea: "${idea}"`,
-        aiResponse: `Thank you for sharing your technique idea! I've received: "${idea}". This is valuable feedback that helps me understand what works for golfers like you. I'll consider incorporating elements of this approach into future coaching sessions. Your experience and insights make the Red2Blue system better for everyone.`,
+        aiResponse: `Thank you for sharing your technique idea! I've received: "${idea}". This is valuable feedback that helps me understand what works for athletes like you. I'll consider incorporating elements of this approach into future coaching sessions. Your experience and insights make the Red2Blue system better for everyone.`,
         sentiment: "positive",
         redHeadIndicators: [],
         blueHeadTechniques: ["idea_sharing", "community_contribution"],
