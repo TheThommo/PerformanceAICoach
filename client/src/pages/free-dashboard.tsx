@@ -442,26 +442,7 @@ export default function FreeDashboard() {
             </Button>
           </div>
           
-          {/* Demo Upgrade Buttons */}
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-            <p className="text-sm text-blue-800 mb-3">Demo: Upgrade Your Access</p>
-            <div className="flex gap-3 justify-center">
-              <Button 
-                onClick={() => upgradeUser('premium')}
-                className="bg-blue-600 hover:bg-blue-700"
-                disabled={isUpgrading}
-              >
-                {isUpgrading ? 'Upgrading...' : 'Get Premium Access'}
-              </Button>
-              <Button 
-                onClick={() => upgradeUser('ultimate')}
-                className="bg-purple-600 hover:bg-purple-700"
-                disabled={isUpgrading}
-              >
-                {isUpgrading ? 'Upgrading...' : 'Get Ultimate Access'}
-              </Button>
-            </div>
-          </div>
+
         </div>
       </div>
 

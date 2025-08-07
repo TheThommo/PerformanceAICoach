@@ -285,26 +285,26 @@ export class MemStorage implements IStorage {
     // Seed default scenarios
     const defaultScenarios: InsertScenario[] = [
       {
-        title: "Final Hole Lead Protection",
-        description: "You're leading by one stroke on the 18th tee. Your heart is racing and you're thinking about winning.",
+        title: "Championship Final Moment",
+        description: "You're leading by a small margin in the final moments. Your heart is racing and you're thinking about winning.",
         pressureLevel: "high",
         category: "tournament",
         redHeadTriggers: ["thinking about outcome", "heart racing", "fear of losing lead"],
-        blueHeadTechniques: ["box breathing", "process focus", "one shot at a time"]
+        blueHeadTechniques: ["box breathing", "process focus", "one play at a time"]
       },
       {
-        title: "Recovery Shot After Mistake",
-        description: "You just hit into the water. Anger and frustration are building as you prepare for your penalty shot.",
+        title: "Recovery After Mistake",
+        description: "You just made a critical error. Anger and frustration are building as you prepare for the next play.",
         pressureLevel: "medium",
         category: "recovery",
         redHeadTriggers: ["anger", "frustration", "dwelling on mistake"],
         blueHeadTechniques: ["pressure valve", "reset routine", "forward focus"]
       },
       {
-        title: "Difficult Putt to Make Cut",
-        description: "You need this 6-footer to make the tournament cut. Miss it and your weekend is over.",
+        title: "Critical Performance Moment",
+        description: "You need to execute perfectly in this crucial moment. The outcome will determine your advancement.",
         pressureLevel: "high",
-        category: "putting",
+        category: "execution",
         redHeadTriggers: ["outcome pressure", "career implications", "technical overthinking"],
         blueHeadTechniques: ["3-2-1 reset", "routine trust", "performance anchor"]
       }
@@ -320,15 +320,15 @@ export class MemStorage implements IStorage {
       });
     });
 
-    // Seed default pre-shot routines
+    // Seed default pre-performance routines
     const defaultRoutine: InsertPreShotRoutine = {
       userId: 1, // Demo user
-      name: "Red2Blue 25-Second Routine",
+      name: "Red2Blue Performance Routine",
       steps: [
-        { name: "Ritual Physical Action", duration: 10, description: "Deep breath (4 in, 6 out) + feet movement for balance" },
-        { name: "Visualize the Shot", duration: 6, description: "Picture trajectory, speed, spin with keyword 'Smooth'" },
-        { name: "Align and Commit", duration: 4, description: "Approach ball, align to target, commit fully" },
-        { name: "Practice Swing", duration: 3, description: "One purposeful swing with intended feel and tempo" },
+        { name: "Ritual Physical Action", duration: 10, description: "Deep breath (4 in, 6 out) + centering movement for balance" },
+        { name: "Visualize the Performance", duration: 6, description: "Picture execution, timing, technique with keyword 'Smooth'" },
+        { name: "Align and Commit", duration: 4, description: "Position yourself, align to target, commit fully" },
+        { name: "Practice Motion", duration: 3, description: "One purposeful rehearsal with intended feel and tempo" },
         { name: "Execute", duration: 5, description: "Step up, settle, execute with complete trust" }
       ],
       totalDuration: 28,

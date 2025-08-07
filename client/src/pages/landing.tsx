@@ -950,20 +950,7 @@ function SignInForm({ onBack }: { onBack: () => void }) {
             </div>
 
             {/* Demo Credentials */}
-            <div className="bg-gray-50 p-4 rounded-lg mt-4">
-              <h4 className="text-sm font-semibold text-gray-700 mb-2">Demo Accounts:</h4>
-              <div className="space-y-2 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-gray-600">flo@example.com</span>
-                  <span className="text-purple-600 font-medium">Ultimate Access</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600">test1@example.com</span>
-                  <span className="text-blue-600 font-medium">Premium Access</span>
-                </div>
-                <div className="text-xs text-gray-500 mt-2">Password: password123</div>
-              </div>
-            </div>
+
 
             <div className="text-center">
               <p className="text-sm text-gray-600">
