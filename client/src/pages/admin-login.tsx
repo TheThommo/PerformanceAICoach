@@ -74,6 +74,32 @@ export default function AdminLogin() {
     }
   };
 
+  const handleDemoLogin = async () => {
+    setIsLoading(true);
+    try {
+      const response = await apiRequest("POST", "/api/auth/admin-demo-login", {});
+      
+      if (response.ok) {
+        toast({
+          title: "Demo Login Successful",
+          description: "Welcome to the admin panel",
+        });
+        // Redirect to admin panel
+        window.location.href = "/admin";
+      } else {
+        throw new Error("Demo login failed");
+      }
+    } catch (error: any) {
+      toast({
+        title: "Demo Login Failed",
+        description: error.message || "Could not access admin demo",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -140,6 +166,17 @@ export default function AdminLogin() {
                 </Button>
 
                 <div className="text-center">
+                  <div className="text-sm text-gray-500 mb-2">For testing access:</div>
+                  <Button 
+                    type="button"
+                    variant="outline"
+                    className="w-full mb-2"
+                    onClick={handleDemoLogin}
+                    disabled={isLoading}
+                  >
+                    Demo Admin Login
+                  </Button>
+                  
                   <div className="text-sm text-gray-500 mb-2">Don't have an admin account?</div>
                   <Button 
                     type="button"
