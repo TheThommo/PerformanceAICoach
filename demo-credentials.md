@@ -1,52 +1,40 @@
 # 🎯 Demo Credentials for Red2Blue Platform
 
-## ✅ READY TO USE: Premium Access Demo Account
+## ✅ FIXED & WORKING: Premium Access Demo Account
 **Email:** demo-premium@red2blue.com  
 **Password:** Premium2024!  
-**Access Level:** Premium ($490/month features) ✅ ACTIVATED
-- Advanced AI coaching sessions with Coach Flo
-- Mental Skills X-Check assessments
-- All breathing techniques and scenarios
-- Progress tracking and analytics
-- Control Circles tool
-- Pre-performance routine builder
+**Status:** ✅ PREMIUM ACCESS ACTIVATED & VERIFIED
+**Features:** Advanced AI coaching, Mental Skills X-Check, breathing techniques, progress tracking, Control Circles tool, pre-performance routine builder
 
-## ✅ READY TO USE: Ultimate Access Demo Account  
+## ✅ FIXED & WORKING: Ultimate Access Demo Account  
 **Email:** demo-ultimate@red2blue.com  
 **Password:** Ultimate2024!  
-**Access Level:** Ultimate ($2190/month features) ✅ ACTIVATED
-- Everything in Premium PLUS:
-- Human coach matching and sessions
-- Advanced performance analytics
-- Priority AI coaching responses
-- Custom assessment creation
-- Unlimited scenario training
-- Premium technique library access
+**Status:** ✅ ULTIMATE ACCESS ACTIVATED & VERIFIED  
+**Features:** Everything in Premium PLUS human coaching, advanced analytics, priority AI responses, custom assessments, unlimited scenario training
 
 ## Admin Access (Already working)
 **Email:** mark.e.s.thompson@gmail.com  
 **Access:** Admin panel + Full platform features
 **Quick Admin Login:** Go to `/admin-login` → Click "Demo Admin Login" button
 
-## 🚀 How to Test on Your Live Website
+## 🚀 How to Test Premium/Ultimate Access
 
-### For Business Presentations:
-1. **Premium Demo:** Use demo-premium@red2blue.com / Premium2024!
-2. **Ultimate Demo:** Use demo-ultimate@red2blue.com / Ultimate2024!
-3. **Admin Demo:** Go to `/admin-login` for instant admin access
+### Method 1: Use Pre-Configured Demo Accounts ✅ WORKING
+1. **Premium Demo:** Login with demo-premium@red2blue.com / Premium2024!
+2. **Ultimate Demo:** Login with demo-ultimate@red2blue.com / Ultimate2024!
 
-### Key Features to Demonstrate:
-- **AI Coach Flo:** Personalized mental performance coaching
-- **Assessment Tools:** Mental Skills X-Check, Control Circles
-- **Technique Library:** Breathing exercises, scenario training
-- **Progress Analytics:** Performance tracking and insights
-- **Payment Integration:** Stripe-powered subscription system
-- **Admin Dashboard:** Complete user and payment management
+### Method 2: Upgrade Any Account Instantly
+After logging in with any account, visit: `/demo-access`
+- Click "Upgrade to Premium" or "Upgrade to Ultimate"
+- Instant access without payment required
 
-## 💼 Perfect for:
-- Investor presentations
-- Partner demonstrations  
-- Feature showcases
-- Business development meetings
+### Method 3: Admin Panel Upgrade
+1. Go to `/admin-login` → Click "Demo Admin Login"
+2. In admin panel, select any user and upgrade their tier
 
-All accounts are live and ready to use on your website!
+## 💼 What to Demonstrate:
+- **Premium:** Advanced AI coaching, complete assessment suite, all techniques
+- **Ultimate:** Everything plus human coaching integration, advanced analytics
+- **Admin:** User management, payment tracking, platform insights
+
+**All methods now fully functional for business presentations!**
