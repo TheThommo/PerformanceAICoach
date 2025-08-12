@@ -1310,13 +1310,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Enhanced chat endpoint with engagement tracking
+  // Enhanced chat endpoint with FLO limitations and engagement tracking
   app.post("/api/chat", requireAuth, async (req: AuthRequest, res) => {
     try {
       const { userId, message, sessionId } = req.body;
       
       if (!userId || !message) {
         return res.status(400).json({ message: "userId and message are required" });
+      }
+
+      // Check FLO chat limitations
+      const chatLimitations = await storage.getUserChatLimitations(userId);
+      
+      if (!chatLimitations.canChat) {
+        return res.status(403).json({ 
+          message: "Chat limit reached", 
+          limitations: chatLimitations,
+          upgradeRequired: true
+        });
       }
 
       let session;
@@ -1352,6 +1363,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const updatedMessages = [...messages, userMessage, assistantMessage];
       await storage.updateChatSession(session.id, updatedMessages);
 
+      // Increment user's chat count for free users
+      if (chatLimitations.subscriptionStatus === "free" || chatLimitations.subscriptionStatus === "expired") {
+        await storage.incrementUserChatCount(userId);
+      }
+
       // Track engagement metrics
       const today = new Date().toISOString().split('T')[0];
       try {
@@ -1363,12 +1379,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.warn("Failed to update engagement metrics:", engagementError);
       }
 
+      // Get updated limitations for response
+      const updatedLimitations = await storage.getUserChatLimitations(userId);
+
       res.json({ 
         session: { ...session, messages: updatedMessages },
-        response: aiResponse 
+        response: aiResponse,
+        limitations: updatedLimitations
       });
     } catch (error) {
       res.status(500).json({ message: "Failed to process chat message", error: (error as Error).message });
+    }
+  });
+
+  // Get user's FLO chat limitations
+  app.get("/api/chat/limitations/:userId", requireAuth, async (req: AuthRequest, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const limitations = await storage.getUserChatLimitations(userId);
+      res.json(limitations);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get chat limitations", error: (error as Error).message });
     }
   });
 

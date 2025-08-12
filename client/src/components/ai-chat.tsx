@@ -5,9 +5,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Users, Send, Loader2 } from "lucide-react";
+import { Users, Send, Loader2, Crown, AlertTriangle } from "lucide-react";
+
+interface ChatLimitations {
+  chatLimit: number;
+  chatsUsed: number;
+  hasAccess: boolean;
+  canChat: boolean;
+  subscriptionStatus: "free" | "premium_included" | "ultimate_included" | "expired";
+  renewalDate?: Date;
+}
 
 interface AIChatProps {
   userId: number;
@@ -23,7 +33,11 @@ export function AIChat({ userId }: AIChatProps) {
     queryKey: [`/api/chat/sessions/${userId}`],
   });
 
-  const currentSession = sessions?.[0];
+  const { data: limitations } = useQuery<ChatLimitations>({
+    queryKey: [`/api/chat/limitations/${userId}`],
+  });
+
+  const currentSession = sessions?.[0] || null;
 
   const mutation = useMutation({
     mutationFn: async (data: { message: string; sessionId?: number }) => {
@@ -37,23 +51,42 @@ export function AIChat({ userId }: AIChatProps) {
     onSuccess: (data) => {
       setCurrentSessionId(data.session.id);
       queryClient.invalidateQueries({ queryKey: [`/api/chat/sessions/${userId}`] });
+      queryClient.invalidateQueries({ queryKey: [`/api/chat/limitations/${userId}`] });
       setMessage("");
     },
-    onError: (error) => {
-      toast({
-        title: "Chat Error",
-        description: "Failed to send message. " + (error as Error).message,
-        variant: "destructive",
-      });
+    onError: (error: any) => {
+      if (error.message?.includes("Chat limit reached") || error.message?.includes("403")) {
+        toast({
+          title: "FLO Chat Limit Reached",
+          description: "You've reached your monthly chat limit. Upgrade to continue chatting with Flo.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Chat Error",
+          description: "Failed to send message. " + error.message,
+          variant: "destructive",
+        });
+      }
     },
   });
 
   const handleSendMessage = () => {
     if (!message.trim()) return;
     
+    // Check if user can still chat
+    if (limitations && !limitations.canChat) {
+      toast({
+        title: "FLO Chat Limit Reached",
+        description: "You've reached your monthly chat limit. Upgrade to continue chatting with Flo.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     mutation.mutate({
       message: message.trim(),
-      sessionId: currentSessionId,
+      sessionId: currentSessionId || undefined,
     });
   };
 
@@ -92,9 +125,45 @@ export function AIChat({ userId }: AIChatProps) {
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-success rounded-full"></div>
               <span className="text-sm text-gray-500">Online</span>
+              {limitations && (
+                <Badge variant="secondary" className="text-xs">
+                  {limitations.chatLimit === -1 
+                    ? "Unlimited" 
+                    : `${limitations.chatsUsed}/${limitations.chatLimit} chats`
+                  }
+                </Badge>
+              )}
             </div>
           </div>
         </div>
+        
+        {/* Chat limitations warning */}
+        {limitations && limitations.subscriptionStatus === "free" && limitations.chatsUsed >= limitations.chatLimit - 1 && (
+          <Alert className="mt-3">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              You're close to your monthly limit. <a href="/checkout?tier=premium" className="text-blue-600 underline">Upgrade now</a> for unlimited FLO chats.
+            </AlertDescription>
+          </Alert>
+        )}
+        
+        {/* Chat limit reached */}
+        {limitations && !limitations.canChat && (
+          <Alert className="mt-3 bg-red-50 border-red-200">
+            <Crown className="h-4 w-4 text-red-600" />
+            <AlertDescription>
+              <strong>Chat limit reached!</strong> Upgrade to Premium ($590) or Ultimate ($2290) for unlimited FLO access.
+              <div className="mt-2 space-x-2">
+                <Button size="sm" asChild>
+                  <a href="/checkout?tier=premium">Upgrade to Premium</a>
+                </Button>
+                <Button size="sm" variant="outline" asChild>
+                  <a href="/checkout?tier=ultimate">Get Ultimate</a>
+                </Button>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
       </CardHeader>
       
       {/* Messages */}
@@ -187,16 +256,20 @@ export function AIChat({ userId }: AIChatProps) {
       <div className="p-4 border-t border-gray-100">
         <div className="flex space-x-3">
           <Input
-            placeholder="Ask Flo anything..."
+            placeholder={
+              limitations && !limitations.canChat 
+                ? "Upgrade to chat with Flo..." 
+                : "Ask Flo anything..."
+            }
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            disabled={mutation.isPending}
+            disabled={mutation.isPending || (limitations && !limitations.canChat)}
             className="flex-1"
           />
           <Button
             onClick={handleSendMessage}
-            disabled={!message.trim() || mutation.isPending}
+            disabled={!message.trim() || mutation.isPending || (limitations && !limitations.canChat)}
             className="bg-blue-primary hover:bg-blue-deep"
           >
             <Send size={16} />

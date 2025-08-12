@@ -247,7 +247,7 @@ export default function Landing() {
                 </CardTitle>
                 <CardDescription>Complete mental performance transformation</CardDescription>
                 <div className="flex items-baseline space-x-2">
-                  <span className="text-3xl font-bold">$490</span>
+                  <span className="text-3xl font-bold">$590</span>
                   <span className="text-lg font-normal text-gray-500">one-time</span>
                 </div>
                 <p className="text-sm text-blue-600 font-medium">Lifetime access - No recurring fees</p>
@@ -281,7 +281,7 @@ export default function Landing() {
                   <Users className="w-5 h-5 text-purple-500 ml-2" />
                 </CardTitle>
                 <CardDescription>Premium AI + personal human coaching</CardDescription>
-                <div className="text-3xl font-bold">$2190<span className="text-lg font-normal text-gray-500"> one-time</span></div>
+                <div className="text-3xl font-bold">$2290<span className="text-lg font-normal text-gray-500"> one-time</span></div>
                 <p className="text-sm text-purple-600 font-medium">Lifetime access - No recurring fees</p>
               </CardHeader>
               <CardContent className="space-y-4">

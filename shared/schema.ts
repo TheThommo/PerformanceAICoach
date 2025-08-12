@@ -25,6 +25,11 @@ export const users = pgTable("users", {
   stripeSubscriptionId: text("stripe_subscription_id"),
   subscriptionStartDate: timestamp("subscription_start_date"),
   subscriptionEndDate: timestamp("subscription_end_date"),
+  // FLO Chat Limitation Fields
+  floChatsUsed: integer("flo_chats_used").default(0),
+  floSubscriptionActive: boolean("flo_subscription_active").default(false),
+  floSubscriptionStartDate: timestamp("flo_subscription_start_date"),
+  floSubscriptionRenewalDate: timestamp("flo_subscription_renewal_date"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -45,8 +50,22 @@ export const chatSessions = pgTable("chat_sessions", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
   messages: jsonb("messages").notNull(), // array of {role, content, timestamp}
+  messageCount: integer("message_count").default(0), // Track total messages in session
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// FLO Subscription Management
+export const floSubscriptions = pgTable("flo_subscriptions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  subscriptionType: text("subscription_type").notNull(), // "included_year", "annual_renewal"
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  isActive: boolean("is_active").default(true),
+  stripeSubscriptionId: text("stripe_subscription_id"),
+  amountPaid: integer("amount_paid"), // in cents
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const userProgress = pgTable("user_progress", {
@@ -540,4 +559,26 @@ export interface PaymentRecord {
   createdAt: string;
   userEmail: string;
   userName: string;
+}
+
+// FLO Subscription schema and types
+export const insertFloSubscriptionSchema = createInsertSchema(floSubscriptions).omit({
+  id: true,
+  createdAt: true,
+}).extend({
+  startDate: z.string().transform((val) => new Date(val)),
+  endDate: z.string().transform((val) => new Date(val)),
+});
+
+export type FloSubscription = typeof floSubscriptions.$inferSelect;
+export type InsertFloSubscription = z.infer<typeof insertFloSubscriptionSchema>;
+
+// Chat limitations interface
+export interface ChatLimitations {
+  chatLimit: number;
+  chatsUsed: number;
+  hasAccess: boolean;
+  canChat: boolean;
+  subscriptionStatus: "free" | "premium_included" | "ultimate_included" | "annual_renewal" | "expired";
+  renewalDate?: Date;
 }

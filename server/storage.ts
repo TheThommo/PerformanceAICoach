@@ -2,6 +2,7 @@ import {
   users, assessments, chatSessions, userProgress, techniques, scenarios,
   preShotRoutines, mentalSkillsXChecks, controlCircles, userCoachingProfiles,
   aiRecommendations, coachingInsights, userEngagementMetrics, dailyMoods,
+  floSubscriptions, userGoals,
   type User, type InsertUser, type Assessment, type InsertAssessment,
   type ChatSession, type InsertChatSession, type UserProgress, type InsertUserProgress,
   type Technique, type InsertTechnique, type Scenario, type InsertScenario,
@@ -10,11 +11,12 @@ import {
   type UserCoachingProfile, type InsertUserCoachingProfile, type AiRecommendation,
   type InsertAiRecommendation, type CoachingInsight, type InsertCoachingInsight,
   type UserEngagementMetric, type InsertUserEngagementMetric, type DailyMood,
-  type InsertDailyMood, type UserGoal, type InsertUserGoal, userGoals,
+  type InsertDailyMood, type UserGoal, type InsertUserGoal,
+  type FloSubscription, type InsertFloSubscription, type ChatLimitations,
   type AdminStats, type PaymentRecord
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, sql } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -96,6 +98,13 @@ export interface IStorage {
   updateUserGoal(id: number, updates: Partial<UserGoal>): Promise<UserGoal>;
   toggleGoalCompletion(id: number, isCompleted: boolean): Promise<UserGoal>;
   deleteUserGoal(id: number): Promise<void>;
+
+  // FLO Chat Limitation operations
+  getUserChatLimitations(userId: number): Promise<ChatLimitations>;
+  incrementUserChatCount(userId: number): Promise<void>;
+  createFloSubscription(subscription: InsertFloSubscription): Promise<FloSubscription>;
+  getUserFloSubscription(userId: number): Promise<FloSubscription | undefined>;
+  checkFloAccessRenewal(userId: number): Promise<boolean>;
 
   // Admin operations
   getAdminStats(): Promise<AdminStats>;
@@ -1591,6 +1600,95 @@ export class DatabaseStorage implements IStorage {
     }
     
     return payments.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  // FLO Chat Limitation operations
+  async getUserChatLimitations(userId: number): Promise<ChatLimitations> {
+    const user = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+    if (!user[0]) {
+      throw new Error("User not found");
+    }
+
+    const userData = user[0];
+    const chatsUsed = userData.floChatsUsed || 0;
+    
+    // Check subscription tier and FLO subscription status
+    const floSubscription = await this.getUserFloSubscription(userId);
+    const now = new Date();
+
+    // Determine subscription status and limits
+    let chatLimit = 5; // Default for free users
+    let hasAccess = true;
+    let subscriptionStatus: ChatLimitations['subscriptionStatus'] = "free";
+    let renewalDate: Date | undefined;
+
+    if (userData.subscriptionTier === "premium" || userData.subscriptionTier === "ultimate") {
+      // Check if they have an active FLO subscription
+      if (floSubscription && floSubscription.isActive && new Date(floSubscription.endDate) > now) {
+        chatLimit = -1; // Unlimited
+        subscriptionStatus = userData.subscriptionTier === "premium" ? "premium_included" : "ultimate_included";
+        renewalDate = floSubscription.endDate;
+      } else if (userData.subscriptionStartDate) {
+        // Check if they're in their first year (included FLO access)
+        const oneYearAfterSubscription = new Date(userData.subscriptionStartDate);
+        oneYearAfterSubscription.setFullYear(oneYearAfterSubscription.getFullYear() + 1);
+        
+        if (now < oneYearAfterSubscription) {
+          chatLimit = -1; // Unlimited for first year
+          subscriptionStatus = userData.subscriptionTier === "premium" ? "premium_included" : "ultimate_included";
+          renewalDate = oneYearAfterSubscription;
+        } else {
+          // First year has expired, need annual renewal
+          chatLimit = 5; // Back to free limit
+          subscriptionStatus = "expired";
+          hasAccess = chatsUsed < chatLimit;
+        }
+      }
+    }
+
+    const canChat = chatLimit === -1 || chatsUsed < chatLimit;
+
+    return {
+      chatLimit,
+      chatsUsed,
+      hasAccess,
+      canChat,
+      subscriptionStatus,
+      renewalDate
+    };
+  }
+
+  async incrementUserChatCount(userId: number): Promise<void> {
+    await db
+      .update(users)
+      .set({ 
+        floChatsUsed: sql`${users.floChatsUsed} + 1`,
+        updatedAt: new Date()
+      })
+      .where(eq(users.id, userId));
+  }
+
+  async createFloSubscription(subscription: InsertFloSubscription): Promise<FloSubscription> {
+    const [newSubscription] = await db
+      .insert(floSubscriptions)
+      .values(subscription)
+      .returning();
+    return newSubscription;
+  }
+
+  async getUserFloSubscription(userId: number): Promise<FloSubscription | undefined> {
+    const [subscription] = await db
+      .select()
+      .from(floSubscriptions)
+      .where(eq(floSubscriptions.userId, userId))
+      .orderBy(desc(floSubscriptions.startDate))
+      .limit(1);
+    return subscription;
+  }
+
+  async checkFloAccessRenewal(userId: number): Promise<boolean> {
+    const limitations = await this.getUserChatLimitations(userId);
+    return limitations.canChat;
   }
 }
 
