@@ -950,7 +950,13 @@ function SignInForm({ onBack }: { onBack: () => void }) {
             </div>
 
             {/* Demo Credentials */}
-
+            <div className="bg-blue-50 p-3 rounded-lg">
+              <p className="text-xs text-blue-700 text-center mb-2 font-medium">Demo Accounts for Testing:</p>
+              <div className="text-xs text-blue-600 space-y-1">
+                <p><strong>Premium:</strong> demo-premium@red2blue.com / Premium2024!</p>
+                <p><strong>Ultimate:</strong> demo-ultimate@red2blue.com / Ultimate2024!</p>
+              </div>
+            </div>
 
             <div className="text-center">
               <p className="text-sm text-gray-600">
