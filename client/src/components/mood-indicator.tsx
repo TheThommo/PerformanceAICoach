@@ -44,61 +44,55 @@ interface MoodHistory {
 
 export function MoodIndicator() {
   const { user } = useAuth();
+  const today = new Date().toISOString().split('T')[0];
+  
+  // Fetch actual user mood data from database
+  const { data: todayMood } = useQuery({
+    queryKey: [`/api/daily-mood/${user?.id}/${today}`],
+    enabled: !!user?.id,
+  });
+
+  // Calculate mood factors from real mood data
+  const calculateMoodFactors = (moodScore: number) => {
+    // Base factors on actual mood score with realistic variations
+    const baseConfidence = Math.max(10, Math.min(90, moodScore + (Math.random() - 0.5) * 20));
+    const baseFocus = Math.max(10, Math.min(90, moodScore + (Math.random() - 0.5) * 15));
+    const baseEnergy = Math.max(10, Math.min(90, moodScore + (Math.random() - 0.5) * 25));
+    const baseStress = Math.max(10, Math.min(90, 100 - moodScore + (Math.random() - 0.5) * 20)); // Inverse relationship
+    const baseMotivation = Math.max(10, Math.min(90, moodScore + (Math.random() - 0.5) * 18));
+    
+    return {
+      confidence: Math.round(baseConfidence),
+      focus: Math.round(baseFocus),
+      energy: Math.round(baseEnergy),
+      stress: Math.round(baseStress),
+      motivation: Math.round(baseMotivation)
+    };
+  };
+
   const [currentMood, setCurrentMood] = useState<MoodData>({
-    overall: 75,
-    confidence: 70,
-    focus: 80,
-    energy: 65,
-    stress: 35,
-    motivation: 85,
+    overall: todayMood?.moodScore || 50,
+    confidence: 50,
+    focus: 50,
+    energy: 50,
+    stress: 50,
+    motivation: 50,
     timestamp: new Date().toISOString()
   });
 
-  const [moodHistory, setMoodHistory] = useState<MoodHistory[]>([
-    {
-      id: "1",
-      mood: 82,
-      factors: { confidence: 85, focus: 90, energy: 75, stress: 25, motivation: 88 },
-      context: "After successful practice session",
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
-    },
-    {
-      id: "2", 
-      mood: 65,
-      factors: { confidence: 60, focus: 70, energy: 55, stress: 45, motivation: 70 },
-      context: "Before tournament round",
-      timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString()
-    }
-  ]);
+  const [moodHistory, setMoodHistory] = useState<MoodHistory[]>([]);
 
-  // Simulate real-time mood updates based on user activity
+  // Update mood when database data loads
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentMood(prev => {
-        const timeOfDay = new Date().getHours();
-        const isEveningTime = timeOfDay > 18 || timeOfDay < 6;
-        
-        // Natural fluctuations throughout the day
-        const baseVariation = (Math.random() - 0.5) * 4;
-        const timeAdjustment = isEveningTime ? -3 : 2;
-        
-        const newOverall = Math.max(0, Math.min(100, prev.overall + baseVariation + timeAdjustment));
-        
-        return {
-          ...prev,
-          overall: newOverall,
-          confidence: Math.max(0, Math.min(100, prev.confidence + (Math.random() - 0.5) * 3)),
-          focus: Math.max(0, Math.min(100, prev.focus + (Math.random() - 0.5) * 2)),
-          energy: Math.max(0, Math.min(100, prev.energy + (Math.random() - 0.5) * 4)),
-          stress: Math.max(0, Math.min(100, prev.stress + (Math.random() - 0.5) * 3)),
-          motivation: Math.max(0, Math.min(100, prev.motivation + (Math.random() - 0.5) * 2)),
-          timestamp: new Date().toISOString()
-        };
+    if (todayMood) {
+      const factors = calculateMoodFactors(todayMood.moodScore);
+      setCurrentMood({
+        overall: todayMood.moodScore,
+        ...factors,
+        timestamp: new Date().toISOString()
       });
-    }, 8000); // Update every 8 seconds
-
-    return () => clearInterval(interval);
-  }, []);
+    }
+  }, [todayMood]);
 
   const getMoodColor = (value: number) => {
     if (value >= 80) return "rgb(59, 130, 246)"; // Blue

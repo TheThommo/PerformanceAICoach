@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Brain, CheckCircle, ArrowLeft } from "lucide-react";
 import { useLocation } from "wouter";
 import { Link } from "wouter";
+import { useAuth } from "@/hooks/useAuth";
 
 const assessmentSchema = z.object({
   intensityQ1: z.string(),
@@ -28,8 +29,6 @@ const assessmentSchema = z.object({
   executionQ2: z.string(),
   executionQ3: z.string(),
 });
-
-const mockUserId = 1;
 
 const questions = {
   intensity: [
@@ -166,6 +165,7 @@ export default function Assessment() {
   const [currentSection, setCurrentSection] = useState(0);
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof assessmentSchema>>({
@@ -177,8 +177,10 @@ export default function Assessment() {
       return apiRequest("POST", "/api/assessments", data);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/assessments/latest/${mockUserId}`] });
-      queryClient.invalidateQueries({ queryKey: [`/api/assessments/user/${mockUserId}`] });
+      if (user?.id) {
+        queryClient.invalidateQueries({ queryKey: [`/api/assessments/latest/${user.id}`] });
+        queryClient.invalidateQueries({ queryKey: [`/api/assessments/user/${user.id}`] });
+      }
       toast({
         title: "Assessment Complete!",
         description: "Your mental skills have been analyzed. Check your dashboard for insights.",
@@ -206,10 +208,18 @@ export default function Assessment() {
   const progress = ((currentSection + 1) / sections.length) * 100;
 
   const onSubmit = (data: z.infer<typeof assessmentSchema>) => {
+    if (!user?.id) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to submit your assessment.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     // Store responses without scoring since this is not right/wrong based
     const submitData = {
-      userId: 2, // Using authenticated user ID
-      responses: data, // Store all responses for analysis
+      responses: data, // Store all responses for analysis - userId comes from auth
     };
 
     console.log('Submitting assessment responses:', submitData);

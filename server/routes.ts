@@ -657,45 +657,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // Assessment routes
-  app.post("/api/assessments", async (req, res) => {
+  app.post("/api/assessments", requireAuth, async (req: AuthRequest, res) => {
     try {
-      const { userId, responses } = req.body;
+      const userId = req.userId!;
+      const { responses } = req.body;
       
-      // Store responses without scoring since this is not right/wrong based
+      console.log(`Creating assessment for user ${userId} with responses:`, responses);
+      
+      // Calculate scores from responses for better analysis
+      const calculateCategoryScore = (prefix: string) => {
+        const categoryResponses = Object.entries(responses)
+          .filter(([key]) => key.startsWith(prefix))
+          .map(([, value]) => parseInt(value as string));
+        
+        return categoryResponses.length > 0 
+          ? Math.round(categoryResponses.reduce((a, b) => a + b, 0) / categoryResponses.length)
+          : 0;
+      };
+      
+      const intensityScore = calculateCategoryScore('intensity');
+      const decisionMakingScore = calculateCategoryScore('decision');
+      const diversionsScore = calculateCategoryScore('diversions');
+      const executionScore = calculateCategoryScore('execution');
+      const totalScore = Math.round((intensityScore + decisionMakingScore + diversionsScore + executionScore) / 4);
+      
+      // Store assessment with calculated scores
       const assessment = await storage.createAssessment({
         userId,
-        responses: responses, // Store all responses as JSON
-        intensityScore: 0,
-        decisionMakingScore: 0,
-        diversionsScore: 0,
-        executionScore: 0,
-        totalScore: 0
+        responses: responses,
+        intensityScore,
+        decisionMakingScore,
+        diversionsScore,
+        executionScore,
+        totalScore
       });
 
-      // Get AI analysis based on response patterns, not scores
+      // Get AI analysis based on response patterns and scores
       const previousAssessments = await storage.getUserAssessments(userId);
       const analysis = await analyzeAssessmentResults(
-        0, 0, 0, 0, // No scores needed
+        intensityScore, decisionMakingScore, diversionsScore, executionScore,
         previousAssessments.slice(1, 4) // Last 3 previous assessments
       );
 
+      console.log(`Assessment created successfully for user ${userId}:`, assessment);
       res.json({ assessment, analysis });
     } catch (error) {
+      console.error('Assessment creation error:', error);
       res.status(400).json({ message: "Invalid assessment data", error: (error as Error).message });
     }
   });
 
-  app.get("/api/assessments/latest/:userId", async (req, res) => {
+  app.get("/api/assessments/latest/:userId", requireAuth, async (req: AuthRequest, res) => {
     try {
       const userId = parseInt(req.params.userId);
+      
+      // Ensure user can only access their own assessments
+      if (userId !== req.userId) {
+        return res.status(403).json({ message: "Access denied" });
+      }
+      
       const assessment = await storage.getLatestAssessment(userId);
       
       if (!assessment) {
         return res.status(404).json({ message: "No assessments found" });
       }
 
+      console.log(`Latest assessment found for user ${userId}:`, assessment);
       res.json(assessment);
     } catch (error) {
+      console.error('Error fetching latest assessment:', error);
       res.status(500).json({ message: "Failed to fetch assessment", error: (error as Error).message });
     }
   });
@@ -888,16 +918,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Mental Skills X-Check routes
-  app.post("/api/mental-skills-xcheck", async (req, res) => {
+  app.post("/api/mental-skills-xcheck", requireAuth, async (req: AuthRequest, res) => {
     try {
-      console.log("Mental Skills X-Check POST request received:", req.body);
+      const userId = req.userId!;
+      console.log(`Mental Skills X-Check POST request for user ${userId}:`, req.body);
       
-      // Use hardcoded user ID for now to bypass auth issues
-      const userId = 2;
-      
-      const mockXCheck = {
-        id: Date.now(),
-        userId: userId,
+      const xcheck = await storage.createMentalSkillsXCheck({
+        userId,
         intensityScores: req.body.intensityScores || [75, 80, 85],
         decisionMakingScores: req.body.decisionMakingScores || [70, 75, 80],
         diversionsScores: req.body.diversionsScores || [65, 70, 75],
@@ -905,12 +932,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         context: req.body.context || "Practice session",
         whatDidWell: req.body.whatDidWell || "Good focus",
         whatCouldDoBetter: req.body.whatCouldDoBetter || "Better tempo",
-        actionPlan: req.body.actionPlan || "Practice more",
-        createdAt: new Date()
-      };
+        actionPlan: req.body.actionPlan || "Practice more"
+      });
       
-      console.log("Mental Skills X-Check created successfully:", mockXCheck);
-      res.status(201).json(mockXCheck);
+      console.log(`Mental Skills X-Check created successfully for user ${userId}:`, xcheck);
+      res.status(201).json(xcheck);
     } catch (error: any) {
       console.error("Mental Skills X-Check creation error:", error);
       res.status(400).json({ 
@@ -944,26 +970,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Control Circles routes
-  app.post("/api/control-circles", async (req, res) => {
+  app.post("/api/control-circles", requireAuth, async (req: AuthRequest, res) => {
     try {
-      console.log("Control Circles POST request received:", req.body);
+      const userId = req.userId!;
+      console.log(`Control Circles POST request for user ${userId}:`, req.body);
       
-      // Use hardcoded user ID for now to bypass auth issues
-      const userId = 2;
-      
-      const mockCircle = {
-        id: Date.now(),
-        userId: userId,
+      const circle = await storage.createControlCircle({
+        userId,
         context: req.body.context || "Practice session",
         reflections: req.body.reflections || "Good exercise",
         cantControl: req.body.cantControl || ["Weather", "Other players"],
         canInfluence: req.body.canInfluence || ["Course strategy", "Club selection"],
-        canControl: req.body.canControl || ["Pre-shot routine", "Breathing"],
-        createdAt: new Date()
-      };
+        canControl: req.body.canControl || ["Pre-shot routine", "Breathing"]
+      });
       
-      console.log("Control Circle created successfully:", mockCircle);
-      res.status(201).json(mockCircle);
+      console.log(`Control Circle created successfully for user ${userId}:`, circle);
+      res.status(201).json(circle);
     } catch (error: any) {
       console.error("Control Circle creation error:", error);
       res.status(400).json({ 
@@ -1176,6 +1198,80 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(plan);
     } catch (error) {
       res.status(500).json({ message: "Failed to generate plan", error: (error as Error).message });
+    }
+  });
+
+  // Resilience Challenge Scoring Context Endpoint
+  app.get("/api/resilience-context", async (req, res) => {
+    try {
+      const resilienceContext = {
+        title: "Mental Resilience Challenge Scoring",
+        description: "Understanding how your resilience scores are calculated based on key mental performance indicators",
+        scoringCriteria: [
+          {
+            range: "90-100",
+            level: "Elite Resilience",
+            description: "Exceptional mental toughness with consistent performance under pressure",
+            indicators: ["Maintains focus during setbacks", "Quick recovery from mistakes", "Thrives in high-pressure situations", "Positive self-talk dominance"]
+          },
+          {
+            range: "80-89", 
+            level: "High Resilience",
+            description: "Strong mental game with good pressure management",
+            indicators: ["Stays composed under pressure", "Good mistake recovery", "Effective stress management", "Mostly positive mindset"]
+          },
+          {
+            range: "70-79",
+            level: "Good Resilience", 
+            description: "Solid mental foundation with room for pressure improvement",
+            indicators: ["Generally maintains composure", "Moderate recovery time", "Some pressure sensitivity", "Mixed positive/negative thoughts"]
+          },
+          {
+            range: "60-69",
+            level: "Developing Resilience",
+            description: "Building mental strength with inconsistent performance under pressure",
+            indicators: ["Occasional composure lapses", "Slow mistake recovery", "Pressure affects performance", "Negative thoughts interfere"]
+          },
+          {
+            range: "Below 60",
+            level: "Building Resilience", 
+            description: "Early stage resilience development requiring focused mental training",
+            indicators: ["Frequent composure issues", "Poor mistake recovery", "High pressure sensitivity", "Negative thought patterns"]
+          }
+        ],
+        assessmentFactors: [
+          {
+            factor: "Intensity Management",
+            weight: "25%",
+            description: "Ability to regulate arousal levels and maintain optimal performance intensity"
+          },
+          {
+            factor: "Decision Making",
+            weight: "25%", 
+            description: "Quality of choices and thought processes under competitive pressure"
+          },
+          {
+            factor: "Attention Control",
+            weight: "25%",
+            description: "Focus management and ability to avoid external/internal diversions"  
+          },
+          {
+            factor: "Execution Under Pressure",
+            weight: "25%",
+            description: "Performance consistency and skill delivery in challenging situations"
+          }
+        ],
+        improvementTips: [
+          "Practice breathing techniques for intensity regulation",
+          "Use visualization to improve decision-making under pressure", 
+          "Develop pre-performance routines for better attention control",
+          "Regular pressure training to build execution confidence"
+        ]
+      };
+      
+      res.json(resilienceContext);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to get resilience context", error: (error as Error).message });
     }
   });
 
