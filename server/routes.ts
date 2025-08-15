@@ -108,22 +108,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Demo admin login for testing (bypasses normal auth)
-  app.post('/api/auth/admin-demo-login', async (req, res) => {
-    try {
-      // Get the admin user directly
-      const adminUser = await storage.getUserByEmail('mark@cero-international.com');
-      if (adminUser) {
-        req.session.userId = adminUser.id;
-        res.json({ success: true, user: adminUser, message: 'Admin demo login successful' });
-      } else {
-        res.status(404).json({ message: 'Admin user not found' });
-      }
-    } catch (error: any) {
-      console.error('Admin demo login error:', error);
-      res.status(500).json({ message: 'Failed to demo login as admin' });
-    }
-  });
+
 
   // Stripe payment route for tier purchases
   app.post("/api/create-payment-intent", async (req, res) => {

@@ -10,8 +10,8 @@ import { Shield, User, Lock } from "lucide-react";
 
 export default function AdminLogin() {
   const [credentials, setCredentials] = useState({
-    email: "mark@cero-international.com", // Pre-filled for convenience
-    password: "admin123" // Default admin password
+    email: "", // Empty for security
+    password: ""
   });
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
@@ -44,61 +44,7 @@ export default function AdminLogin() {
     }
   };
 
-  const handleCreateAdminAccount = async () => {
-    setIsLoading(true);
-    try {
-      const response = await apiRequest("POST", "/api/auth/create-admin", {
-        email: credentials.email,
-        password: credentials.password,
-        username: "admin",
-        firstName: "Admin",
-        lastName: "User"
-      });
-      
-      if (response.ok) {
-        toast({
-          title: "Admin Account Created",
-          description: "You can now log in with your credentials",
-        });
-      } else {
-        throw new Error("Failed to create admin account");
-      }
-    } catch (error: any) {
-      toast({
-        title: "Account Creation Failed",
-        description: error.message || "Could not create admin account",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
-  const handleDemoLogin = async () => {
-    setIsLoading(true);
-    try {
-      const response = await apiRequest("POST", "/api/auth/admin-demo-login", {});
-      
-      if (response.ok) {
-        toast({
-          title: "Demo Login Successful",
-          description: "Welcome to the admin panel",
-        });
-        // Redirect to admin panel
-        window.location.href = "/admin";
-      } else {
-        throw new Error("Demo login failed");
-      }
-    } catch (error: any) {
-      toast({
-        title: "Demo Login Failed",
-        description: error.message || "Could not access admin demo",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -156,50 +102,16 @@ export default function AdminLogin() {
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <Button 
-                  type="submit" 
-                  className="w-full"
-                  disabled={isLoading || !credentials.email || !credentials.password}
-                >
-                  {isLoading ? "Signing in..." : "Sign In"}
-                </Button>
-
-                <div className="text-center">
-                  <div className="text-sm text-gray-500 mb-2">For testing access:</div>
-                  <Button 
-                    type="button"
-                    variant="outline"
-                    className="w-full mb-2"
-                    onClick={handleDemoLogin}
-                    disabled={isLoading}
-                  >
-                    Demo Admin Login
-                  </Button>
-                  
-                  <div className="text-sm text-gray-500 mb-2">Don't have an admin account?</div>
-                  <Button 
-                    type="button"
-                    variant="outline"
-                    className="w-full"
-                    onClick={handleCreateAdminAccount}
-                    disabled={isLoading || !credentials.email || !credentials.password}
-                  >
-                    Create Admin Account
-                  </Button>
-                </div>
-              </div>
+              <Button 
+                type="submit" 
+                className="w-full"
+                disabled={isLoading || !credentials.email || !credentials.password}
+              >
+                {isLoading ? "Signing in..." : "Sign In to Admin Panel"}
+              </Button>
             </form>
 
-            <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-              <h4 className="text-sm font-medium text-blue-900 mb-2">Quick Access:</h4>
-              <p className="text-xs text-blue-700">
-                The system has a pre-configured admin account with email: mark@cero-international.com
-              </p>
-              <p className="text-xs text-blue-700 mt-1">
-                You can create a new password or use the "Create Admin Account" button above.
-              </p>
-            </div>
+
           </CardContent>
         </Card>
 
