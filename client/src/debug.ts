@@ -330,32 +330,32 @@ export function withClientErrorLogging<T extends (...args: any[]) => any>(
   }) as T;
 }
 
-// Global error handlers for deployment debugging
-window.addEventListener('error', (event) => {
-  clientDebugger.error('global', 'Unhandled JavaScript error', {
-    message: event.message,
-    filename: event.filename,
-    lineno: event.lineno,
-    colno: event.colno,
-    stack: event.error?.stack
-  });
-});
+// Disabled global error handlers to prevent infinite loops and memory leaks
+// window.addEventListener('error', (event) => {
+//   clientDebugger.error('global', 'Unhandled JavaScript error', {
+//     message: event.message,
+//     filename: event.filename,
+//     lineno: event.lineno,
+//     colno: event.colno,
+//     stack: event.error?.stack
+//   });
+// });
 
-window.addEventListener('unhandledrejection', (event) => {
-  clientDebugger.error('global', 'Unhandled promise rejection', {
-    reason: event.reason,
-    stack: event.reason?.stack
-  });
-});
+// window.addEventListener('unhandledrejection', (event) => {
+//   clientDebugger.error('global', 'Unhandled promise rejection', {
+//     reason: event.reason,
+//     stack: event.reason?.stack
+//   });
+// });
 
-// Auto-run basic diagnostics on load
-if (typeof window !== 'undefined') {
-  // Run diagnostics after DOM is loaded
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => clientDebugger.runClientDiagnostics(), 1000);
-    });
-  } else {
-    setTimeout(() => clientDebugger.runClientDiagnostics(), 1000);
-  }
-}
+// DISABLED: Auto-run diagnostics to prevent white screen crashes and infinite loops
+// if (typeof window !== 'undefined') {
+//   // Run diagnostics after DOM is loaded
+//   if (document.readyState === 'loading') {
+//     document.addEventListener('DOMContentLoaded', () => {
+//       setTimeout(() => clientDebugger.runClientDiagnostics(), 1000);
+//     });
+//   } else {
+//     setTimeout(() => clientDebugger.runClientDiagnostics(), 1000);
+//   }
+// }
