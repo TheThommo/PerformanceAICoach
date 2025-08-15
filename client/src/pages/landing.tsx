@@ -129,8 +129,7 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Floating Chat Component */}
-      <LandingChat />
+
 
       {/* Features Section */}
       <section className="py-16 bg-white">
@@ -365,8 +364,7 @@ export default function Landing() {
 
       <Footer />
       
-      {/* Floating Chat - only shows when main widget is not visible */}
-      {showFloatingChat && <LandingChat />}
+
     </div>
   );
 }
