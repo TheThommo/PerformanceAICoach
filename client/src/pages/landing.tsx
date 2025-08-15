@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Brain, Target, TrendingUp, Users, Shield, Check, Star } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { LandingChatStableV2 as LandingChat } from "@/components/landing-chat-stable-v2";
+import { OptimizedFloChat as LandingChat } from "@/components/optimized-flo-chat";
 import { Footer } from "@/components/footer";
 import { StableSignUpForm } from "@/components/stable-signup-form";
 import Checkout from "./checkout";

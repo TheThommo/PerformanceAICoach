@@ -149,9 +149,25 @@ User message: "${userMessage}"
 
 Please provide a coaching response in JSON format.`;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-flash",
+      generationConfig: {
+        maxOutputTokens: 1000,
+        temperature: 0.7,
+      },
+    });
     
-    const result = await model.generateContent(fullPrompt);
+    // Add timeout wrapper for better performance
+    const generateWithTimeout = async () => {
+      return Promise.race([
+        model.generateContent(fullPrompt),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Request timeout after 15 seconds')), 15000)
+        )
+      ]);
+    };
+    
+    const result = await generateWithTimeout() as any;
     const response = await result.response;
     const text = response.text();
     
@@ -230,8 +246,25 @@ As Flo, the Red2Blue coach, provide analysis in JSON format with:
 
 Focus on practical, sports-specific insights and simple language.`;
 
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const result = await model.generateContent(prompt);
+    const model = genAI.getGenerativeModel({ 
+      model: "gemini-1.5-flash",
+      generationConfig: {
+        maxOutputTokens: 800,
+        temperature: 0.6,
+      },
+    });
+    
+    // Add timeout wrapper for assessment analysis
+    const generateWithTimeout = async () => {
+      return Promise.race([
+        model.generateContent(prompt),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Assessment analysis timeout')), 12000)
+        )
+      ]);
+    };
+    
+    const result = await generateWithTimeout() as any;
     const response = await result.response;
     const text = response.text();
     
