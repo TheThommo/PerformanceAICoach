@@ -725,31 +725,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Landing page chat for non-authenticated users
+  // Landing page chat for non-authenticated users with optimized performance
   app.post("/api/landing-chat", async (req, res) => {
+    // Set timeout for the entire request
+    const requestTimeout = setTimeout(() => {
+      if (!res.headersSent) {
+        res.status(408).json({ 
+          message: "I'm having trouble connecting right now. Please try your question again." 
+        });
+      }
+    }, 10000); // 10 second timeout
+
     try {
       const { message } = req.body;
       
-      if (!message) {
-        return res.status(400).json({ message: "Message is required" });
+      if (!message || typeof message !== 'string' || message.trim().length === 0) {
+        clearTimeout(requestTimeout);
+        return res.status(400).json({ message: "Please provide a valid message" });
       }
 
-      // Use the Gemini AI for responses
-      const response = await getCoachingResponse(message, [], {
+      // Limit message length to prevent abuse
+      if (message.length > 500) {
+        clearTimeout(requestTimeout);
+        return res.status(400).json({ message: "Message too long. Please keep it under 500 characters." });
+      }
+
+      console.log(`[LANDING-CHAT] Processing message: "${message.substring(0, 100)}..."`);
+
+      // Use the Gemini AI for responses with lightweight context
+      const response = await getCoachingResponse(message.trim(), [], {
         latestAssessment: null,
         recentProgress: []
       });
 
-      res.json({
-        message: response.message,
-        suggestions: response.suggestions || [],
-        urgencyLevel: response.urgencyLevel || "low"
-      });
+      clearTimeout(requestTimeout);
+      
+      if (!res.headersSent) {
+        res.json({
+          message: response.message,
+          suggestions: response.suggestions || [],
+          urgencyLevel: response.urgencyLevel || "low"
+        });
+      }
+
+      console.log(`[LANDING-CHAT] Response sent successfully`);
     } catch (error) {
+      clearTimeout(requestTimeout);
       console.error("Landing chat error:", error);
-      res.status(500).json({ 
-        message: "I'm here to help with your mental game. What specific challenge are you facing on the course?" 
-      });
+      
+      if (!res.headersSent) {
+        // Provide different fallback based on error type
+        if (error.message?.includes('timeout')) {
+          res.status(408).json({ 
+            message: "I'm taking a bit longer to think. Let me give you a quick response: Try box breathing (4 counts in, hold 4, out 4, hold 4) when you feel pressure. What specific situation are you dealing with?" 
+          });
+        } else {
+          res.status(500).json({ 
+            message: "I'm here to help with your mental game. Try asking about handling pressure, staying focused, or managing nerves before competition." 
+          });
+        }
+      }
     }
   });
 

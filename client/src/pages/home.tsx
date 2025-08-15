@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { OptimizedAIChat as AIChat } from "@/components/optimized-ai-chat";
+import { BulletproofAIChat as AIChat } from "@/components/bulletproof-ai-chat";
 import { ResilienceGame } from "@/components/resilience-game";
 import { MoodIndicator } from "@/components/mood-indicator";
 import { MoodTracker } from "@/components/mood-tracker";

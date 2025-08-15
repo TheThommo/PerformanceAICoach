@@ -162,7 +162,7 @@ Please provide a coaching response in JSON format.`;
       return Promise.race([
         model.generateContent(fullPrompt),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Request timeout after 15 seconds')), 15000)
+          setTimeout(() => reject(new Error('Request timeout after 8 seconds')), 8000)
         )
       ]);
     };
@@ -259,7 +259,7 @@ Focus on practical, sports-specific insights and simple language.`;
       return Promise.race([
         model.generateContent(prompt),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Assessment analysis timeout')), 12000)
+          setTimeout(() => reject(new Error('Assessment analysis timeout')), 8000)
         )
       ]);
     };
