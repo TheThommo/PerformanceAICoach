@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Brain, Target, TrendingUp, Users, Shield, Check, Star } from "lucide-react";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { BulletproofFloChat as LandingChat } from "@/components/bulletproof-flo-chat";
+import { StableChat as LandingChat } from "@/components/stable-chat";
 import { Footer } from "@/components/footer";
 import { StableSignUpForm } from "@/components/stable-signup-form";
 import Checkout from "./checkout";
@@ -20,23 +20,23 @@ export default function Landing() {
   const [showFloatingChat, setShowFloatingChat] = useState(false);
   const [showSignIn, setShowSignIn] = useState(false);
 
-  // Smart visibility logic for floating chat
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        // Show floating chat when main widget is not visible
-        setShowFloatingChat(!entry.isIntersecting);
-      },
-      { threshold: 0.1 }
-    );
+  // DISABLED: IntersectionObserver to prevent memory leaks and crashes
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(
+  //     ([entry]) => {
+  //       // Show floating chat when main widget is not visible
+  //       setShowFloatingChat(!entry.isIntersecting);
+  //     },
+  //     { threshold: 0.1 }
+  //   );
 
-    const mainWidget = document.getElementById('main-chat-widget');
-    if (mainWidget) {
-      observer.observe(mainWidget);
-    }
+  //   const mainWidget = document.getElementById('main-chat-widget');
+  //   if (mainWidget) {
+  //     observer.observe(mainWidget);
+  //   }
 
-    return () => observer.disconnect();
-  }, []);
+  //   return () => observer.disconnect();
+  // }, []);
 
   if (showCheckout) {
     return <Checkout tier={selectedTier} onBack={() => setShowCheckout(false)} />;

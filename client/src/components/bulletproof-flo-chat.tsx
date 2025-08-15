@@ -26,25 +26,26 @@ function ChatErrorBoundary({ children }: { children: React.ReactNode }) {
   const [hasError, setHasError] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    const handleError = (event: ErrorEvent) => {
-      setHasError(true);
-      setError(new Error(event.message));
-    };
+  // DISABLED: Global error listeners to prevent infinite loops and crashes
+  // useEffect(() => {
+  //   const handleError = (event: ErrorEvent) => {
+  //     setHasError(true);
+  //     setError(new Error(event.message));
+  //   };
 
-    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
-      setHasError(true);
-      setError(new Error(event.reason?.toString() || 'Promise rejection'));
-    };
+  //   const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+  //     setHasError(true);
+  //     setError(new Error(event.reason?.toString() || 'Promise rejection'));
+  //   };
 
-    window.addEventListener('error', handleError);
-    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+  //   window.addEventListener('error', handleError);
+  //   window.addEventListener('unhandledrejection', handleUnhandledRejection);
 
-    return () => {
-      window.removeEventListener('error', handleError);
-      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener('error', handleError);
+  //     window.removeEventListener('unhandledRejection', handleUnhandledRejection);
+  //   };
+  // }, []);
 
   if (hasError) {
     return (
@@ -87,38 +88,30 @@ export function BulletproofFloChat({ isInlineWidget = false }: { isInlineWidget?
   const inputRef = useRef<HTMLInputElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  // Component initialization
+  // Component initialization - simplified
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setComponentReady(true);
-    }, 100);
+    const timer = setTimeout(() => setComponentReady(true), 100);
     return () => clearTimeout(timer);
   }, []);
 
-  // Auto-scroll to bottom when new messages are added
-  const scrollToBottom = useCallback(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ 
-        behavior: "smooth",
-        block: "end",
-        inline: "nearest"
-      });
-    }
-  }, []);
-
+  // Simplified auto-scroll without complex observers
   useEffect(() => {
-    const timeoutId = setTimeout(scrollToBottom, 100);
-    return () => clearTimeout(timeoutId);
-  }, [messages, scrollToBottom]);
+    if (messages.length > 0 && chatContainerRef.current) {
+      const container = chatContainerRef.current;
+      setTimeout(() => {
+        container.scrollTop = container.scrollHeight;
+      }, 50);
+    }
+  }, [messages]);
 
-  // Cancel ongoing request on component unmount
+  // Cleanup only - no dependencies to prevent infinite loops
   useEffect(() => {
     return () => {
       if (abortController) {
         abortController.abort();
       }
     };
-  }, [abortController]);
+  }, []);
 
   const sendMessage = useCallback(async (messageText: string) => {
     if (!messageText.trim() || isLoading) return;
@@ -194,12 +187,10 @@ export function BulletproofFloChat({ isInlineWidget = false }: { isInlineWidget?
       setIsLoading(false);
       setAbortController(null);
       
-      // Refocus input for better UX
-      setTimeout(() => {
-        if (inputRef.current && !inputRef.current.disabled) {
-          inputRef.current.focus();
-        }
-      }, 100);
+      // Simple refocus without setTimeout to prevent memory leaks
+      if (inputRef.current && !inputRef.current.disabled) {
+        inputRef.current.focus();
+      }
     }
   }, [isLoading]);
 
