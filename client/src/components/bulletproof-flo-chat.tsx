@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { MessageCircle, Send, Loader2 } from "lucide-react";
+import { MessageCircle, Send, Loader2, AlertCircle, RefreshCw } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Message {
@@ -21,15 +21,79 @@ interface FloResponse {
   urgencyLevel?: string;
 }
 
-export function BulletproofFloChat() {
+// Error boundary wrapper component
+function ChatErrorBoundary({ children }: { children: React.ReactNode }) {
+  const [hasError, setHasError] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
+    const handleError = (event: ErrorEvent) => {
+      setHasError(true);
+      setError(new Error(event.message));
+    };
+
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      setHasError(true);
+      setError(new Error(event.reason?.toString() || 'Promise rejection'));
+    };
+
+    window.addEventListener('error', handleError);
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+
+    return () => {
+      window.removeEventListener('error', handleError);
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+    };
+  }, []);
+
+  if (hasError) {
+    return (
+      <Card className="w-full max-w-2xl mx-auto h-[600px] flex flex-col bg-white dark:bg-gray-950 border border-red-200">
+        <div className="flex-1 flex items-center justify-center p-8">
+          <div className="text-center space-y-4">
+            <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Chat Temporarily Unavailable</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              I'm having trouble loading right now. Let me try to restart the chat.
+            </p>
+            <Button 
+              onClick={() => {
+                setHasError(false);
+                setError(null);
+                window.location.reload();
+              }}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Restart Chat
+            </Button>
+          </div>
+        </div>
+      </Card>
+    );
+  }
+
+  return <>{children}</>;
+}
+
+export function BulletproofFloChat({ isInlineWidget = false }: { isInlineWidget?: boolean }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [abortController, setAbortController] = useState<AbortController | null>(null);
+  const [componentReady, setComponentReady] = useState(false);
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+
+  // Component initialization
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setComponentReady(true);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Auto-scroll to bottom when new messages are added
   const scrollToBottom = useCallback(() => {
@@ -168,21 +232,36 @@ export function BulletproofFloChat() {
     }
   }, [handleSubmit, abortController]);
 
-  return (
-    <Card className="w-full max-w-2xl mx-auto h-[600px] flex flex-col bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800">
-      {/* Header */}
-      <div className="flex items-center gap-3 p-4 border-b border-gray-200 dark:border-gray-800 bg-gradient-to-r from-blue-50 to-red-50 dark:from-blue-950/20 dark:to-red-950/20">
-        <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-red-500 rounded-full flex items-center justify-center">
-          <MessageCircle className="w-5 h-5 text-white" />
+  // Show loading state while component initializes
+  if (!componentReady) {
+    return (
+      <Card className="w-full max-w-2xl mx-auto h-[600px] flex flex-col bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800">
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center space-y-4">
+            <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto" />
+            <p className="text-gray-600 dark:text-gray-400">Loading Flo...</p>
+          </div>
         </div>
-        <div>
-          <h3 className="font-semibold text-gray-900 dark:text-white">Chat with Flo</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Your Red2Blue mental performance coach</p>
-        </div>
-      </div>
+      </Card>
+    );
+  }
 
-      {/* Messages Container */}
-      <div 
+  return (
+    <ChatErrorBoundary>
+      <Card className="w-full max-w-2xl mx-auto h-[600px] flex flex-col bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800">
+        {/* Header */}
+        <div className="flex items-center gap-3 p-4 border-b border-gray-200 dark:border-gray-800 bg-gradient-to-r from-blue-50 to-red-50 dark:from-blue-950/20 dark:to-red-950/20">
+          <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-red-500 rounded-full flex items-center justify-center">
+            <MessageCircle className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-gray-900 dark:text-white">Chat with Flo</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Your Red2Blue mental performance coach</p>
+          </div>
+        </div>
+
+        {/* Messages Container */}
+        <div 
         ref={chatContainerRef}
         className="flex-1 overflow-y-auto p-4 space-y-4 min-h-0"
         style={{ scrollBehavior: "smooth" }}
@@ -192,14 +271,21 @@ export function BulletproofFloChat() {
             <MessageCircle className="w-12 h-12 mx-auto mb-4 opacity-50" />
             <p className="text-lg font-medium">Hi! I'm Flo, your mental performance coach.</p>
             <p className="mt-2">Ask me about handling pressure, staying focused, or any mental game challenge.</p>
-            <div className="flex flex-wrap gap-2 justify-center mt-4">
-              {["Control Circles", "Box Breathing", "Pre-game Nerves"].map((suggestion) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 justify-center mt-4 max-w-md mx-auto">
+              {[
+                "I missed a short putt and got frustrated. How do I recover?",
+                "I'm feeling nervous before my next round. Help with pre-round anxiety?", 
+                "How do I stay focused after a bad shot?",
+                "What's the best breathing technique for pressure putts?",
+                "Tell me about control circles and managing distractions",
+                "How can I build confidence on the first tee?"
+              ].map((suggestion, index) => (
                 <Button
-                  key={suggestion}
+                  key={index}
                   variant="outline"
                   size="sm"
-                  onClick={() => handleSuggestionClick(suggestion)}
-                  className="text-xs hover:bg-blue-50 dark:hover:bg-blue-950/20"
+                  onClick={() => sendMessage(suggestion)}
+                  className="text-xs h-auto p-3 text-left leading-relaxed hover:bg-blue-50 dark:hover:bg-blue-950/20"
                   disabled={isLoading}
                 >
                   {suggestion}
@@ -297,6 +383,7 @@ export function BulletproofFloChat() {
           Press Enter to send • ESC to cancel • {500 - inputValue.length} characters left
         </p>
       </form>
-    </Card>
+      </Card>
+    </ChatErrorBoundary>
   );
 }

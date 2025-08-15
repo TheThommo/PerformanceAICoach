@@ -190,11 +190,8 @@ export default function Home() {
                         variant="ghost" 
                         className="h-auto min-h-[80px] p-4 text-left bg-white hover:bg-blue-50 border border-gray-200 flex items-start"
                         onClick={() => {
-                          const chatInput = document.querySelector('[data-chat-input]') as HTMLInputElement;
-                          if (chatInput) {
-                            chatInput.value = "I'm feeling nervous before my next round. How can I manage pre-round anxiety?";
-                            chatInput.focus();
-                          }
+                          const chatButton = document.querySelector('[data-chat-button]') as HTMLElement;
+                          if (chatButton) chatButton.click();
                         }}
                       >
                         <div className="w-full overflow-hidden">
@@ -207,11 +204,8 @@ export default function Home() {
                         variant="ghost" 
                         className="h-auto min-h-[80px] p-4 text-left bg-white hover:bg-blue-50 border border-gray-200 flex items-start"
                         onClick={() => {
-                          const chatInput = document.querySelector('[data-chat-input]') as HTMLInputElement;
-                          if (chatInput) {
-                            chatInput.value = "I missed a short putt and got really frustrated. How do I recover quickly?";
-                            chatInput.focus();
-                          }
+                          const chatButton = document.querySelector('[data-chat-button]') as HTMLElement;
+                          if (chatButton) chatButton.click();
                         }}
                       >
                         <div className="w-full overflow-hidden">
@@ -224,11 +218,8 @@ export default function Home() {
                         variant="ghost" 
                         className="h-auto min-h-[80px] p-4 text-left bg-white hover:bg-blue-50 border border-gray-200 flex items-start"
                         onClick={() => {
-                          const chatInput = document.querySelector('[data-chat-input]') as HTMLInputElement;
-                          if (chatInput) {
-                            chatInput.value = "Teach me a breathing technique I can use on the course to stay calm.";
-                            chatInput.focus();
-                          }
+                          const chatButton = document.querySelector('[data-chat-button]') as HTMLElement;
+                          if (chatButton) chatButton.click();
                         }}
                       >
                         <div className="w-full overflow-hidden">
