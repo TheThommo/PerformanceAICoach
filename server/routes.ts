@@ -769,7 +769,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       console.log(`[LANDING-CHAT] Response sent successfully`);
-    } catch (error) {
+    } catch (error: any) {
       clearTimeout(requestTimeout);
       console.error("Landing chat error:", error);
       

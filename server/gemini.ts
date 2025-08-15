@@ -28,139 +28,76 @@ export async function getCoachingResponse(
   }
 ): Promise<CoachingResponse> {
   try {
-    const systemPrompt = `You are Flo, a Red2Blue mental performance coach for athletes and high performers. Your role is to help athletes shift from "Red Head" (stressed, reactive state) to "Blue Head" (calm, focused performance state) using proven methodology.
+    // Build context-aware prompt that directly addresses the user's question
+    const contextInfo = conversationHistory.length > 0 ? 
+      `Previous conversation context: ${JSON.stringify(conversationHistory.slice(-3))}` : '';
+    
+    const assessmentContext = userContext?.latestAssessment ? 
+      `User's recent assessment results: ${JSON.stringify(userContext.latestAssessment)}` : '';
 
-COMMUNICATION RULES:
-- Use simple, everyday language (ELI5 level)
-- No complex or unusual words; keep it conversational
-- No em dashes (-) for sentence separation; use semicolons (;) if needed
-- Avoid clichés like "game-changing", "cutting-edge", "essential"
-- Avoid redundant phrases like "in today's world", "plays a significant role"
-- Be direct and practical; no fluff
-- Don't use multiple words when one will do
+    const directPrompt = `You are Flo, a Red2Blue mental performance coach. Answer the user's question directly and helpfully.
 
-COMPREHENSIVE RED2BLUE KNOWLEDGE BASE:
-
-CORE PHILOSOPHY:
-Red Head State: Reactive, emotional, distracted mindset that impairs performance
-- Characteristics: Overthinking, dwelling on mistakes, worrying about outcomes, physical tension, negative self-talk
-- Triggers: Pressure situations, mistakes, environmental conditions, competitors, expectations
-
-Blue Head State: Calm, focused, present mindset that enhances performance  
-- Characteristics: Present awareness, controlled breathing, positive self-talk, clear decisions, routine consistency
-- Benefits: Better performance execution, emotional control, resilience, confidence
-
-FUNDAMENTAL TECHNIQUES:
-
-1. BOX BREATHING (Primary Reset Tool):
-- Pattern: Inhale 4 counts → Hold 4 → Exhale 4 → Hold 4
-- When to use: Before key moments, during transitions, during pressure situations
-- Effect: Activates parasympathetic nervous system, instant calm
-- Practice: 5 cycles minimum for effectiveness
-
-2. PRE-PERFORMANCE ROUTINE (25-Second Structure):
-- Physical Ritual (10s): Deep breath + balance check + equipment/strategy confidence
-- Visualize Action (6s): See execution, trajectory, outcome with specific target
-- Align & Commit (4s): Position yourself, align to target, commit fully to action
-- Practice Motion (3s): One purposeful rehearsal feeling the intended action
-- Execute (2s): Step up, settle, trust, perform
-
-3. CONTROL CIRCLES TECHNIQUE:
-Inner Circle (Complete Control): Breathing, attitude, effort, preparation, routine
-Middle Circle (Influence): Strategy, game management, action selection, practice quality
-Outer Circle (No Control): Weather, playing conditions, other competitors, results
-RULE: Invest energy ONLY in Inner and Middle circles
-
-4. 3-2-1 FOCUS RESET:
-- 3 things you can see (specific details)
-- 2 things you can hear (present sounds)  
-- 1 thing you can feel (physical sensation)
-- Purpose: Grounds attention in present moment, breaks negative thought loops
-
-5. MENTAL SKILLS X-CHECK ASSESSMENT:
-Intensity Management: Controlling arousal and energy levels
-Decision Making: Clear, committed strategic choices
-Diversions Control: Managing distractions and staying focused  
-Execution: Trusting technique and following through
-
-SPECIFIC INTERVENTIONS:
-
-Mistake Recovery:
-- Immediate: Box breathing, acknowledge without judgment
-- Process: "What can I learn?" vs "Why did I do that?"
-- Refocus: Next action routine, target selection
-- Mantra: "This moment, right now"
-
-Pre-Competition Nerves:
-- Physical: Progressive muscle relaxation, dynamic warm-up
-- Mental: Visualization of successful performance and good feelings
-- Process focus: Commit to routine and process goals
-- Acceptance: Nervous energy is normal and useful
-
-During Competition Pressure:
-- Slow down all movements and decisions
-- Extra emphasis on breathing and routine
-- Simplify action selection and strategy
-- Trust your practice and preparation
-
-RED HEAD INTERVENTIONS:
-Overthinking: "Stop, breathe, simplify" - Single action thought maximum
-Dwelling on Mistakes: "File it and move on" - Physical reset routine
-Future Worry: "One moment at a time" - Present moment awareness
-Physical Tension: Progressive muscle relaxation, breathing exercises
-
-BLUE HEAD ENHANCEMENT:
-Confidence Building: Recall past successes, positive visualization
-Flow State: Challenge-skill balance, clear goals, focused attention
-Resilience: Growth mindset, adversity as opportunity, long-term perspective
-
-COACHING PRINCIPLES:
-- Meet athletes where they are emotionally
-- Provide immediate, actionable techniques
-- Build confidence through small wins
-- Focus on process over outcome
-- Use confident, encouraging tone
-
-Analyze messages for Red Head indicators and provide specific Blue Head solutions using this comprehensive methodology. Always provide practical next steps.
-
-Respond in JSON format with:
-{
-  "message": "Your detailed coaching response using Red2Blue methodology",
-  "suggestions": ["specific actionable techniques from knowledge base"],
-  "redHeadIndicators": ["any red head signs detected in their message"],
-  "blueHeadTechniques": ["recommended blue head techniques"],
-  "urgencyLevel": "low|medium|high"
-}`;
-
-    const contextInfo = userContext ? `
-User's latest assessment scores: ${JSON.stringify(userContext.latestAssessment)}
-Recent progress: ${JSON.stringify(userContext.recentProgress)}
-` : '';
-
-    const conversationContext = conversationHistory.length > 0 ? 
-      `Previous conversation: ${JSON.stringify(conversationHistory.slice(-5))}` : '';
-
-    const fullPrompt = `${systemPrompt}
+USER'S QUESTION: "${userMessage}"
 
 ${contextInfo}
-${conversationContext}
+${assessmentContext}
 
-User message: "${userMessage}"
+RED2BLUE KNOWLEDGE FOR REFERENCE:
 
-Please provide a coaching response in JSON format.`;
+CONTROL CIRCLES:
+- Inner Circle (Full Control): Your breathing, attitude, effort, preparation, pre-performance routine
+- Middle Circle (Influence): Strategy decisions, shot selection, practice quality, game management  
+- Outer Circle (No Control): Weather, course conditions, other players, final results
+- KEY RULE: Only focus energy on Inner and Middle circles
+
+BOX BREATHING:
+- Pattern: Breathe in 4 counts → Hold 4 → Out 4 → Hold 4
+- Use when: Feeling pressure, making mistakes, getting tense
+- Effect: Activates calm nervous system, instant reset
+
+PRE-PERFORMANCE ROUTINE (25 seconds):
+- Physical setup (10s): Deep breath, check stance/grip, feel confident
+- Visualize (6s): See your perfect execution and target
+- Align & commit (4s): Set position, pick target, fully commit
+- Practice motion (3s): One smooth rehearsal
+- Execute (2s): Step up and trust your training
+
+3-2-1 FOCUS RESET:
+- 3 things you can see (specific details)
+- 2 things you can hear (present sounds)
+- 1 thing you can feel (physical sensation)
+- Purpose: Gets you present and stops overthinking
+
+COMMUNICATION STYLE:
+- Use simple, everyday language
+- Be direct and practical
+- No complex terms or jargon
+- Provide specific, actionable advice
+- Be encouraging but realistic
+
+RESPOND DIRECTLY TO THE USER'S QUESTION. If they ask about a specific technique like "control circles," explain that technique clearly. If they describe a problem, provide relevant solutions.
+
+Format your response as JSON:
+{
+  "message": "Direct answer to their question with practical Red2Blue advice",
+  "suggestions": ["2-3 specific actionable techniques"],
+  "redHeadIndicators": ["any stress/anxiety signs they mentioned"],
+  "blueHeadTechniques": ["relevant techniques for their situation"],
+  "urgencyLevel": "low|medium|high"
+}`;
 
     const model = genAI.getGenerativeModel({ 
       model: "gemini-1.5-flash",
       generationConfig: {
-        maxOutputTokens: 1000,
-        temperature: 0.7,
+        maxOutputTokens: 800,
+        temperature: 0.6,
       },
     });
     
-    // Add timeout wrapper for better performance
+    // Add timeout wrapper with retries for reliability
     const generateWithTimeout = async () => {
       return Promise.race([
-        model.generateContent(fullPrompt),
+        model.generateContent(directPrompt),
         new Promise((_, reject) =>
           setTimeout(() => reject(new Error('Request timeout after 8 seconds')), 8000)
         )
@@ -184,36 +121,92 @@ Please provide a coaching response in JSON format.`;
       };
     }
     
-    // Fallback if JSON parsing fails
-    return {
-      message: "I'm here to help you shift from Red Head to Blue Head. Let's work on some specific techniques based on what you're experiencing.",
-      suggestions: ["Practice box breathing (4-4-4-4)", "Use your pre-shot routine consistently", "Focus on what you can control"],
-      redHeadIndicators: [],
-      blueHeadTechniques: ["Box breathing", "Present moment awareness", "Control circles"],
-      urgencyLevel: "medium"
-    };
+    // Intelligent fallback based on user's question
+    const fallbackResponse = generateFallbackResponse(userMessage);
+    return fallbackResponse;
     
   } catch (error) {
     console.error("Gemini coaching response error:", error);
     
-    // Comprehensive fallback response based on Red2Blue methodology
+    // Intelligent fallback based on user's question
+    const fallbackResponse = generateFallbackResponse(userMessage);
+    return fallbackResponse;
+  }
+}
+
+// Intelligent fallback response generator
+function generateFallbackResponse(userMessage: string): CoachingResponse {
+  const message = userMessage.toLowerCase();
+  
+  // Detect question topics and provide relevant responses
+  if (message.includes("control circles") || message.includes("control circle")) {
     return {
-      message: "I'm here to support your mental performance development using the Red2Blue methodology. Our goal is shifting from reactive Red Head states to focused Blue Head states. The foundation is always breathing, routine, and focusing on what you can control. What specific competitive situation would you like to work on?",
+      message: "Control Circles are a powerful Red2Blue technique for managing your focus and energy. There are three circles: Inner Circle (things you completely control like your breathing, attitude, and routine), Middle Circle (things you can influence like strategy and preparation), and Outer Circle (things you can't control like weather and other competitors). The key is to only invest your mental energy in the Inner and Middle circles. When you feel stressed or overwhelmed, ask yourself: 'Is this in my control circles?' If not, let it go and refocus on what you can actually influence.",
       suggestions: [
-        "Practice box breathing: 4 counts in, hold 4, out 4, hold 4",
-        "Establish a consistent 25-second pre-performance routine",
-        "Use Control Circles - focus only on what you can control"
+        "Practice identifying what's in each circle before competition",
+        "Use box breathing when you catch yourself worrying about Outer Circle stuff",
+        "Create a pre-performance routine (Inner Circle control)"
       ],
-      redHeadIndicators: [],
-      blueHeadTechniques: [
-        "Box breathing for instant calm",
-        "Present moment awareness with 3-2-1 focus reset", 
-        "Control circles technique",
-        "Pre-performance routine consistency"
-      ],
+      redHeadIndicators: ["worrying about uncontrollable factors"],
+      blueHeadTechniques: ["Control circles awareness", "Focus redirection"],
       urgencyLevel: "medium"
     };
   }
+  
+  if (message.includes("breathing") || message.includes("breath")) {
+    return {
+      message: "Box breathing is your instant reset tool for shifting from Red Head to Blue Head. The pattern is simple: breathe in for 4 counts, hold for 4, breathe out for 4, hold for 4. Do this for 5 cycles minimum. It activates your calm nervous system and gives you immediate control over pressure situations. Use it before key moments, after mistakes, or whenever you feel tension building.",
+      suggestions: [
+        "Practice box breathing 5 cycles right now",
+        "Use it as part of your pre-performance routine",
+        "Practice it daily so it becomes automatic under pressure"
+      ],
+      redHeadIndicators: ["physical tension", "feeling rushed"],
+      blueHeadTechniques: ["Box breathing", "Controlled breathing patterns"],
+      urgencyLevel: "low"
+    };
+  }
+  
+  if (message.includes("nervous") || message.includes("anxiety") || message.includes("pressure")) {
+    return {
+      message: "Feeling nervous before competition is completely normal and actually shows you care. The goal isn't to eliminate nerves but to channel that energy into focus. Start with box breathing to calm your system, then use your pre-performance routine to give yourself a clear process to follow. Remember: nerves mean you're ready to perform at a higher level.",
+      suggestions: [
+        "Start with 5 cycles of box breathing",
+        "Focus on your process rather than the outcome",
+        "Use your 25-second pre-performance routine consistently"
+      ],
+      redHeadIndicators: ["pre-competition anxiety", "overthinking outcomes"],
+      blueHeadTechniques: ["Box breathing", "Process focus", "Routine consistency"],
+      urgencyLevel: "medium"
+    };
+  }
+  
+  if (message.includes("mistake") || message.includes("error") || message.includes("mess up")) {
+    return {
+      message: "Mistakes are part of competition, and how you respond to them determines your next performance. The Red2Blue approach: First, take a breath and acknowledge the mistake without judgment. Ask 'What can I learn?' instead of 'Why did I do that?' Then use your reset routine to refocus on the next action. The mantra is 'This moment, right now' to bring your attention back to the present.",
+      suggestions: [
+        "Practice the 'file it and move on' mental technique",
+        "Use box breathing after mistakes to reset your nervous system",
+        "Have a specific physical reset routine (like adjusting your equipment)"
+      ],
+      redHeadIndicators: ["dwelling on past mistakes", "negative self-talk"],
+      blueHeadTechniques: ["Mistake recovery process", "Present moment focus"],
+      urgencyLevel: "medium"
+    };
+  }
+  
+  // General response for unclear or broad questions
+  return {
+    message: "I'm here to help you develop your mental game using Red2Blue methodology. Our goal is shifting from Red Head (stressed, reactive) to Blue Head (calm, focused) states. The foundation is always: breathing for instant calm, routines for consistency, and focusing only on what you can control. What specific mental game challenge would you like to work on?",
+    suggestions: [
+      "Try box breathing (4-4-4-4) for immediate calm",
+      "Develop a consistent pre-performance routine",
+      "Use Control Circles to focus on what you can influence"
+    ],
+    redHeadIndicators: [],
+    blueHeadTechniques: ["Box breathing", "Process focus", "Control awareness"],
+    urgencyLevel: "low"
+  };
 }
 
 export async function analyzeAssessmentResults(
