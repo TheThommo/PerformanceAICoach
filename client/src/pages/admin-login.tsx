@@ -11,7 +11,7 @@ import { Shield, User, Lock } from "lucide-react";
 export default function AdminLogin() {
   const [credentials, setCredentials] = useState({
     email: "mark@cero-international.com", // Pre-filled for convenience
-    password: ""
+    password: "admin123" // Default admin password
   });
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();

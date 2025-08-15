@@ -39,6 +39,7 @@ import CheckoutHosted from "@/pages/checkout-hosted";
 import PaymentRedirect from "@/pages/payment-redirect";
 import AdminDashboard from "@/pages/admin-dashboard";
 import AdminLogin from "@/pages/admin-login";
+import { AdminGuard } from "@/components/admin-guard";
 import DemoAccess from "@/pages/demo-access";
 import { canAccessDashboard } from "@/lib/permissions";
 
@@ -142,8 +143,15 @@ function Router() {
                 <Route path="/coach" component={CoachDashboard} />
               )}
               
-              {/* Admin only routes - temporarily allow all authenticated users for testing */}
-              <Route path="/admin" component={AdminDashboard} />
+              {/* Admin routes with proper security */}
+              <Route path="/admin" component={() => (
+                <AdminGuard>
+                  <AdminDashboard />
+                </AdminGuard>
+              )} />
+              
+              {/* Admin login */}
+              <Route path="/admin-login" component={AdminLogin} />
               
               <Route component={NotFound} />
             </Switch>
