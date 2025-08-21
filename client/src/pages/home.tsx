@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 
 import { ResilienceGame } from "@/components/resilience-game";
 import { MoodIndicator } from "@/components/mood-indicator";
+import { StableChat } from "@/components/stable-chat";
 import { MoodTracker } from "@/components/mood-tracker";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "wouter";
@@ -167,8 +168,12 @@ export default function Home() {
                     <Button 
                       className="bg-blue-600 hover:bg-blue-700 text-white"
                       onClick={() => {
-                        const chatButton = document.querySelector('[data-chat-button]') as HTMLElement;
-                        if (chatButton) chatButton.click();
+                        // Scroll to the chat component
+                        const chatElement = document.querySelector('[data-chat-input]') as HTMLElement;
+                        if (chatElement) {
+                          chatElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                          setTimeout(() => chatElement.focus(), 300);
+                        }
                       }}
                     >
                       <MessageCircle className="mr-2" size={16} />
@@ -193,9 +198,12 @@ export default function Home() {
                           const chatInput = document.querySelector('[data-chat-input]') as HTMLInputElement;
                           if (chatInput) {
                             chatInput.value = "I'm feeling nervous before my next round. How can I manage pre-round anxiety?";
-                            chatInput.focus();
-                            const chatButton = document.querySelector('[data-chat-button]') as HTMLElement;
-                            if (chatButton) chatButton.click();
+                            chatInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            setTimeout(() => {
+                              chatInput.focus();
+                              const chatButton = document.querySelector('[data-chat-button]') as HTMLElement;
+                              if (chatButton) chatButton.click();
+                            }, 300);
                           }
                         }}
                       >
@@ -212,9 +220,12 @@ export default function Home() {
                           const chatInput = document.querySelector('[data-chat-input]') as HTMLInputElement;
                           if (chatInput) {
                             chatInput.value = "I missed a short putt and got really frustrated. How do I recover quickly?";
-                            chatInput.focus();
-                            const chatButton = document.querySelector('[data-chat-button]') as HTMLElement;
-                            if (chatButton) chatButton.click();
+                            chatInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            setTimeout(() => {
+                              chatInput.focus();
+                              const chatButton = document.querySelector('[data-chat-button]') as HTMLElement;
+                              if (chatButton) chatButton.click();
+                            }, 300);
                           }
                         }}
                       >
@@ -231,9 +242,12 @@ export default function Home() {
                           const chatInput = document.querySelector('[data-chat-input]') as HTMLInputElement;
                           if (chatInput) {
                             chatInput.value = "Teach me a breathing technique I can use on the course to stay calm.";
-                            chatInput.focus();
-                            const chatButton = document.querySelector('[data-chat-button]') as HTMLElement;
-                            if (chatButton) chatButton.click();
+                            chatInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            setTimeout(() => {
+                              chatInput.focus();
+                              const chatButton = document.querySelector('[data-chat-button]') as HTMLElement;
+                              if (chatButton) chatButton.click();
+                            }, 300);
                           }
                         }}
                       >
@@ -368,11 +382,19 @@ export default function Home() {
 
       {/* Interactive Features Section */}
       <div className="grid lg:grid-cols-2 gap-8 mt-8">
+        {/* Flo Chat Interface */}
+        <div>
+          <StableChat />
+        </div>
+
         {/* Mental Resilience Mini-Game */}
         <div>
           <ResilienceGame />
         </div>
+      </div>
 
+      {/* Additional Features Row */}
+      <div className="grid lg:grid-cols-1 gap-8 mt-8">
         {/* Real-time Performance Mood Indicator */}
         <div>
           <MoodIndicator />
