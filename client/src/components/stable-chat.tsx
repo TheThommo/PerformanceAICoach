@@ -89,7 +89,7 @@ export function StableChat({ isInlineWidget = false }: { isInlineWidget?: boolea
   }, [inputValue, sendMessage, isLoading]);
 
   return (
-    <Card className="w-full max-w-2xl mx-auto h-[600px] flex flex-col bg-white border border-gray-200">
+    <Card className="w-full max-w-2xl mx-auto h-[650px] flex flex-col bg-white border border-gray-200 shadow-lg">
       {/* Header */}
       <div className="flex items-center gap-3 p-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-red-50">
         <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-red-500 rounded-full flex items-center justify-center">
@@ -104,14 +104,14 @@ export function StableChat({ isInlineWidget = false }: { isInlineWidget?: boolea
       {/* Messages Container */}
       <div 
         ref={chatContainerRef}
-        className="flex-1 overflow-y-auto p-4 space-y-4"
+        className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50"
       >
         {messages.length === 0 && (
-          <div className="text-center text-gray-500 py-8">
-            <MessageCircle className="w-12 h-12 mx-auto mb-4 opacity-50" />
-            <p className="text-lg font-medium">Hi! I'm Flo, your mental performance coach.</p>
-            <p className="mt-2">Ask me about handling pressure, staying focused, or any mental game challenge.</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4 max-w-md mx-auto">
+          <div className="text-center text-gray-600 py-8 bg-white rounded-lg border border-gray-200 mx-2">
+            <MessageCircle className="w-12 h-12 mx-auto mb-4 text-blue-500 opacity-80" />
+            <p className="text-lg font-medium text-gray-900">Hi! I'm Flo, your mental performance coach.</p>
+            <p className="mt-3 mb-6 text-gray-600">Ask me about handling pressure, staying focused, or any mental game challenge.</p>
+            <div className="flex flex-col gap-3 mt-6 max-w-lg mx-auto">
               {[
                 "I missed a short putt and got frustrated. How do I recover?",
                 "I'm feeling nervous before my next round. Help with pre-round anxiety?", 
@@ -123,7 +123,7 @@ export function StableChat({ isInlineWidget = false }: { isInlineWidget?: boolea
                   variant="outline"
                   size="sm"
                   onClick={() => sendMessage(suggestion)}
-                  className="text-xs h-auto p-3 text-left leading-relaxed hover:bg-blue-50"
+                  className="text-xs h-auto py-3 px-4 text-left leading-relaxed hover:bg-blue-50 whitespace-normal min-h-[44px]"
                   disabled={isLoading}
                 >
                   {suggestion}
