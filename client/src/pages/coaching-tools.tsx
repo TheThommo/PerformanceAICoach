@@ -299,21 +299,56 @@ export default function CoachingTools() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="control-circles">Control Circles</TabsTrigger>
-          <TabsTrigger value="recognition">Recognition</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-7 text-xs">
+          <TabsTrigger value="overview" className="text-xs">Overview</TabsTrigger>
+          <TabsTrigger value="pre-shot">Pre-Shot</TabsTrigger>
+          <TabsTrigger value="mental-skills">X-Check</TabsTrigger>
+          <TabsTrigger value="control-circles">Circles</TabsTrigger>
+          <TabsTrigger value="mindset-map">Map</TabsTrigger>
           <TabsTrigger value="what-if">What Ifs</TabsTrigger>
-          <TabsTrigger value="screw-up">SUC Tool</TabsTrigger>
-          <TabsTrigger value="priority">Priority Plan</TabsTrigger>
+          <TabsTrigger value="recognition">Recognition</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setActiveTab("pre-shot")}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="h-5 w-5 text-blue-600" />
+                  Pre-Shot Routine
+                </CardTitle>
+                <CardDescription>
+                  Build consistent pre-performance routines for optimal mental preparation.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">
+                  <strong>Purpose:</strong> Develop repeatable preparation sequences for consistency.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setActiveTab("mental-skills")}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
+                  Mental Skills X-Check
+                </CardTitle>
+                <CardDescription>
+                  Comprehensive assessment of mental performance across four key areas.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">
+                  <strong>Purpose:</strong> Evaluate intensity, decisions, focus, and execution.
+                </p>
+              </CardContent>
+            </Card>
+
             <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setActiveTab("control-circles")}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Target className="h-5 w-5 text-blue-600" />
+                  <Target className="h-5 w-5 text-red-600" />
                   Control Circles
                 </CardTitle>
                 <CardDescription>
@@ -327,19 +362,19 @@ export default function CoachingTools() {
               </CardContent>
             </Card>
 
-            <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setActiveTab("recognition")}>
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setActiveTab("mindset-map")}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Eye className="h-5 w-5 text-green-600" />
-                  Recognition Tool
+                  <Brain className="h-5 w-5 text-purple-600" />
+                  Mindset Map
                 </CardTitle>
                 <CardDescription>
-                  Identify red (diverted) and blue (on-task) indicators for performance awareness.
+                  Visual framework for understanding Red Head vs Blue Head mental states.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-gray-600">
-                  <strong>Purpose:</strong> Build self-awareness of performance states and triggers.
+                  <strong>Purpose:</strong> Map mental states and transition strategies.
                 </p>
               </CardContent>
             </Card>
@@ -347,7 +382,7 @@ export default function CoachingTools() {
             <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setActiveTab("what-if")}>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Brain className="h-5 w-5 text-purple-600" />
+                  <AlertTriangle className="h-5 w-5 text-orange-600" />
                   What Ifs Planning
                 </CardTitle>
                 <CardDescription>
@@ -357,6 +392,23 @@ export default function CoachingTools() {
               <CardContent>
                 <p className="text-sm text-gray-600">
                   <strong>Purpose:</strong> Proactive preparation and strategy development.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setActiveTab("recognition")}>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Eye className="h-5 w-5 text-yellow-600" />
+                  Recognition Radar
+                </CardTitle>
+                <CardDescription>
+                  Identify red and blue behaviors and triggers in yourself and others.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600">
+                  <strong>Purpose:</strong> Build awareness of performance states and triggers.
                 </p>
               </CardContent>
             </Card>
@@ -417,10 +469,20 @@ export default function CoachingTools() {
         <TabsContent value="control-circles" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Control Circles Tool</CardTitle>
-              <CardDescription>
-                Clarity around what you can and cannot control helps direct your attention and energy effectively.
-              </CardDescription>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Control Circles Tool</CardTitle>
+                  <CardDescription>
+                    Clarity around what you can and cannot control helps direct your attention and energy effectively.
+                  </CardDescription>
+                </div>
+                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Download PDF Guide
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
               <form onSubmit={controlCircleForm.handleSubmit((data) => controlCircleMutation.mutate(data))} className="space-y-6">
@@ -545,7 +607,135 @@ export default function CoachingTools() {
           </Card>
         </TabsContent>
 
-        {/* Additional tabs content would continue here with similar comprehensive forms for each tool... */}
+        <TabsContent value="pre-shot" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Pre-Shot Routine Builder</CardTitle>
+                  <CardDescription>
+                    Build consistent, repeatable routines for optimal mental preparation before each shot.
+                  </CardDescription>
+                </div>
+                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Download PDF Guide
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">
+                Coming soon: Interactive pre-shot routine builder with timing, visualization, and physical preparation steps.
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="mental-skills" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Mental Skills X-Check</CardTitle>
+                  <CardDescription>
+                    Comprehensive assessment across four key mental performance areas: Intensity, Decision Making, Diversions, and Execution.
+                  </CardDescription>
+                </div>
+                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Download PDF Guide
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">
+                Coming soon: Complete mental skills assessment tool with scoring and personalized feedback.
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="mindset-map" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Mindset Map</CardTitle>
+                  <CardDescription>
+                    Visual framework for understanding and transitioning between Red Head and Blue Head mental states.
+                  </CardDescription>
+                </div>
+                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Download PDF Guide
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">
+                Coming soon: Interactive mindset mapping tool with state transitions and recovery strategies.
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="what-if" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>What If's Planning Tool</CardTitle>
+                  <CardDescription>
+                    Prepare strategies for challenging scenarios before they happen. Build mental resilience through scenario planning.
+                  </CardDescription>
+                </div>
+                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Download PDF Guide
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">
+                Coming soon: Scenario planning tool for pressure situations, course challenges, and performance obstacles.
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="recognition" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>Recognition Radar</CardTitle>
+                  <CardDescription>
+                    Identify red and blue behaviors and triggers in yourself and others. Build awareness for better performance states.
+                  </CardDescription>
+                </div>
+                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  Download PDF Guide
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 mb-4">
+                Coming soon: Behavioral awareness tool for recognizing performance state indicators and triggers.
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
         
       </Tabs>
     </div>
