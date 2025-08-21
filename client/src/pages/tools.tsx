@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Timer, Target, CircleDot, Brain, ArrowLeft } from "lucide-react";
+import { Timer, Target, CircleDot, Brain, ArrowLeft, AlertTriangle, Eye } from "lucide-react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { PreShotRoutineBuilder } from "@/components/pre-shot-routine-builder";
@@ -41,7 +41,7 @@ export default function Tools() {
 
           {/* Tools Tabs */}
           <Tabs defaultValue="pre-shot-routine" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:grid-cols-4">
+            <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:grid-cols-6 text-xs">
               <TabsTrigger value="pre-shot-routine" className="flex items-center space-x-2">
                 <Timer className="h-4 w-4" />
                 <span className="hidden sm:inline">Pre-Shot Routine</span>
@@ -62,6 +62,16 @@ export default function Tools() {
                 <span className="hidden sm:inline">Mindset Map</span>
                 <span className="sm:hidden">Mindset</span>
               </TabsTrigger>
+              <TabsTrigger value="what-ifs" className="flex items-center space-x-2">
+                <AlertTriangle className="h-4 w-4" />
+                <span className="hidden sm:inline">What If's</span>
+                <span className="sm:hidden">What If's</span>
+              </TabsTrigger>
+              <TabsTrigger value="recognition" className="flex items-center space-x-2">
+                <Eye className="h-4 w-4" />
+                <span className="hidden sm:inline">Recognition Radar</span>
+                <span className="sm:hidden">Recognition</span>
+              </TabsTrigger>
             </TabsList>
 
             {/* Pre-Shot Routine */}
@@ -69,11 +79,21 @@ export default function Tools() {
               <div className="grid gap-6">
                 <Card className="bg-blue-50 border-blue-200">
                   <CardHeader>
-                    <CardTitle className="text-blue-900">Pre-Shot Routine Playbook</CardTitle>
-                    <CardDescription className="text-blue-700">
-                      Master your 25-second routine for consistent performance under pressure. 
-                      This systematic approach helps you enter the Blue Head state before every shot.
-                    </CardDescription>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle className="text-blue-900">Pre-Shot Routine Playbook</CardTitle>
+                        <CardDescription className="text-blue-700">
+                          Master your 25-second routine for consistent performance under pressure. 
+                          This systematic approach helps you enter the Blue Head state before every shot.
+                        </CardDescription>
+                      </div>
+                      <Button variant="outline" size="sm" className="flex items-center gap-2">
+                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Download PDF Guide
+                      </Button>
+                    </div>
                   </CardHeader>
                   <CardContent className="text-blue-800">
                     <div className="grid md:grid-cols-2 gap-4 text-sm">
@@ -108,11 +128,21 @@ export default function Tools() {
               <div className="grid gap-6">
                 <Card className="bg-green-50 border-green-200">
                   <CardHeader>
-                    <CardTitle className="text-green-900">Mental Skills X-Check Tool</CardTitle>
-                    <CardDescription className="text-green-700">
-                      Track and evaluate your performance across the four core Red2Blue mental skills. 
-                      Use this systematic review to identify strengths and areas for improvement.
-                    </CardDescription>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle className="text-green-900">Mental Skills X-Check Tool</CardTitle>
+                        <CardDescription className="text-green-700">
+                          Track and evaluate your performance across the four core Red2Blue mental skills. 
+                          Use this systematic review to identify strengths and areas for improvement.
+                        </CardDescription>
+                      </div>
+                      <Button variant="outline" size="sm" className="flex items-center gap-2">
+                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Download PDF Guide
+                      </Button>
+                    </div>
                   </CardHeader>
                   <CardContent className="text-green-800">
                     <div className="grid md:grid-cols-4 gap-4 text-sm">
@@ -145,11 +175,21 @@ export default function Tools() {
               <div className="grid gap-6">
                 <Card className="bg-purple-50 border-purple-200">
                   <CardHeader>
-                    <CardTitle className="text-purple-900">R2B Control Circles Tool</CardTitle>
-                    <CardDescription className="text-purple-700">
-                      Focus your mental energy on what truly matters. This exercise helps you distinguish 
-                      between what you can control, influence, or must accept, leading to better mental clarity.
-                    </CardDescription>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle className="text-purple-900">R2B Control Circles Tool</CardTitle>
+                        <CardDescription className="text-purple-700">
+                          Focus your mental energy on what truly matters. This exercise helps you distinguish 
+                          between what you can control, influence, or must accept, leading to better mental clarity.
+                        </CardDescription>
+                      </div>
+                      <Button variant="outline" size="sm" className="flex items-center gap-2">
+                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Download PDF Guide
+                      </Button>
+                    </div>
                   </CardHeader>
                   <CardContent className="text-purple-800">
                     <div className="grid md:grid-cols-3 gap-4 text-sm">
@@ -180,11 +220,21 @@ export default function Tools() {
             <TabsContent value="mindset-map" className="space-y-6">
               <Card className="bg-orange-50 border-orange-200">
                 <CardHeader>
-                  <CardTitle className="text-orange-900">R2B Mindset Map</CardTitle>
-                  <CardDescription className="text-orange-700">
-                    Visual framework for understanding the journey from Red Head reactive states 
-                    to Blue Head performance states. Use this as your mental performance compass.
-                  </CardDescription>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-orange-900">R2B Mindset Map</CardTitle>
+                      <CardDescription className="text-orange-700">
+                        Visual framework for understanding the journey from Red Head reactive states 
+                        to Blue Head performance states. Use this as your mental performance compass.
+                      </CardDescription>
+                    </div>
+                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      Download PDF Guide
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
@@ -279,6 +329,173 @@ export default function Tools() {
                         </ul>
                       </div>
                     </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* What If's Planning */}
+            <TabsContent value="what-ifs" className="space-y-6">
+              <Card className="bg-orange-50 border-orange-200">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-orange-900">What If's Planning Tool</CardTitle>
+                      <CardDescription className="text-orange-700">
+                        Prepare strategies for challenging scenarios before they happen. Build mental resilience 
+                        through proactive scenario planning and contingency strategies.
+                      </CardDescription>
+                    </div>
+                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      Download PDF Guide
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent className="text-orange-800">
+                  <div className="grid md:grid-cols-2 gap-6 text-sm">
+                    <div>
+                      <h4 className="font-semibold mb-2">Purpose & Benefits:</h4>
+                      <ul className="space-y-1">
+                        <li>• Reduce anxiety through preparation</li>
+                        <li>• Build confidence in challenging situations</li>
+                        <li>• Develop quick decision-making skills</li>
+                        <li>• Create contingency strategies</li>
+                        <li>• Improve mental resilience</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold mb-2">Common Scenarios to Plan For:</h4>
+                      <ul className="space-y-1">
+                        <li>• Pressure shots in competition</li>
+                        <li>• Adverse weather conditions</li>
+                        <li>• Equipment malfunctions</li>
+                        <li>• Performance distractions</li>
+                        <li>• Physical discomfort or fatigue</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="mt-4 p-3 bg-orange-100 rounded-lg">
+                    <p className="text-sm">
+                      <strong>Interactive tool coming soon:</strong> Create detailed scenario plans with risk assessment, 
+                      strategy development, and mental preparation techniques for any challenging situation you might face.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Recognition Radar */}
+            <TabsContent value="recognition" className="space-y-6">
+              <Card className="bg-purple-50 border-purple-200">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-purple-900">Recognition Radar</CardTitle>
+                      <CardDescription className="text-purple-700">
+                        Identify red and blue behaviors and triggers in yourself and others. 
+                        Build awareness for better performance state management and team dynamics.
+                      </CardDescription>
+                    </div>
+                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                      <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      Download PDF Guide
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    {/* Red Behaviors */}
+                    <div className="p-4 bg-red-50 border-2 border-red-200 rounded-lg">
+                      <h3 className="text-lg font-bold text-red-800 mb-3 flex items-center">
+                        <div className="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
+                        Red Behaviors to Recognize
+                      </h3>
+                      <div className="space-y-3 text-sm text-red-700">
+                        <div>
+                          <h4 className="font-semibold">Physical Signs:</h4>
+                          <ul className="list-disc list-inside space-y-1 ml-2">
+                            <li>Tense body language</li>
+                            <li>Rapid or shallow breathing</li>
+                            <li>Fidgeting or restlessness</li>
+                            <li>Clenched jaw or fists</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold">Mental/Emotional:</h4>
+                          <ul className="list-disc list-inside space-y-1 ml-2">
+                            <li>Negative self-talk</li>
+                            <li>Overthinking decisions</li>
+                            <li>Frustration or anger</li>
+                            <li>Loss of confidence</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Blue Behaviors */}
+                    <div className="p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                      <h3 className="text-lg font-bold text-blue-800 mb-3 flex items-center">
+                        <div className="w-4 h-4 bg-blue-500 rounded-full mr-2"></div>
+                        Blue Behaviors to Cultivate
+                      </h3>
+                      <div className="space-y-3 text-sm text-blue-700">
+                        <div>
+                          <h4 className="font-semibold">Physical Signs:</h4>
+                          <ul className="list-disc list-inside space-y-1 ml-2">
+                            <li>Relaxed posture</li>
+                            <li>Controlled breathing</li>
+                            <li>Fluid movements</li>
+                            <li>Confident stance</li>
+                          </ul>
+                        </div>
+                        <div>
+                          <h4 className="font-semibold">Mental/Emotional:</h4>
+                          <ul className="list-disc list-inside space-y-1 ml-2">
+                            <li>Positive self-talk</li>
+                            <li>Clear decision making</li>
+                            <li>Calm confidence</li>
+                            <li>Present moment focus</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Recognition Practice */}
+                  <div className="p-4 bg-purple-100 border-2 border-purple-200 rounded-lg">
+                    <h3 className="text-lg font-bold text-purple-800 mb-3">Recognition Practice</h3>
+                    <div className="grid md:grid-cols-2 gap-4 text-sm text-purple-700">
+                      <div>
+                        <h4 className="font-semibold mb-2">Self-Awareness:</h4>
+                        <ul className="list-disc list-inside space-y-1 ml-2">
+                          <li>Regular mental state check-ins</li>
+                          <li>Body scan awareness</li>
+                          <li>Trigger identification</li>
+                          <li>Pattern recognition</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 className="font-semibold mb-2">Team Awareness:</h4>
+                        <ul className="list-disc list-inside space-y-1 ml-2">
+                          <li>Reading teammates' states</li>
+                          <li>Supportive communication</li>
+                          <li>Group energy management</li>
+                          <li>Positive influence strategies</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 p-3 bg-purple-100 rounded-lg">
+                    <p className="text-sm text-purple-800">
+                      <strong>Interactive tool coming soon:</strong> Practice identifying red and blue behaviors 
+                      with video scenarios, assessment tools, and personalized feedback for improved awareness.
+                    </p>
                   </div>
                 </CardContent>
               </Card>
