@@ -71,7 +71,7 @@ export function MoodIndicator() {
   };
 
   const [currentMood, setCurrentMood] = useState<MoodData>({
-    overall: todayMood?.moodScore || 50,
+    overall: (todayMood as any)?.moodScore || 50,
     confidence: 50,
     focus: 50,
     energy: 50,
@@ -85,9 +85,9 @@ export function MoodIndicator() {
   // Update mood when database data loads
   useEffect(() => {
     if (todayMood) {
-      const factors = calculateMoodFactors(todayMood.moodScore);
+      const factors = calculateMoodFactors((todayMood as any).moodScore);
       setCurrentMood({
-        overall: todayMood.moodScore,
+        overall: (todayMood as any).moodScore,
         ...factors,
         timestamp: new Date().toISOString()
       });
@@ -134,6 +134,79 @@ export function MoodIndicator() {
       default: return <Activity className="w-4 h-4" />;
     }
   };
+
+  // Calculate dynamic mood insights
+  const getMoodInsights = () => {
+    const factors = {
+      confidence: currentMood.confidence,
+      focus: currentMood.focus,
+      energy: currentMood.energy,
+      stress: currentMood.stress,
+      motivation: currentMood.motivation
+    };
+
+    // Find strongest factor (highest score)
+    // For stress, we invert it since lower stress is better
+    const adjustedFactors = {
+      ...factors,
+      stress: 100 - factors.stress // Invert stress for comparison
+    };
+
+    const strongest = Object.entries(adjustedFactors).reduce((max, [key, value]) => 
+      value > max.value ? { key, value: factors[key as keyof typeof factors] } : max,
+      { key: '', value: 0 }
+    );
+
+    // Find weakest factor (lowest score) 
+    const weakest = Object.entries(factors).reduce((min, [key, value]) => 
+      value < min.value ? { key, value } : min,
+      { key: '', value: 100 }
+    );
+
+    // Generate insights based on scores
+    const getInsightMessage = (factor: string, score: number, isStrongest: boolean) => {
+      const messages = {
+        confidence: {
+          strong: "Your self-belief is solid and supporting your performance",
+          weak: "Building confidence could unlock better performance"
+        },
+        focus: {
+          strong: "Your concentration levels are helping you stay on task",
+          weak: "Improving focus could help you maintain better attention"
+        },
+        energy: {
+          strong: "Your energy levels are fueling strong performance",
+          weak: "Boosting energy could improve your overall performance"
+        },
+        stress: {
+          strong: "Your stress management is working well",
+          weak: "Managing stress better could improve your mental clarity"
+        },
+        motivation: {
+          strong: "Your drive and enthusiasm are clearly supporting you",
+          weak: "Finding ways to boost motivation could help your progress"
+        }
+      };
+      
+      const factorMessages = messages[factor as keyof typeof messages];
+      return isStrongest ? factorMessages.strong : factorMessages.weak;
+    };
+
+    return {
+      strongest: {
+        factor: strongest.key,
+        score: strongest.value,
+        message: getInsightMessage(strongest.key, strongest.value, true)
+      },
+      weakest: {
+        factor: weakest.key,
+        score: weakest.value,
+        message: getInsightMessage(weakest.key, weakest.value, false)
+      }
+    };
+  };
+
+  const insights = getMoodInsights();
 
   const formatTime = (timestamp: string) => {
     return new Date(timestamp).toLocaleTimeString([], { 
@@ -327,21 +400,25 @@ export function MoodIndicator() {
             <div className="p-4 bg-blue-50 rounded-lg">
               <h4 className="font-medium text-blue-900 mb-2">Strongest Factor</h4>
               <div className="flex items-center gap-2">
-                {getFactorIcon("motivation")}
-                <span className="text-blue-800">Motivation (85%)</span>
+                {getFactorIcon(insights.strongest.factor)}
+                <span className="text-blue-800 capitalize">
+                  {insights.strongest.factor} ({Math.round(insights.strongest.score)}%)
+                </span>
               </div>
               <p className="text-sm text-blue-700 mt-1">
-                Your motivation levels are consistently high
+                {insights.strongest.message}
               </p>
             </div>
             <div className="p-4 bg-orange-50 rounded-lg">
               <h4 className="font-medium text-orange-900 mb-2">Area to Focus</h4>
               <div className="flex items-center gap-2">
-                {getFactorIcon("stress")}
-                <span className="text-orange-800">Stress Management (35%)</span>
+                {getFactorIcon(insights.weakest.factor)}
+                <span className="text-orange-800 capitalize">
+                  {insights.weakest.factor} ({Math.round(insights.weakest.score)}%)
+                </span>
               </div>
               <p className="text-sm text-orange-700 mt-1">
-                Consider breathing techniques to reduce stress
+                {insights.weakest.message}
               </p>
             </div>
           </div>
