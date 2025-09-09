@@ -120,7 +120,7 @@ export function checkFeatureAccess(
 
   // Determine required tier for upgrade message
   let requiredTier = "premium";
-  let upgradeMessage = "Upgrade to Premium ($490) for full access to all Red2Blue tools and techniques.";
+  let upgradeMessage = "Upgrade to Premium ($490) for full access to all Cerosity tools and techniques.";
   
   if (feature === 'humanCoaching') {
     requiredTier = "ultimate";
