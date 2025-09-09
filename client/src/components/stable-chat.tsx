@@ -97,7 +97,7 @@ export function StableChat({ isInlineWidget = false }: { isInlineWidget?: boolea
         </div>
         <div>
           <h3 className="font-semibold text-gray-900">Chat with Flo</h3>
-          <p className="text-sm text-gray-600">Your Red2Blue mental performance coach</p>
+          <p className="text-sm text-gray-600">Your Cerosity mental performance coach</p>
         </div>
       </div>
 
