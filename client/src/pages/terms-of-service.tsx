@@ -242,8 +242,8 @@ export default function TermsOfService() {
             For questions about these Terms of Service or platform support:
           </p>
           <div className="space-y-2 text-blue-700">
-            <p><strong>Email:</strong> support@red2blue.com</p>
-            <p><strong>Legal:</strong> legal@red2blue.com</p>
+            <p><strong>Email:</strong> info@cerosity.com</p>
+            <p><strong>Legal:</strong> legal@cerosity.com</p>
             <p><strong>Address:</strong> Cero International, Melbourne, Australia</p>
             <p><strong>Response Time:</strong> Support inquiries answered within 24 hours</p>
           </div>

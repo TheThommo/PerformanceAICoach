@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { Brain, MessageCircle, TrendingUp, Target, Users, Calendar, BarChart3 } from "lucide-react";
+import { MessageCircle, TrendingUp, Target, Users, Calendar, BarChart3 } from "lucide-react";
+import { CerosityLogo } from "@/components/cerosity-logo";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -133,7 +134,9 @@ export default function Home() {
             <CardHeader className="pb-4">
               <div className="flex items-center space-x-4">
                 <div className="w-16 h-16 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full flex items-center justify-center shadow-lg">
-                  <Brain className="text-white" size={28} />
+                  <div className="w-7 h-7 bg-white rounded-full flex items-center justify-center">
+                    <CerosityLogo size={20} />
+                  </div>
                 </div>
                 <div>
                   <CardTitle className="text-2xl font-bold text-gray-900">Meet Flo</CardTitle>

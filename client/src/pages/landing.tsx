@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { StableChat as LandingChat } from "@/components/stable-chat";
 import { Footer } from "@/components/footer";
 import { StableSignUpForm } from "@/components/stable-signup-form";
+import { CerosityLogo } from "@/components/cerosity-logo";
 import Checkout from "./checkout";
 
 export default function Landing() {
@@ -57,8 +58,8 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 gradient-red-blue rounded-full flex items-center justify-center">
-                <Brain className="text-white" size={20} />
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                <CerosityLogo size={24} />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">Cerosity</h1>
@@ -163,7 +164,9 @@ export default function Landing() {
 
             <Card className="border-0 shadow-lg">
               <CardHeader>
-                <Brain className="w-12 h-12 text-purple-600 mb-4" />
+                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                  <CerosityLogo size={28} className="opacity-80" />
+                </div>
                 <CardTitle>AI-Powered Coaching</CardTitle>
                 <CardDescription>
                   Personalized guidance from Flo, your AI mental coach
@@ -377,8 +380,8 @@ function SignUpForm({ onBack }: { onBack: () => void }) {
           <Card className="shadow-2xl">
             <CardHeader className="text-center">
               <div className="flex justify-center mb-4">
-                <div className="w-16 h-16 gradient-red-blue rounded-full flex items-center justify-center">
-                  <Brain className="text-white" size={32} />
+                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center">
+                  <CerosityLogo size={40} />
                 </div>
               </div>
               <CardTitle className="text-3xl">Create Your Account</CardTitle>

@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Brain, Send, MessageCircle } from "lucide-react";
+import { Send, MessageCircle } from "lucide-react";
+import { CerosityLogo } from "@/components/cerosity-logo";
 import { ErrorBoundary, ChatErrorFallback } from "@/components/error-boundary";
 
 interface Message {
@@ -226,7 +227,9 @@ function ChatComponent({ isInlineWidget = false }: LandingChatProps) {
       <Card className="w-full h-full flex flex-col shadow-lg">
         <CardHeader className="bg-gradient-to-r from-blue-600 to-red-600 text-white p-4 flex-shrink-0">
           <div className="flex items-center space-x-2">
-            <Brain className="w-6 h-6" />
+            <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+              <CerosityLogo size={16} />
+            </div>
             <div>
               <CardTitle className="text-lg">Chat with Flo</CardTitle>
               <p className="text-sm text-blue-100">Your AI Mental Performance Coach</p>
@@ -257,7 +260,9 @@ function ChatComponent({ isInlineWidget = false }: LandingChatProps) {
           <CardHeader className="bg-gradient-to-r from-blue-600 to-red-600 text-white p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <Brain className="w-6 h-6" />
+                <div className="w-6 h-6 bg-white rounded-full flex items-center justify-center">
+              <CerosityLogo size={16} />
+            </div>
                 <div>
                   <CardTitle className="text-lg">Chat with Flo</CardTitle>
                   <p className="text-sm text-blue-100">Your AI Mental Performance Coach</p>

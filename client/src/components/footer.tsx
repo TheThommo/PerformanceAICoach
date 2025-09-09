@@ -1,6 +1,7 @@
 import { Link } from "wouter";
 import { Separator } from "@/components/ui/separator";
-import { Brain, Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
+import { CerosityLogo } from "@/components/cerosity-logo";
 
 export function Footer() {
   return (
@@ -12,8 +13,8 @@ export function Footer() {
           {/* Company Info */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 gradient-red-blue rounded-full flex items-center justify-center">
-                <Brain className="h-4 w-4 text-white" />
+              <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                <CerosityLogo size={20} />
               </div>
               <span className="text-xl font-bold">Cerosity</span>
             </div>
@@ -23,7 +24,7 @@ export function Footer() {
             <div className="space-y-2 text-sm text-gray-300">
               <div className="flex items-center space-x-2">
                 <Mail className="h-4 w-4" />
-                <span>support@red2blue.me</span>
+                <span>info@cerosity.com</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="h-4 w-4" />

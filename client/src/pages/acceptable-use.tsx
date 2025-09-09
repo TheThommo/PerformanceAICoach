@@ -214,7 +214,7 @@ export default function AcceptableUse() {
                 If you encounter content or behavior that violates this policy:
               </p>
               <ul className="list-disc list-inside space-y-1 text-gray-600 text-sm">
-                <li>Email: <a href="mailto:support@red2blue.me" className="text-blue-600 hover:underline">support@red2blue.me</a></li>
+                <li>Email: <a href="mailto:info@cerosity.com" className="text-blue-600 hover:underline">info@cerosity.com</a></li>
                 <li>Subject: "Policy Violation Report"</li>
                 <li>Include: Date, time, description, and any relevant screenshots</li>
                 <li>Response: We'll investigate within 48 hours</li>
@@ -256,7 +256,7 @@ export default function AcceptableUse() {
           </p>
           <div className="bg-gray-50 p-4 rounded-lg">
             <p className="text-sm text-gray-600">
-              <strong>General Questions:</strong> <a href="mailto:support@red2blue.me" className="text-blue-600 hover:underline">support@red2blue.me</a><br />
+              <strong>General Questions:</strong> <a href="mailto:info@cerosity.com" className="text-blue-600 hover:underline">info@cerosity.com</a><br />
               <strong>Policy Clarification:</strong> <a href="mailto:legal@red2blue.me" className="text-blue-600 hover:underline">legal@red2blue.me</a><br />
               <strong>Mental Health Resources:</strong> <a href="mailto:wellness@red2blue.me" className="text-blue-600 hover:underline">wellness@red2blue.me</a><br />
               <strong>Response Time:</strong> Within 24 hours for urgent matters

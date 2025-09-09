@@ -74,7 +74,7 @@ export default function RefundPolicy() {
           <div>
             <h4 className="font-semibold mb-2">Step 1: Submit Request</h4>
             <p className="text-gray-700">
-              Send a refund request to <strong>support@red2blue.com</strong> with the subject line "Refund Request - [Your Username]"
+              Send a refund request to <strong>info@cerosity.com</strong> with the subject line "Refund Request - [Your Username]"
             </p>
           </div>
 
@@ -209,7 +209,7 @@ export default function RefundPolicy() {
             For refund requests or questions about this policy:
           </p>
           <div className="space-y-2 text-blue-700">
-            <p><strong>Email:</strong> support@red2blue.com</p>
+            <p><strong>Email:</strong> info@cerosity.com</p>
             <p><strong>Subject Line:</strong> "Refund Request - [Your Username]"</p>
             <p><strong>Response Time:</strong> 48 hours for refund request review</p>
             <p><strong>Processing Time:</strong> 5-7 business days for approved refunds</p>

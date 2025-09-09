@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Brain, Bell, Menu, X, BarChart3, MessageCircle, Zap, Wrench, Users, Trophy, User, Settings, LogOut, Lightbulb, HelpCircle, Target, ClipboardCheck } from "lucide-react";
+import { Bell, Menu, X, BarChart3, MessageCircle, Zap, Wrench, Users, Trophy, User, Settings, LogOut, Lightbulb, HelpCircle, Target, ClipboardCheck } from "lucide-react";
+import { CerosityLogo } from "@/components/cerosity-logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -62,8 +63,8 @@ export function Navigation() {
             
             {/* Logo */}
             <Link href="/" className="flex items-center space-x-3">
-              <div className="w-10 h-10 gradient-red-blue rounded-full flex items-center justify-center">
-                <Brain className="text-white" size={20} />
+              <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                <CerosityLogo size={24} />
               </div>
               <div>
                 <div className="flex items-center space-x-2">
@@ -180,8 +181,8 @@ export function Navigation() {
                     {/* Mobile Header */}
                     <div className="flex items-center justify-between pb-6 border-b">
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 gradient-red-blue rounded-full flex items-center justify-center">
-                          <Brain className="text-white" size={20} />
+                        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                          <CerosityLogo size={24} />
                         </div>
                         <div>
                           <h1 className="text-lg font-bold text-gray-900">Cerosity</h1>
