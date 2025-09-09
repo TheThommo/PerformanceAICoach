@@ -71,7 +71,7 @@ export default function Home() {
                   </div>
                   <div>
                     <h2 className="text-2xl font-bold">Human Coaching Access</h2>
-                    <p className="text-purple-100 mt-1">Connect with your certified Red2Blue performance coach</p>
+                    <p className="text-purple-100 mt-1">Connect with your certified Cerosity performance coach</p>
                   </div>
                 </div>
                 <div className="flex space-x-3">
@@ -137,7 +137,7 @@ export default function Home() {
                 </div>
                 <div>
                   <CardTitle className="text-2xl font-bold text-gray-900">Meet Flo</CardTitle>
-                  <p className="text-blue-600 font-medium">Your Red2Blue AI Mental Performance Coach</p>
+                  <p className="text-blue-600 font-medium">Your Cerosity AI Mental Performance Coach</p>
                 </div>
                 <div className="ml-auto">
                   <div className="flex items-center space-x-2 bg-green-100 px-3 py-1 rounded-full">

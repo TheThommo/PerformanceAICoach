@@ -61,7 +61,7 @@ export default function Landing() {
                 <Brain className="text-white" size={20} />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Red2Blue</h1>
+                <h1 className="text-xl font-bold text-gray-900">Cerosity</h1>
                 <p className="text-xs text-gray-500">AI Mental Coach</p>
               </div>
             </div>
@@ -97,7 +97,7 @@ export default function Landing() {
               </span>
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              Get instant Red2Blue coaching. Ask about handling pressure, improving focus, or any mental game challenge.
+              Get instant Cerosity coaching. Ask about handling pressure, improving focus, or any mental game challenge.
             </p>
           </div>
 
@@ -383,7 +383,7 @@ function SignUpForm({ onBack }: { onBack: () => void }) {
               </div>
               <CardTitle className="text-3xl">Create Your Account</CardTitle>
               <CardDescription className="text-lg">
-                Join the Red2Blue mental performance community
+                Join the Cerosity mental performance community
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -484,7 +484,7 @@ function SignUpFormFields({ onBack }: { onBack: () => void }) {
         // Show success message
         toast({
           title: "Account Created Successfully!",
-          description: `Welcome to Red2Blue, ${user?.username || 'User'}! Your AI profile is being generated.`,
+          description: `Welcome to Cerosity, ${user?.username || 'User'}! Your AI profile is being generated.`,
         });
         // Redirect will happen automatically via useAuth hook
       } catch (error) {
@@ -704,7 +704,7 @@ function SignUpFormFields({ onBack }: { onBack: () => void }) {
           value={formData.bio}
           onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="Tell us about your athletic background, mental performance goals, challenges you face, and what you hope to achieve with Red2Blue coaching..."
+          placeholder="Tell us about your athletic background, mental performance goals, challenges you face, and what you hope to achieve with Cerosity coaching..."
         />
       </div>
 
@@ -890,7 +890,7 @@ function SignInForm({ onBack }: { onBack: () => void }) {
               <Brain className="text-white" size={24} />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Red2Blue</h1>
+              <h1 className="text-2xl font-bold text-gray-900">Cerosity</h1>
               <p className="text-sm text-gray-500">AI Mental Coach</p>
             </div>
           </div>

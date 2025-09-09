@@ -30,7 +30,7 @@ export default function Tools() {
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Red2Blue Mental Performance Tools
+              Cerosity Mental Performance Tools
             </h1>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
               Professional coaching tools designed to develop elite mental performance. 
@@ -132,7 +132,7 @@ export default function Tools() {
                       <div>
                         <CardTitle className="text-green-900">Mental Skills X-Check Tool</CardTitle>
                         <CardDescription className="text-green-700">
-                          Track and evaluate your performance across the four core Red2Blue mental skills. 
+                          Track and evaluate your performance across the four core Cerosity mental skills. 
                           Use this systematic review to identify strengths and areas for improvement.
                         </CardDescription>
                       </div>

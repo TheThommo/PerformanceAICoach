@@ -53,7 +53,7 @@ function Router() {
           <div className="w-16 h-16 gradient-red-blue rounded-full flex items-center justify-center mb-4 mx-auto animate-pulse">
             <div className="w-8 h-8 bg-white rounded-full"></div>
           </div>
-          <p className="text-gray-600">Loading Red2Blue...</p>
+          <p className="text-gray-600">Loading Cerosity...</p>
         </div>
       </div>
     );

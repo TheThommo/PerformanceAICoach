@@ -15,7 +15,7 @@ export function Footer() {
               <div className="w-8 h-8 gradient-red-blue rounded-full flex items-center justify-center">
                 <Brain className="h-4 w-4 text-white" />
               </div>
-              <span className="text-xl font-bold">Red2Blue</span>
+              <span className="text-xl font-bold">Cerosity</span>
             </div>
             <p className="text-gray-300 text-sm">
               Elite mental performance coaching for golfers seeking consistent excellence through proven psychological techniques and AI-powered guidance.
@@ -67,7 +67,7 @@ export function Footer() {
         {/* Bottom Footer */}
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <div className="text-sm text-gray-400">
-            © 2025 Red2Blue Mental Performance Coaching. All rights reserved.
+            © 2025 Cerosity Mental Performance Coaching. All rights reserved.
           </div>
           
           <div className="flex items-center space-x-6 text-sm text-gray-400">
@@ -83,7 +83,7 @@ export function Footer() {
         <div className="mt-8 pt-6 border-t border-gray-700">
           <div className="text-xs text-gray-500 space-y-2">
             <p>
-              <strong>Disclaimer:</strong> Red2Blue provides mental performance coaching tools and techniques for educational and training purposes. 
+              <strong>Disclaimer:</strong> Cerosity provides mental performance coaching tools and techniques for educational and training purposes. 
               Individual results may vary. This platform is not a substitute for professional psychological counseling or medical advice. 
               If you are experiencing mental health concerns, please consult with a qualified healthcare professional.
             </p>
