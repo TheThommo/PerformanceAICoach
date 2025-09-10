@@ -19,7 +19,7 @@ export function OptimizedFloChat({ isInlineWidget = false, className = "" }: Opt
     {
       id: 'initial',
       role: 'assistant',
-      content: "Hi! I'm Flo, your Cerosity mental performance coach. Ask me about handling pressure, improving focus, or any mental game challenge you're facing.",
+      content: "Hi! I'm Flo, your AI mental performance coach. Ask me about handling pressure, improving focus, or any mental game challenge you're facing.",
       timestamp: Date.now()
     }
   ]);

@@ -98,7 +98,7 @@ export default function Landing() {
               </span>
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              Get instant Cerosity coaching. Ask about handling pressure, improving focus, or any mental game challenge.
+              Get instant AI coaching. Ask about handling pressure, improving focus, or any mental game challenge.
             </p>
           </div>
 
@@ -707,7 +707,7 @@ function SignUpFormFields({ onBack }: { onBack: () => void }) {
           value={formData.bio}
           onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
           className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          placeholder="Tell us about your athletic background, mental performance goals, challenges you face, and what you hope to achieve with Cerosity coaching..."
+          placeholder="Tell us about your athletic background, mental performance goals, challenges you face, and what you hope to achieve with AI coaching..."
         />
       </div>
 

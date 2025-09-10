@@ -21,7 +21,7 @@ function ChatComponent({ isInlineWidget = false }: LandingChatProps) {
     {
       id: 'initial',
       role: 'assistant',
-      content: "Hi! I'm Flo, your Cerosity mental performance coach. Ask me about handling pressure, improving focus, or any mental game challenge you're facing on the course.",
+      content: "Hi! I'm Flo, your AI mental performance coach. Ask me about handling pressure, improving focus, or any mental game challenge you're facing on the course.",
       timestamp: Date.now()
     }
   ]);
