@@ -359,7 +359,6 @@ export default function Landing() {
                   <p className="text-sm font-medium text-purple-800">Everything in Premium plus:</p>
                 </div>
                 <ul className="space-y-3">
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />All Premium features</li>
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />1-on-1 private sessions</li>
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Advanced coach matching</li>
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Custom training programs</li>
