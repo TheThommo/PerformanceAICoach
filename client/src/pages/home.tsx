@@ -12,7 +12,7 @@ import { StableChat } from "@/components/stable-chat";
 import { MoodTracker } from "@/components/mood-tracker";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "wouter";
-import mindsetMapImage from "@assets/RED2BLUE MINDSET MAPS_1757498916185.png";
+// import mindsetMapImage from "@assets/RED2BLUE MINDSET MAPS_1757498916185.png";
 
 export default function Home() {
   const { user } = useAuth();
@@ -275,9 +275,14 @@ export default function Home() {
                   <CardContent>
                     <div className="flex justify-center">
                       <img 
-                        src={mindsetMapImage} 
+                        src="/attached_assets/RED2BLUE MINDSET MAPS_1757498916185.png" 
                         alt="Red2Blue Mindset Map - showing transformation from Red Head (doubt, I can't) to Blue Head (trust, do it, zoom out/zoom in)" 
                         className="w-full max-w-md rounded-lg shadow-sm"
+                        onError={(e) => {
+                          console.error('Image failed to load:', e);
+                          e.currentTarget.style.display = 'none';
+                        }}
+                        onLoad={() => console.log('Image loaded successfully')}
                       />
                     </div>
                     <div className="mt-4 text-center text-sm text-gray-700">
