@@ -63,7 +63,7 @@ export default function Landing() {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">Cerosity</h1>
-                <p className="text-xs text-gray-500">AI Mental Coach</p>
+                <p className="text-xs text-gray-500">AI Golf Mental Coach</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
@@ -89,7 +89,7 @@ export default function Landing() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <Badge variant="secondary" className="mb-4">
-              AI-Powered Mental Performance
+              AI-Powered Golf Mental Performance
             </Badge>
             <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
               Meet Flo - Your
@@ -98,7 +98,7 @@ export default function Landing() {
               </span>
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              Get instant AI coaching. Ask about handling pressure, improving focus, or any mental game challenge.
+              Get instant AI coaching. Ask about handling pressure on the course, improving focus during your round, or any mental golf game challenge.
             </p>
           </div>
 
@@ -109,7 +109,7 @@ export default function Landing() {
           
           <div className="text-center">
             <p className="text-lg text-gray-700 mb-8">
-              <strong>Start chatting instantly</strong> or sign up for full access to personalized coaching
+              <strong>Start chatting instantly</strong> or sign up for full access to personalized golf coaching
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -140,7 +140,7 @@ export default function Landing() {
               What is Red2Blue?
             </h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              The proven methodology that transforms your mental state from reactive stress to peak performance
+              The proven methodology that transforms your mental golf game from reactive stress to peak golf performance
             </p>
           </div>
 
@@ -166,7 +166,7 @@ export default function Landing() {
                 <p className="text-red-700">
                   <strong>Reactive • Stressed • Overwhelmed</strong><br/>
                   When you're in "Red Head," you're caught in doubt, negative self-talk, and reactive thinking. 
-                  Your mind is cluttered with "I CAN'T" thoughts that hurt performance.
+                  Your mind is cluttered with "I CAN'T" thoughts that hurt your golf performance.
                 </p>
               </div>
 
@@ -182,16 +182,16 @@ export default function Landing() {
                 <p className="text-blue-700">
                   <strong>Focused • Confident • In Control</strong><br/>
                   In "Blue Head," you operate with trust, clear intent, and focused attention. 
-                  You're in the zone with "DO IT" confidence that drives peak performance.
+                  You're in the zone with "DO IT" confidence that drives peak golf performance.
                 </p>
               </div>
 
               <div className="bg-gray-50 rounded-lg p-6">
                 <h4 className="font-semibold text-gray-900 mb-2">The Science Behind It</h4>
                 <p className="text-gray-600 text-sm">
-                  Red2Blue is based on proven sports psychology principles used by elite athletes worldwide. 
+                  Red2Blue is based on proven sports psychology principles used by elite golfers worldwide. 
                   Our AI coach Flo uses these techniques to help you recognize your mental state and shift 
-                  from reactive stress to focused performance in real-time.
+                  from reactive stress to focused golf performance in real-time.
                 </p>
               </div>
             </div>
@@ -204,10 +204,10 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">
-              Everything You Need for Mental Excellence
+              Everything You Need for Golf Mental Excellence
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Comprehensive tools and methodologies designed for elite performers
+              Comprehensive tools and methodologies designed for golfers seeking peak performance
             </p>
           </div>
 
@@ -224,7 +224,7 @@ export default function Landing() {
                 <ul className="space-y-2">
                   <li className="flex items-center"><Check className="w-4 h-4 text-green-500 mr-2" />Mental Skills X-Check</li>
                   <li className="flex items-center"><Check className="w-4 h-4 text-green-500 mr-2" />Control Circles</li>
-                  <li className="flex items-center"><Check className="w-4 h-4 text-green-500 mr-2" />Pre-Performance Routines</li>
+                  <li className="flex items-center"><Check className="w-4 h-4 text-green-500 mr-2" />Pre-Shot Routines</li>
                 </ul>
               </CardContent>
             </Card>
