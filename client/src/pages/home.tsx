@@ -12,6 +12,7 @@ import { StableChat } from "@/components/stable-chat";
 import { MoodTracker } from "@/components/mood-tracker";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "wouter";
+import mindsetMapImage from "@/assets/mindset-map.png";
 
 export default function Home() {
   const { user } = useAuth();
@@ -259,6 +260,28 @@ export default function Home() {
                           <div className="text-xs text-gray-600 leading-relaxed">Quick calming methods</div>
                         </div>
                       </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+              
+              {/* Red2Blue Mindset Map */}
+              <div className="mt-6">
+                <Card className="shadow-sm bg-gradient-to-r from-red-50 to-blue-50">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg">Red Head ↔ Blue Head Mindset</CardTitle>
+                    <p className="text-sm text-gray-600">Transform from reactive stress to peak performance</p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex justify-center">
+                      <img 
+                        src={mindsetMapImage} 
+                        alt="Red2Blue Mindset Map - showing transformation from Red Head (doubt, I can't) to Blue Head (trust, do it, zoom out/zoom in)" 
+                        className="w-full max-w-md rounded-lg shadow-sm"
+                      />
+                    </div>
+                    <div className="mt-4 text-center text-sm text-gray-700">
+                      <p>Learn to shift from <span className="text-red-600 font-medium">Red Head</span> reactive thinking to <span className="text-blue-600 font-medium">Blue Head</span> focused performance</p>
                     </div>
                   </CardContent>
                 </Card>
