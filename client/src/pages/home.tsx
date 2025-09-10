@@ -275,7 +275,7 @@ export default function Home() {
                   <CardContent>
                     <div className="flex justify-center">
                       <img 
-                        src="/attached_assets/RED2BLUE MINDSET MAPS_1757498916185.png" 
+                        src="/mindset-map.png" 
                         alt="Red2Blue Mindset Map - showing transformation from Red Head (doubt, I can't) to Blue Head (trust, do it, zoom out/zoom in)" 
                         className="w-full max-w-md rounded-lg shadow-sm"
                         onError={(e) => {
