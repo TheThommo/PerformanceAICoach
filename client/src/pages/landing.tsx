@@ -132,6 +132,73 @@ export default function Landing() {
 
 
 
+      {/* What is Red2Blue Section */}
+      <section className="py-16 bg-gradient-to-r from-red-50 via-white to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">
+              What is Red2Blue?
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              The proven methodology that transforms your mental state from reactive stress to peak performance
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Left side - Image */}
+            <div className="flex justify-center">
+              <div className="relative">
+                <img 
+                  src="/mindset-map.png" 
+                  alt="Red2Blue Mindset Map - transformation from Red Head reactive state to Blue Head peak performance state" 
+                  className="w-full max-w-lg rounded-lg shadow-lg"
+                />
+              </div>
+            </div>
+
+            {/* Right side - Explanation */}
+            <div className="space-y-6">
+              <div className="bg-red-100 rounded-lg p-6 border-l-4 border-red-500">
+                <h3 className="text-xl font-semibold text-red-800 mb-3 flex items-center">
+                  <span className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white font-bold mr-3">R</span>
+                  Red Head State
+                </h3>
+                <p className="text-red-700">
+                  <strong>Reactive • Stressed • Overwhelmed</strong><br/>
+                  When you're in "Red Head," you're caught in doubt, negative self-talk, and reactive thinking. 
+                  Your mind is cluttered with "I CAN'T" thoughts that hurt performance.
+                </p>
+              </div>
+
+              <div className="flex justify-center">
+                <div className="text-2xl font-bold text-gray-500">↓ TRANSFORM ↓</div>
+              </div>
+
+              <div className="bg-blue-100 rounded-lg p-6 border-l-4 border-blue-500">
+                <h3 className="text-xl font-semibold text-blue-800 mb-3 flex items-center">
+                  <span className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold mr-3">B</span>
+                  Blue Head State
+                </h3>
+                <p className="text-blue-700">
+                  <strong>Focused • Confident • In Control</strong><br/>
+                  In "Blue Head," you operate with trust, clear intent, and focused attention. 
+                  You're in the zone with "DO IT" confidence that drives peak performance.
+                </p>
+              </div>
+
+              <div className="bg-gray-50 rounded-lg p-6">
+                <h4 className="font-semibold text-gray-900 mb-2">The Science Behind It</h4>
+                <p className="text-gray-600 text-sm">
+                  Red2Blue is based on proven sports psychology principles used by elite athletes worldwide. 
+                  Our AI coach Flo uses these techniques to help you recognize your mental state and shift 
+                  from reactive stress to focused performance in real-time.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
