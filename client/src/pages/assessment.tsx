@@ -183,10 +183,12 @@ export default function Assessment() {
       }
       toast({
         title: "Assessment Complete!",
-        description: "Your mental skills have been analyzed. Check your dashboard for insights.",
+        description: "Your mental skills have been analyzed. Redirecting to your dashboard...",
       });
       // Redirect to dashboard with a success indicator
-      setLocation("/?assessment=completed");
+      setTimeout(() => {
+        setLocation("/dashboard?assessment=completed");
+      }, 1500);
     },
     onError: (error) => {
       toast({
