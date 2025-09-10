@@ -320,6 +320,9 @@ export default function Landing() {
                 <p className="text-sm text-blue-600 font-medium">Lifetime access - No recurring fees</p>
               </CardHeader>
               <CardContent className="space-y-4">
+                <div className="bg-blue-50 p-3 rounded-lg mb-4">
+                  <p className="text-sm font-medium text-blue-800">Everything in Free plus:</p>
+                </div>
                 <ul className="space-y-3">
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Complete R2B methodology</li>
                   <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Unlimited AI coaching</li>
