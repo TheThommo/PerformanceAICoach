@@ -164,9 +164,7 @@ export default function Landing() {
 
             <Card className="border-0 shadow-lg">
               <CardHeader>
-                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-                  <CerosityLogo size={28} className="opacity-80" />
-                </div>
+                <Brain className="w-12 h-12 text-purple-600 mb-4" />
                 <CardTitle>AI-Powered Coaching</CardTitle>
                 <CardDescription>
                   Personalized guidance from Flo, your AI mental coach

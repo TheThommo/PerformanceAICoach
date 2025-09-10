@@ -12,7 +12,7 @@ import { StableChat } from "@/components/stable-chat";
 import { MoodTracker } from "@/components/mood-tracker";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "wouter";
-import mindsetMapImage from "@/assets/mindset-map.png";
+import mindsetMapImage from "@assets/RED2BLUE MINDSET MAPS_1757498916185.png";
 
 export default function Home() {
   const { user } = useAuth();
