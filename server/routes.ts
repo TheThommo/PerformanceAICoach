@@ -10,13 +10,16 @@ import { sessionConfig, requireAuth, requirePremium, requireAdmin, requireCoach,
 import { recommendationEngine } from "./recommendationEngine";
 import { debugLogger, withErrorLogging } from "./debug";
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  debugLogger.error('stripe', 'Missing required Stripe secret: STRIPE_SECRET_KEY');
-  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
+// Fix: Use testing keys (the env variables are swapped - "public" contains secret key)
+const stripeSecretKey = process.env.TESTING_VITE_STRIPE_PUBLIC_KEY || process.env.STRIPE_SECRET_KEY;
+
+if (!stripeSecretKey) {
+  debugLogger.error('stripe', 'Missing required Stripe secret key');
+  throw new Error('Missing required Stripe secret key');
 }
 
-debugLogger.success('stripe', 'Initializing Stripe with secret key');
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+debugLogger.success('stripe', `Initializing Stripe with testing secret key (${stripeSecretKey.substring(0, 7)}...)`);
+const stripe = new Stripe(stripeSecretKey, {
   apiVersion: "2025-05-28.basil",
 });
 debugLogger.success('stripe', 'Stripe initialized successfully');
@@ -42,6 +45,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       details: diagnostic.details
     });
     res.json({ received: true });
+  });
+
+  // Stripe config endpoint - returns only the publishable key
+  app.get("/api/stripe-config", (req, res) => {
+    // Find the correct publishable key by checking prefixes
+    const possibleKeys = [
+      process.env.TESTING_STRIPE_SECRET_KEY, // Contains pk_test due to naming swap
+      process.env.VITE_TESTING_STRIPE_PUBLIC_KEY,
+      process.env.VITE_STRIPE_PUBLIC_KEY
+    ].filter(Boolean);
+
+    const publishableKey = possibleKeys.find(key => key?.startsWith('pk_'));
+    
+    if (!publishableKey) {
+      debugLogger.error('stripe-config', 'No publishable key (pk_*) found in environment variables');
+      return res.status(500).json({ 
+        error: 'Stripe configuration error: No publishable key found' 
+      });
+    }
+
+    debugLogger.success('stripe-config', `Providing publishable key: ${publishableKey.substring(0, 7)}...`);
+    res.json({ publishableKey });
   });
 
   // Authentication routes

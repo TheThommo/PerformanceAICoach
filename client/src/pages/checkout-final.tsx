@@ -8,10 +8,32 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Brain } from "lucide-react";
 
-if (!import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
-  throw new Error('Missing required Stripe key: VITE_STRIPE_PUBLIC_KEY');
+// Fetch Stripe config from backend to get the correct publishable key
+let stripePromise: Promise<any> | null = null;
+
+async function getStripeConfig() {
+  try {
+    const response = await fetch('/api/stripe-config');
+    const data = await response.json();
+    
+    if (!response.ok || !data.publishableKey) {
+      throw new Error(data.error || 'Failed to get Stripe configuration');
+    }
+    
+    console.log('Stripe Config:', {
+      publishableKey: `${data.publishableKey.substring(0, 7)}...`,
+      keyType: data.publishableKey.startsWith('pk_') ? 'publishable' : 'invalid'
+    });
+    
+    return data.publishableKey;
+  } catch (error) {
+    console.error('Failed to fetch Stripe config:', error);
+    throw error;
+  }
 }
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+
+// Initialize Stripe promise
+stripePromise = getStripeConfig().then(publishableKey => loadStripe(publishableKey));
 
 interface CheckoutFormProps {
   amount: number;
@@ -23,6 +45,7 @@ function CheckoutForm({ amount, tier }: CheckoutFormProps) {
   const elements = useElements();
   const { toast } = useToast();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isPaymentElementReady, setIsPaymentElementReady] = useState(false);
   const [, setLocation] = useLocation();
 
   // Debug the state changes
@@ -30,16 +53,26 @@ function CheckoutForm({ amount, tier }: CheckoutFormProps) {
     console.log('CheckoutForm render:', { 
       stripe: !!stripe, 
       elements: !!elements, 
+      isPaymentElementReady,
       amount, 
       tier 
     });
-  }, [stripe, elements, amount, tier]);
+  }, [stripe, elements, isPaymentElementReady, amount, tier]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!stripe || !elements) {
-      console.log('Stripe not ready:', { stripe: !!stripe, elements: !!elements });
+    if (!stripe || !elements || !isPaymentElementReady) {
+      console.log('Stripe not ready:', { 
+        stripe: !!stripe, 
+        elements: !!elements, 
+        paymentElementReady: isPaymentElementReady 
+      });
+      toast({
+        title: "Payment Not Ready",
+        description: "Please wait for the payment form to load completely.",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -79,14 +112,36 @@ function CheckoutForm({ amount, tier }: CheckoutFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="min-h-[200px] p-4">
-        <PaymentElement />
+        <PaymentElement 
+          onReady={() => {
+            console.log('PaymentElement is now ready!');
+            setIsPaymentElementReady(true);
+          }}
+          onLoadError={(error) => {
+            console.error('PaymentElement load error:', error);
+            toast({
+              title: "Payment Form Error",
+              description: "Failed to load payment form. Please refresh and try again.",
+              variant: "destructive",
+            });
+          }}
+        />
       </div>
+      
+      {!isPaymentElementReady && (
+        <div className="text-center text-sm text-gray-500 py-2">
+          Loading secure payment form...
+        </div>
+      )}
+      
       <Button 
         type="submit" 
-        disabled={!stripe || !elements || isProcessing}
-        className="w-full bg-blue-600 hover:bg-blue-700"
+        disabled={!stripe || !elements || !isPaymentElementReady || isProcessing}
+        className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
       >
-        {isProcessing ? "Processing..." : `Pay $${amount} - Complete Purchase`}
+        {isProcessing ? "Processing..." : 
+         !isPaymentElementReady ? "Loading Payment Form..." :
+         `Pay $${amount} - Complete Purchase`}
       </Button>
     </form>
   );
