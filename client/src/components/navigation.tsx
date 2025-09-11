@@ -33,7 +33,8 @@ export function Navigation() {
     }
 
     // Only show Help button in header for free users (subscribed users see it in footer only)
-    if (!user?.isSubscribed || user?.subscriptionTier === 'free') {
+    // Admin users should never see Help button
+    if ((!user?.isSubscribed || user?.subscriptionTier === 'free') && user?.role !== 'admin') {
       baseItems.push({ href: "/help", label: "Help", icon: HelpCircle });
     }
 

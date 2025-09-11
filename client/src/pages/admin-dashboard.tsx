@@ -316,7 +316,11 @@ export default function AdminDashboard() {
                           </TableCell>
                           <TableCell>{user.email}</TableCell>
                           <TableCell>
-                            {getSubscriptionBadge(user.subscriptionTier, user.isSubscribed)}
+                            {user.role === 'admin' ? (
+                              <Badge variant="outline" className="text-gray-500">N/A</Badge>
+                            ) : (
+                              getSubscriptionBadge(user.subscriptionTier, user.isSubscribed)
+                            )}
                           </TableCell>
                           <TableCell>{getRoleBadge(user.role)}</TableCell>
                           <TableCell>
