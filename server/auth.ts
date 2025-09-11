@@ -41,7 +41,7 @@ if (!sessionSecret) {
 }
 
 // Check if running in production/Replit environment  
-const isProduction = process.env.NODE_ENV === 'production' || process.env.REPL_ID;
+const isProduction = process.env.NODE_ENV === 'production' || !!process.env.REPL_ID;
 
 export const sessionConfig = {
   store: sessionStore,
