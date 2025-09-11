@@ -1,4 +1,4 @@
-// User permissions and access control for subscription tiers
+// User permissions and access control for subscription tiers and user roles
 import type { ClientUser } from "@/hooks/useAuth";
 
 export interface PermissionCheck {
@@ -94,6 +94,25 @@ export function checkFeatureAccess(
     };
   }
 
+  // ADMIN USERS: Get full access through role, not subscription
+  if (user.role === 'admin') {
+    return {
+      hasAccess: true,
+      requiredTier: "admin",
+      upgradeMessage: ""
+    };
+  }
+
+  // COACH USERS: Get access to coaching features through role
+  if (user.role === 'coach') {
+    return {
+      hasAccess: true,
+      requiredTier: "coach",
+      upgradeMessage: ""
+    };
+  }
+
+  // REGULAR USERS: Access based on subscription tier
   let permissions;
   switch (user.subscriptionTier) {
     case 'free':
@@ -137,6 +156,11 @@ export function checkFeatureAccess(
 
 // Helper function to check if user can access the full dashboard
 export function canAccessDashboard(user: ClientUser | null): boolean {
+  // Admins and coaches get dashboard access through role
+  if (user?.role === 'admin' || user?.role === 'coach') {
+    return true;
+  }
+  // Regular users get access through subscription
   return checkFeatureAccess(user, 'dashboard').hasAccess;
 }
 
@@ -151,6 +175,12 @@ export function getAllowedFeatures(user: ClientUser | null): string[] {
     return ['limitedChat', 'basicPDFs'];
   }
 
+  // Admins and coaches get all features through role
+  if (user.role === 'admin' || user.role === 'coach') {
+    return Object.keys(ULTIMATE_TIER_FEATURES);
+  }
+
+  // Regular users get features based on subscription
   let permissions;
   switch (user.subscriptionTier) {
     case 'free':

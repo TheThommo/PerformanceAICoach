@@ -1503,19 +1503,20 @@ export class DatabaseStorage implements IStorage {
 
   // Admin operations
   async getAdminStats(): Promise<AdminStats> {
-    // Get user counts by subscription tier
+    // Get user counts by subscription tier (EXCLUDE ADMIN/COACH USERS)
     const allUsers = await db.select().from(users);
+    const regularUsers = allUsers.filter(u => u.role !== 'admin' && u.role !== 'coach'); // Only count regular users
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     
-    const totalUsers = allUsers.length;
-    const freeUsers = allUsers.filter(u => !u.isSubscribed || u.subscriptionTier === 'free').length;
-    const premiumUsers = allUsers.filter(u => u.isSubscribed && u.subscriptionTier === 'premium').length;
-    const ultimateUsers = allUsers.filter(u => u.isSubscribed && u.subscriptionTier === 'ultimate').length;
+    const totalUsers = regularUsers.length; // Only count regular users, not admins
+    const freeUsers = regularUsers.filter(u => !u.isSubscribed || u.subscriptionTier === 'free').length;
+    const premiumUsers = regularUsers.filter(u => u.isSubscribed && u.subscriptionTier === 'premium').length;
+    const ultimateUsers = regularUsers.filter(u => u.isSubscribed && u.subscriptionTier === 'ultimate').length;
     const activeSubscriptions = premiumUsers + ultimateUsers;
-    const newUsersThisMonth = allUsers.filter(u => new Date(u.createdAt) >= monthStart).length;
+    const newUsersThisMonth = regularUsers.filter(u => new Date(u.createdAt) >= monthStart).length;
     
-    // Calculate revenue (premium $490, ultimate $2190)
+    // Calculate revenue from REAL paying users only (premium $490, ultimate $2190)
     const monthlyRevenue = (premiumUsers * 490) + (ultimateUsers * 2190);
     const totalRevenue = monthlyRevenue; // Simplified for now
     
@@ -1577,10 +1578,16 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getPaymentHistory(filter?: string): Promise<PaymentRecord[]> {
-    // For now, return mock payment data based on users
+    // For now, return mock payment data based on users (EXCLUDE ADMIN/COACH USERS)
     // In production, this would connect to Stripe API or payment database
     const allUsers = await db.select().from(users);
-    const paidUsers = allUsers.filter(u => u.isSubscribed && u.subscriptionTier !== 'free');
+    // Only include REAL paying users - exclude admins and coaches who get access via role
+    const paidUsers = allUsers.filter(u => 
+      u.isSubscribed && 
+      u.subscriptionTier !== 'free' && 
+      u.role !== 'admin' && 
+      u.role !== 'coach'
+    );
     
     const payments: PaymentRecord[] = paidUsers.map(user => ({
       id: `pi_${user.id}_${Date.now()}`,
