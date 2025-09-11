@@ -15,9 +15,10 @@ declare module 'express-session' {
 // PostgreSQL session store to prevent memory leaks
 const PgSession = connectPg(session);
 
+let sessionStore;
 try {
   debugLogger.success('auth', 'Initializing PostgreSQL session store...');
-  const sessionStore = new PgSession({
+  sessionStore = new PgSession({
     conString: process.env.DATABASE_URL,
     createTableIfMissing: true,
     tableName: 'sessions',
@@ -30,12 +31,6 @@ try {
   });
   throw error;
 }
-
-const sessionStore = new PgSession({
-  conString: process.env.DATABASE_URL,
-  createTableIfMissing: true,
-  tableName: 'sessions',
-});
 
 // Session configuration with logging
 const sessionSecret = process.env.SESSION_SECRET;
