@@ -936,6 +936,10 @@ function SignInForm({ onBack }: { onBack: () => void }) {
         title: "Welcome back!",
         description: "You have successfully signed in.",
       });
+      // Redirect to dashboard after successful login
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     },
     onError: (error: any) => {
       toast({
