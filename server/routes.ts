@@ -75,7 +75,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { email, password } = req.body;
       const user = await loginUser(email, password);
+      
+      console.log('AUTH DEBUG - Before setting userId:', {
+        sessionId: req.session.id,
+        hasSession: !!req.session,
+        userId: req.session.userId
+      });
+      
       req.session.userId = user.id;
+      
+      console.log('AUTH DEBUG - After setting userId:', {
+        sessionId: req.session.id,
+        userId: req.session.userId,
+        sessionData: req.session
+      });
       
       // Save session explicitly
       req.session.save((err) => {
@@ -83,6 +96,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.error('Session save error on login:', err);
           return res.status(500).json({ message: 'Session creation failed' });
         }
+        
+        console.log('AUTH DEBUG - Session saved:', {
+          sessionId: req.session.id,
+          userId: req.session.userId,
+          user: user.username
+        });
+        
+        // Debug response headers
+        console.log('AUTH DEBUG - Response headers being set:', {
+          setCookie: res.getHeader('Set-Cookie'),
+          allHeaders: res.getHeaders()
+        });
         
         console.log('Session saved successfully for user:', user.username);
         res.json(user);
