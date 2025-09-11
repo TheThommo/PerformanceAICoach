@@ -24,6 +24,9 @@ debugLogger.success('stripe', 'Stripe initialized successfully');
 export async function registerRoutes(app: Express): Promise<Server> {
   debugLogger.success('routes', 'Starting route registration...');
   
+  // Enable trust proxy for Replit/production environments
+  app.set('trust proxy', 1);
+  
   // Session middleware with logging
   debugLogger.success('routes', 'Configuring session middleware');
   app.use(session(sessionConfig));

@@ -40,16 +40,19 @@ if (!sessionSecret) {
   debugLogger.success('auth', 'SESSION_SECRET found and configured');
 }
 
+// Check if running in production/Replit environment  
+const isProduction = process.env.NODE_ENV === 'production' || process.env.REPL_ID;
+
 export const sessionConfig = {
   store: sessionStore,
   secret: sessionSecret || 'your-secret-key-here',
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false, // Set to true if using HTTPS
-    httpOnly: false, // Allow client access in development
+    secure: isProduction, // Use HTTPS in production/Replit
+    httpOnly: true, // Prevent XSS access to session cookies
     maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
-    sameSite: 'lax', // Allow same-site requests
+    sameSite: isProduction ? 'none' : 'lax', // Allow cross-site in iframe
   },
   name: 'connect.sid', // Explicit session name
 };
