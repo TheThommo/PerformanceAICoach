@@ -12,6 +12,7 @@ import { Separator } from "@/components/ui/separator";
 import { CircleDot, Plus, X, Eye, EyeOff, Lightbulb } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import { insertControlCircleSchema, type ControlCircle } from "@shared/schema";
+import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 
 const formSchema = insertControlCircleSchema.extend({
@@ -27,16 +28,16 @@ interface ControlCirclesProps {
 export function ControlCircles({ userId }: ControlCirclesProps) {
   const [showForm, setShowForm] = useState(false);
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const { data: latestCircle } = useQuery({
-    queryKey: ['/api/control-circles/latest', userId],
-    queryFn: () => fetch(`/api/control-circles/latest/${userId}`).then(res => res.json()) as Promise<ControlCircle>
+    queryKey: ['/api/control-circles/latest'],
+    queryFn: () => fetch('/api/control-circles/latest').then(res => res.json()) as Promise<ControlCircle>
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      userId,
       context: "",
       reflections: "",
       cantControlItems: [""],
@@ -63,7 +64,6 @@ export function ControlCircles({ userId }: ControlCirclesProps) {
   const createCircleMutation = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
       const payload = {
-        userId: userId,
         context: data.context || null,
         reflections: data.reflections || null,
         cantControl: data.cantControlItems.filter(item => item.trim() !== ""),
@@ -73,7 +73,7 @@ export function ControlCircles({ userId }: ControlCirclesProps) {
       return apiRequest('POST', '/api/control-circles', payload);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/control-circles/latest', userId] });
+      queryClient.invalidateQueries({ queryKey: ['/api/control-circles/latest'] });
       setShowForm(false);
       form.reset();
       toast({

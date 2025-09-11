@@ -978,22 +978,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/mental-skills-xcheck/latest/:userId", async (req, res) => {
+  app.get("/api/mental-skills-xcheck/latest", requireAuth, async (req: AuthRequest, res) => {
+    console.log('🔍 ROUTE HIT: mental-skills-xcheck/latest');
+    console.log('🔐 Auth state:', { 
+      sessionUserId: req.session?.userId,
+      reqUserId: req.userId,
+      hasUser: !!req.user,
+      userFromAuth: req.user?.id
+    });
+    
     try {
-      const userId = parseInt(req.params.userId);
+      const userId = req.userId;
+      if (!userId) {
+        console.log('❌ No userId found, this should not happen after requireAuth');
+        return res.status(401).json({ message: "Authentication error - no user ID" });
+      }
+      
+      console.log('✅ Using userId:', userId);
       const xcheck = await storage.getLatestMentalSkillsXCheck(userId);
       if (!xcheck) {
         return res.status(404).json({ message: "No x-check found" });
       }
       res.json(xcheck);
     } catch (error) {
+      console.log('❌ Error in mental-skills-xcheck/latest:', error);
       res.status(500).json({ message: "Failed to fetch latest x-check", error: (error as Error).message });
     }
   });
 
-  app.get("/api/mental-skills-xcheck/:userId", async (req, res) => {
+  app.get("/api/mental-skills-xcheck", requireAuth, async (req: AuthRequest, res) => {
     try {
-      const userId = parseInt(req.params.userId);
+      const userId = req.userId!;
       const xchecks = await storage.getUserMentalSkillsXChecks(userId);
       res.json(xchecks);
     } catch (error) {
@@ -1027,9 +1042,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/control-circles/latest/:userId", async (req, res) => {
+  app.get("/api/control-circles/latest", requireAuth, async (req: AuthRequest, res) => {
     try {
-      const userId = parseInt(req.params.userId);
+      const userId = req.userId!;
       const circle = await storage.getLatestControlCircle(userId);
       if (!circle) {
         return res.status(404).json({ message: "No control circle found" });
@@ -1040,9 +1055,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/control-circles/:userId", async (req, res) => {
+  app.get("/api/control-circles", requireAuth, async (req: AuthRequest, res) => {
     try {
-      const userId = parseInt(req.params.userId);
+      const userId = req.userId!;
       const circles = await storage.getUserControlCircles(userId);
       res.json(circles);
     } catch (error) {

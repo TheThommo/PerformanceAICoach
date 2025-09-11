@@ -41,14 +41,13 @@ export function MentalSkillsXCheck({ userId }: MentalSkillsXCheckProps) {
   const { toast } = useToast();
 
   const { data: latestXCheck } = useQuery({
-    queryKey: ['/api/mental-skills-xcheck/latest', userId],
-    queryFn: () => fetch(`/api/mental-skills-xcheck/latest/${userId}`).then(res => res.json()) as Promise<MentalSkillsXCheck>
+    queryKey: ['/api/mental-skills-xcheck/latest'],
+    queryFn: () => fetch('/api/mental-skills-xcheck/latest').then(res => res.json()) as Promise<MentalSkillsXCheck>
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      userId,
       intensity1: 50,
       intensity2: 50,
       intensity3: 50,
@@ -71,7 +70,6 @@ export function MentalSkillsXCheck({ userId }: MentalSkillsXCheckProps) {
   const createXCheckMutation = useMutation({
     mutationFn: async (data: z.infer<typeof formSchema>) => {
       const payload = {
-        userId: userId,
         intensityScores: [data.intensity1, data.intensity2, data.intensity3],
         decisionMakingScores: [data.decisionMaking1, data.decisionMaking2, data.decisionMaking3],
         diversionsScores: [data.diversions1, data.diversions2, data.diversions3],
@@ -84,12 +82,12 @@ export function MentalSkillsXCheck({ userId }: MentalSkillsXCheckProps) {
       return apiRequest('POST', '/api/mental-skills-xcheck', payload);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/mental-skills-xcheck/latest', userId] });
+      queryClient.invalidateQueries({ queryKey: ['/api/mental-skills-xcheck/latest'] });
       setShowForm(false);
       form.reset();
       toast({
         title: "X-Check Complete!",
-        description: "Your Mental Skills assessment has been saved successfully.",
+        description: "Your results are displayed below. Great work tracking your mental performance!",
         variant: "default",
       });
     },

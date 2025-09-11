@@ -11,6 +11,7 @@ export interface PermissionCheck {
 const FREE_TIER_FEATURES = {
   // Assessments
   basicAssessment: true,
+  basicAssessmentResults: true, // Free users can see results of their basic assessment
   advancedAssessments: false,
   assessmentHistory: false,
   
