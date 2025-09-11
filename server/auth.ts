@@ -47,9 +47,11 @@ export const sessionConfig = {
   saveUninitialized: false,
   cookie: {
     secure: false, // Set to true if using HTTPS
-    httpOnly: true,
+    httpOnly: false, // Allow client access in development
     maxAge: 1000 * 60 * 60 * 24 * 7, // 1 week
+    sameSite: 'lax', // Allow same-site requests
   },
+  name: 'connect.sid', // Explicit session name
 };
 
 export interface AuthRequest extends Request {
