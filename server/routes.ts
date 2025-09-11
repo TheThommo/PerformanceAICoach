@@ -102,7 +102,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/api/auth/me", async (req: AuthRequest, res) => {
+    // Debug session and cookie information
+    console.log('AUTH DEBUG - /api/auth/me called:', {
+      hasSession: !!req.session,
+      sessionId: req.session?.id,
+      hasUserId: !!req.session?.userId,
+      cookies: req.headers.cookie,
+      isProduction: process.env.NODE_ENV === 'production' || process.env.REPL_ID,
+      nodeEnv: process.env.NODE_ENV,
+      replId: !!process.env.REPL_ID
+    });
+    
     if (!req.session.userId) {
+      console.log('AUTH DEBUG - Not authenticated:', {
+        sessionExists: !!req.session,
+        sessionId: req.session?.id,
+        cookieHeader: req.headers.cookie
+      });
       return res.status(401).json({ message: "Not authenticated" });
     }
 
