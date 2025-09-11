@@ -75,20 +75,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { email, password } = req.body;
       const user = await loginUser(email, password);
-      
-      console.log('AUTH DEBUG - Before setting userId:', {
-        sessionId: req.session.id,
-        hasSession: !!req.session,
-        userId: req.session.userId
-      });
-      
       req.session.userId = user.id;
-      
-      console.log('AUTH DEBUG - After setting userId:', {
-        sessionId: req.session.id,
-        userId: req.session.userId,
-        sessionData: req.session
-      });
       
       // Save session explicitly
       req.session.save((err) => {
@@ -96,18 +83,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           console.error('Session save error on login:', err);
           return res.status(500).json({ message: 'Session creation failed' });
         }
-        
-        console.log('AUTH DEBUG - Session saved:', {
-          sessionId: req.session.id,
-          userId: req.session.userId,
-          user: user.username
-        });
-        
-        // Debug response headers
-        console.log('AUTH DEBUG - Response headers being set:', {
-          setCookie: res.getHeader('Set-Cookie'),
-          allHeaders: res.getHeaders()
-        });
         
         console.log('Session saved successfully for user:', user.username);
         res.json(user);
@@ -127,23 +102,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/api/auth/me", async (req: AuthRequest, res) => {
-    // Debug session and cookie information
-    console.log('AUTH DEBUG - /api/auth/me called:', {
-      hasSession: !!req.session,
-      sessionId: req.session?.id,
-      hasUserId: !!req.session?.userId,
-      cookies: req.headers.cookie,
-      isProduction: process.env.NODE_ENV === 'production' || process.env.REPL_ID,
-      nodeEnv: process.env.NODE_ENV,
-      replId: !!process.env.REPL_ID
-    });
-    
     if (!req.session.userId) {
-      console.log('AUTH DEBUG - Not authenticated:', {
-        sessionExists: !!req.session,
-        sessionId: req.session?.id,
-        cookieHeader: req.headers.cookie
-      });
       return res.status(401).json({ message: "Not authenticated" });
     }
 

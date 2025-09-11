@@ -25,13 +25,16 @@ export function Navigation() {
 
   // Navigation items based on subscription tier
   const getNavItems = () => {
-    const baseItems = [
-      { href: "/help", label: "Help", icon: HelpCircle },
-    ];
+    const baseItems = [];
 
     // Only show Dashboard for Premium/Ultimate users
     if (canAccessDashboard(user)) {
-      baseItems.splice(0, 0, { href: "/dashboard", label: "Dashboard", icon: BarChart3 });
+      baseItems.push({ href: "/dashboard", label: "Dashboard", icon: BarChart3 });
+    }
+
+    // Only show Help button in header for free users (subscribed users see it in footer only)
+    if (!user?.isSubscribed || user?.subscriptionTier === 'free') {
+      baseItems.push({ href: "/help", label: "Help", icon: HelpCircle });
     }
 
     // Add Human Coaching for Ultimate subscribers
