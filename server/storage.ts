@@ -1444,7 +1444,9 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserEngagementMetrics(userId: number, days?: number): Promise<UserEngagementMetric[]> {
-    throw new Error('Method not implemented in DatabaseStorage');
+    // Return empty array for now - engagement metrics not yet implemented
+    // TODO: Implement proper engagement tracking with database tables
+    return [];
   }
 
   async updateEngagementMetric(userId: number, date: string, updates: Partial<UserEngagementMetric>): Promise<UserEngagementMetric> {

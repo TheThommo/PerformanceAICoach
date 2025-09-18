@@ -1940,8 +1940,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Admin API routes - temporarily open for testing (remove requireAdmin)
-  app.get("/api/admin/stats", requireAuth, async (req, res) => {
+  // Admin API routes - properly secured with requireAuth and requireAdmin
+  app.get("/api/admin/stats", requireAuth, requireAdmin, async (req, res) => {
     try {
       const stats = await storage.getAdminStats();
       res.json(stats);
@@ -1951,7 +1951,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/admin/users", requireAuth, async (req, res) => {
+  app.get("/api/admin/users", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { filter, search } = req.query;
       const users = await storage.getAllUsers(filter as string, search as string);
@@ -1962,7 +1962,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/admin/users/:userId", requireAuth, async (req, res) => {
+  app.patch("/api/admin/users/:userId", requireAuth, requireAdmin, async (req, res) => {
     try {
       const userId = parseInt(req.params.userId);
       const updates = req.body;
@@ -1974,7 +1974,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/admin/payments", requireAuth, async (req, res) => {
+  app.get("/api/admin/payments", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { filter } = req.query;
       const payments = await storage.getPaymentHistory(filter as string);
@@ -1985,7 +1985,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/admin/send-email", requireAuth, async (req, res) => {
+  app.post("/api/admin/send-email", requireAuth, requireAdmin, async (req, res) => {
     try {
       const { userIds, subject, message } = req.body;
       // TODO: Implement email sending functionality
@@ -1993,6 +1993,161 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error('Admin email error:', error);
       res.status(500).json({ message: 'Failed to send emails' });
+    }
+  });
+
+  // Admin endpoints for detailed user progress monitoring
+  app.get("/api/admin/users/:userId/moods", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const { days = 30 } = req.query;
+      const moods = await storage.getUserMoods(userId, parseInt(days as string));
+      res.json(moods);
+    } catch (error: any) {
+      console.error('Admin user moods error:', error);
+      res.status(500).json({ message: 'Failed to fetch user mood data' });
+    }
+  });
+
+  app.get("/api/admin/users/:userId/assessments", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const assessments = await storage.getUserAssessments(userId);
+      res.json(assessments);
+    } catch (error: any) {
+      console.error('Admin user assessments error:', error);
+      res.status(500).json({ message: 'Failed to fetch user assessment data' });
+    }
+  });
+
+  app.get("/api/admin/users/:userId/progress", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const { days = 30 } = req.query;
+      const progress = await storage.getUserProgress(userId, parseInt(days as string));
+      res.json(progress);
+    } catch (error: any) {
+      console.error('Admin user progress error:', error);
+      res.status(500).json({ message: 'Failed to fetch user progress data' });
+    }
+  });
+
+  app.get("/api/admin/users/:userId/goals", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const goals = await storage.getUserGoals(userId);
+      res.json(goals);
+    } catch (error: any) {
+      console.error('Admin user goals error:', error);
+      res.status(500).json({ message: 'Failed to fetch user goals data' });
+    }
+  });
+
+  app.get("/api/admin/users/:userId/chat-sessions", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const chatSessions = await storage.getUserChatSessions(userId);
+      const sessionStats = {
+        totalSessions: chatSessions.length,
+        totalMessages: chatSessions.reduce((total, session) => {
+          const messages = session.messages as any[] || [];
+          return total + messages.length;
+        }, 0),
+        lastActivity: chatSessions.length > 0 ? chatSessions[0].updatedAt : null,
+        sessions: chatSessions.map(session => ({
+          id: session.id,
+          createdAt: session.createdAt,
+          updatedAt: session.updatedAt,
+          messageCount: (session.messages as any[] || []).length
+        }))
+      };
+      res.json(sessionStats);
+    } catch (error: any) {
+      console.error('Admin user chat sessions error:', error);
+      res.status(500).json({ message: 'Failed to fetch user chat session data' });
+    }
+  });
+
+  app.get("/api/admin/users/:userId/engagement", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      try {
+        const engagement = await storage.getUserEngagementMetrics(userId);
+        res.json(engagement);
+      } catch (methodError) {
+        // If method not implemented, return placeholder data
+        res.json({
+          message: "Engagement metrics not yet implemented",
+          totalSessions: "N/A",
+          averageSessionLength: "N/A", 
+          lastActiveDate: "N/A"
+        });
+      }
+    } catch (error: any) {
+      console.error('Admin user engagement error:', error);
+      res.status(500).json({ message: 'Failed to fetch user engagement data' });
+    }
+  });
+
+  app.get("/api/admin/users/:userId/details", requireAuth, requireAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      
+      // Fetch comprehensive user data - handle missing methods gracefully
+      const [user, moods, assessments, progress, goals, chatSessions] = await Promise.all([
+        storage.getUser(userId),
+        storage.getUserMoods(userId, 30),
+        storage.getUserAssessments(userId),
+        storage.getUserProgress(userId, 30),
+        storage.getUserGoals(userId),
+        storage.getUserChatSessions(userId)
+      ]);
+
+      // Try to get engagement metrics, fallback if not implemented
+      let engagement = null;
+      try {
+        engagement = await storage.getUserEngagementMetrics(userId);
+      } catch (error) {
+        engagement = {
+          message: "Engagement metrics not yet implemented",
+          totalSessions: "N/A",
+          averageSessionLength: "N/A",
+          lastActiveDate: "N/A"
+        };
+      }
+
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+
+      // Calculate summary stats
+      const chatStats = {
+        totalSessions: chatSessions.length,
+        totalMessages: chatSessions.reduce((total, session) => {
+          const messages = session.messages as any[] || [];
+          return total + messages.length;
+        }, 0),
+        lastActivity: chatSessions.length > 0 ? chatSessions[0].updatedAt : null
+      };
+
+      const { password, ...userWithoutPassword } = user;
+      
+      const userDetails = {
+        user: userWithoutPassword,
+        recentMoods: moods.slice(0, 10),
+        latestAssessment: assessments[0] || null,
+        assessmentCount: assessments.length,
+        recentProgress: progress.slice(0, 10),
+        activeGoals: goals.filter(g => !g.isCompleted),
+        completedGoals: goals.filter(g => g.isCompleted),
+        chatActivity: chatStats,
+        engagement: engagement || null
+      };
+
+      res.json(userDetails);
+    } catch (error: any) {
+      console.error('Admin user details error:', error);
+      res.status(500).json({ message: 'Failed to fetch comprehensive user details' });
     }
   });
 
