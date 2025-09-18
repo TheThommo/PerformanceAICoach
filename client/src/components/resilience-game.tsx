@@ -401,20 +401,20 @@ export function ResilienceGame() {
                 <Button
                   key={option.id}
                   variant="outline"
-                  className={`w-full text-left p-4 h-auto justify-start ${getOptionColor(option.colorCode)} ${
+                  className={`w-full text-left p-4 h-auto justify-start overflow-hidden whitespace-normal ${getOptionColor(option.colorCode)} ${
                     gameState.selectedOption === option.id ? 'ring-2 ring-blue-500' : ''
                   }`}
                   onClick={() => handleOptionSelect(option.id)}
                   disabled={!gameState.isActive || !!gameState.selectedOption}
                 >
                   <div className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium mt-1">
+                    <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-sm font-medium mt-1 flex-shrink-0">
                       {option.id.toUpperCase()}
                     </div>
-                    <div className="flex-1">
-                      <p>{option.text}</p>
+                    <div className="flex-1 min-w-0">
+                      <p className="break-words">{option.text}</p>
                       {gameState.selectedOption === option.id && (
-                        <p className="text-sm text-gray-600 mt-2">{option.explanation}</p>
+                        <p className="text-sm text-gray-600 mt-2 break-words">{option.explanation}</p>
                       )}
                     </div>
                     {gameState.selectedOption === option.id && (
