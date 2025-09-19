@@ -651,11 +651,14 @@ function UserProgressCard({ user }: { user: User }) {
               <p className="text-sm text-blue-600 dark:text-blue-400">
                 {userMoods.length} mood entries
               </p>
-              {userMoods.length > 0 && (
-                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                  Latest: {format(new Date(userMoods[0]?.date), "MMM dd")}
-                </p>
-              )}
+              {userMoods.length > 0 && userMoods[0]?.date && (() => {
+                const date = new Date(userMoods[0].date);
+                return !isNaN(date.getTime()) ? (
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                    Latest: {format(date, "MMM dd")}
+                  </p>
+                ) : null;
+              })()}
             </div>
 
             {/* Assessment Performance */}
@@ -668,11 +671,14 @@ function UserProgressCard({ user }: { user: User }) {
               <p className="text-sm text-green-600 dark:text-green-400">
                 {userAssessments.length} assessments taken
               </p>
-              {userAssessments.length > 0 && (
-                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                  Latest: {format(new Date(userAssessments[0]?.createdAt), "MMM dd")}
-                </p>
-              )}
+              {userAssessments.length > 0 && userAssessments[0]?.createdAt && (() => {
+                const date = new Date(userAssessments[0].createdAt);
+                return !isNaN(date.getTime()) ? (
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                    Latest: {format(date, "MMM dd")}
+                  </p>
+                ) : null;
+              })()}
             </div>
 
             {/* Scenario Progress */}
@@ -706,24 +712,33 @@ function UserProgressCard({ user }: { user: User }) {
           <div className="mt-6 pt-4 border-t">
             <h5 className="font-medium mb-3 text-gray-900 dark:text-gray-100">Recent Activity</h5>
             <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-              {userMoods.slice(0, 2).map((mood) => (
-                <div key={mood.id} className="flex items-center gap-2">
-                  <Activity className="w-3 h-3" />
-                  <span>Mood logged: {mood.mood}/10 on {format(new Date(mood.date), "MMM dd")}</span>
-                </div>
-              ))}
-              {userAssessments.slice(0, 1).map((assessment) => (
-                <div key={assessment.id} className="flex items-center gap-2">
-                  <TrendingUp className="w-3 h-3" />
-                  <span>Assessment completed: {assessment.score}% on {format(new Date(assessment.createdAt), "MMM dd")}</span>
-                </div>
-              ))}
-              {userProgress.slice(0, 1).map((progress) => (
-                <div key={progress.id} className="flex items-center gap-2">
-                  <Crown className="w-3 h-3" />
-                  <span>Scenario completed: {progress.score}% score on {format(new Date(progress.createdAt), "MMM dd")}</span>
-                </div>
-              ))}
+              {userMoods.slice(0, 2).map((mood) => {
+                const date = mood.date ? new Date(mood.date) : null;
+                return date && !isNaN(date.getTime()) ? (
+                  <div key={mood.id} className="flex items-center gap-2">
+                    <Activity className="w-3 h-3" />
+                    <span>Mood logged: {mood.mood}/10 on {format(date, "MMM dd")}</span>
+                  </div>
+                ) : null;
+              })}
+              {userAssessments.slice(0, 1).map((assessment) => {
+                const date = assessment.createdAt ? new Date(assessment.createdAt) : null;
+                return date && !isNaN(date.getTime()) ? (
+                  <div key={assessment.id} className="flex items-center gap-2">
+                    <TrendingUp className="w-3 h-3" />
+                    <span>Assessment completed: {assessment.score}% on {format(date, "MMM dd")}</span>
+                  </div>
+                ) : null;
+              })}
+              {userProgress.slice(0, 1).map((progress) => {
+                const date = progress.createdAt ? new Date(progress.createdAt) : null;
+                return date && !isNaN(date.getTime()) ? (
+                  <div key={progress.id} className="flex items-center gap-2">
+                    <Crown className="w-3 h-3" />
+                    <span>Scenario completed: {progress.score}% score on {format(date, "MMM dd")}</span>
+                  </div>
+                ) : null;
+              })}
             </div>
           </div>
         )}
