@@ -72,6 +72,56 @@ interface Payment {
   userName: string;
 }
 
+interface UserMood {
+  id: number;
+  userId: number;
+  mood: number;
+  energy: number;
+  stress: number;
+  notes?: string;
+  date: string;
+}
+
+interface UserAssessment {
+  id: number;
+  userId: number;
+  score: number;
+  responses: any;
+  createdAt: string;
+}
+
+interface UserProgress {
+  id: number;
+  userId: number;
+  scenarioId: number;
+  score: number;
+  accuracy: number;
+  timeSpent: number;
+  improvements?: string;
+  createdAt: string;
+}
+
+interface UserGoal {
+  id: number;
+  userId: number;
+  title: string;
+  description?: string;
+  category: string;
+  targetValue: number;
+  currentValue: number;
+  isCompleted: boolean;
+  dueDate?: string;
+  createdAt: string;
+}
+
+interface UserDetails {
+  moods: UserMood[];
+  assessments: UserAssessment[];
+  progress: UserProgress[];
+  goals: UserGoal[];
+  engagementMetrics: any[];
+}
+
 export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -247,6 +297,7 @@ export default function AdminDashboard() {
       <Tabs defaultValue="users" className="space-y-4">
         <TabsList>
           <TabsTrigger value="users">Users</TabsTrigger>
+          <TabsTrigger value="progress">User Progress</TabsTrigger>
           <TabsTrigger value="payments">Payments</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
@@ -364,6 +415,24 @@ export default function AdminDashboard() {
           </Card>
         </TabsContent>
 
+        <TabsContent value="progress" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>User Progress Monitoring</CardTitle>
+              <CardDescription>
+                Comprehensive user activity and mental health progress tracking
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-6">
+                {users.map((user) => (
+                  <UserProgressCard key={user.id} user={user} />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="payments" className="space-y-4">
           <Card>
             <CardHeader>
@@ -476,6 +545,190 @@ export default function AdminDashboard() {
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+function UserProgressCard({ user }: { user: User }) {
+  // Skip admin users
+  if (user.role === 'admin') {
+    return null;
+  }
+
+  const getSubscriptionBadge = (tier: string, isSubscribed: boolean) => {
+    if (!isSubscribed) return <Badge variant="secondary">Free</Badge>;
+    
+    switch (tier) {
+      case "premium":
+        return <Badge className="bg-blue-500 text-white"><Star className="w-3 h-3 mr-1" />Premium</Badge>;
+      case "ultimate":
+        return <Badge className="bg-purple-500 text-white"><Crown className="w-3 h-3 mr-1" />Ultimate</Badge>;
+      default:
+        return <Badge variant="secondary">Free</Badge>;
+    }
+  };
+
+  const getRoleBadge = (role: string) => {
+    switch (role) {
+      case "admin":
+        return <Badge className="bg-red-500 text-white">Admin</Badge>;
+      case "coach":
+        return <Badge className="bg-green-500 text-white">Coach</Badge>;
+      default:
+        return <Badge variant="outline">Student</Badge>;
+    }
+  };
+
+  // Fetch user progress data
+  const { data: userMoods = [], isLoading: moodsLoading } = useQuery<UserMood[]>({
+    queryKey: ["/api/admin/users", user.id, "moods"],
+  });
+
+  const { data: userAssessments = [], isLoading: assessmentsLoading } = useQuery<UserAssessment[]>({
+    queryKey: ["/api/admin/users", user.id, "assessments"],
+  });
+
+  const { data: userProgress = [], isLoading: progressLoading } = useQuery<UserProgress[]>({
+    queryKey: ["/api/admin/users", user.id, "progress"],
+  });
+
+  const { data: userGoals = [], isLoading: goalsLoading } = useQuery<UserGoal[]>({
+    queryKey: ["/api/admin/users", user.id, "goals"],
+  });
+
+  const isLoading = moodsLoading || assessmentsLoading || progressLoading || goalsLoading;
+
+  const getMoodAverage = () => {
+    if (userMoods.length === 0) return "No data";
+    const avg = userMoods.reduce((sum, mood) => sum + mood.mood, 0) / userMoods.length;
+    return avg.toFixed(1) + "/10";
+  };
+
+  const getLatestAssessmentScore = () => {
+    if (userAssessments.length === 0) return "No assessments";
+    return userAssessments[0]?.score + "%";
+  };
+
+  const getProgressStats = () => {
+    if (userProgress.length === 0) return { scenarios: 0, avgScore: "No data" };
+    const avgScore = userProgress.reduce((sum, p) => sum + p.score, 0) / userProgress.length;
+    return { scenarios: userProgress.length, avgScore: avgScore.toFixed(1) + "%" };
+  };
+
+  const getGoalCompletion = () => {
+    if (userGoals.length === 0) return "No goals";
+    const completed = userGoals.filter(g => g.isCompleted).length;
+    return `${completed}/${userGoals.length} completed`;
+  };
+
+  return (
+    <Card className="w-full">
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="text-lg">{user.firstName} {user.lastName}</CardTitle>
+            <CardDescription>@{user.username} • {user.email}</CardDescription>
+          </div>
+          <div className="flex gap-2">
+            {getSubscriptionBadge(user.subscriptionTier, user.isSubscribed)}
+            {getRoleBadge(user.role)}
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        {isLoading ? (
+          <div className="flex justify-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Mood Tracking */}
+            <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <Activity className="w-4 h-4 text-blue-600" />
+                <h4 className="font-medium text-blue-900 dark:text-blue-100">Mood Tracking</h4>
+              </div>
+              <p className="text-2xl font-bold text-blue-700 dark:text-blue-300">{getMoodAverage()}</p>
+              <p className="text-sm text-blue-600 dark:text-blue-400">
+                {userMoods.length} mood entries
+              </p>
+              {userMoods.length > 0 && (
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                  Latest: {format(new Date(userMoods[0]?.date), "MMM dd")}
+                </p>
+              )}
+            </div>
+
+            {/* Assessment Performance */}
+            <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <TrendingUp className="w-4 h-4 text-green-600" />
+                <h4 className="font-medium text-green-900 dark:text-green-100">Assessments</h4>
+              </div>
+              <p className="text-2xl font-bold text-green-700 dark:text-green-300">{getLatestAssessmentScore()}</p>
+              <p className="text-sm text-green-600 dark:text-green-400">
+                {userAssessments.length} assessments taken
+              </p>
+              {userAssessments.length > 0 && (
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                  Latest: {format(new Date(userAssessments[0]?.createdAt), "MMM dd")}
+                </p>
+              )}
+            </div>
+
+            {/* Scenario Progress */}
+            <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <Crown className="w-4 h-4 text-purple-600" />
+                <h4 className="font-medium text-purple-900 dark:text-purple-100">Scenarios</h4>
+              </div>
+              <p className="text-2xl font-bold text-purple-700 dark:text-purple-300">{getProgressStats().avgScore}</p>
+              <p className="text-sm text-purple-600 dark:text-purple-400">
+                {getProgressStats().scenarios} scenarios completed
+              </p>
+            </div>
+
+            {/* Goals Progress */}
+            <div className="bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                <Star className="w-4 h-4 text-orange-600" />
+                <h4 className="font-medium text-orange-900 dark:text-orange-100">Goals</h4>
+              </div>
+              <p className="text-2xl font-bold text-orange-700 dark:text-orange-300">{getGoalCompletion()}</p>
+              <p className="text-sm text-orange-600 dark:text-orange-400">
+                Goal completion rate
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Recent Activity Summary */}
+        {!isLoading && (userMoods.length > 0 || userAssessments.length > 0 || userProgress.length > 0) && (
+          <div className="mt-6 pt-4 border-t">
+            <h5 className="font-medium mb-3 text-gray-900 dark:text-gray-100">Recent Activity</h5>
+            <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+              {userMoods.slice(0, 2).map((mood) => (
+                <div key={mood.id} className="flex items-center gap-2">
+                  <Activity className="w-3 h-3" />
+                  <span>Mood logged: {mood.mood}/10 on {format(new Date(mood.date), "MMM dd")}</span>
+                </div>
+              ))}
+              {userAssessments.slice(0, 1).map((assessment) => (
+                <div key={assessment.id} className="flex items-center gap-2">
+                  <TrendingUp className="w-3 h-3" />
+                  <span>Assessment completed: {assessment.score}% on {format(new Date(assessment.createdAt), "MMM dd")}</span>
+                </div>
+              ))}
+              {userProgress.slice(0, 1).map((progress) => (
+                <div key={progress.id} className="flex items-center gap-2">
+                  <Crown className="w-3 h-3" />
+                  <span>Scenario completed: {progress.score}% score on {format(new Date(progress.createdAt), "MMM dd")}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }
 
