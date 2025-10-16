@@ -284,17 +284,17 @@ export default function Landing() {
               <CardHeader>
                 <Badge variant="outline" className="w-fit mb-2">Universal Access</Badge>
                 <CardTitle className="text-2xl">FLO Resilience Coach</CardTitle>
-                <CardDescription>Foundational emotional intelligence training for daily mental toughness.</CardDescription>
+                <CardDescription className="text-base">Foundational emotional intelligence training for daily mental toughness.</CardDescription>
                 <div className="text-3xl font-bold mt-4">$9.90<span className="text-lg font-normal text-gray-500">/mo</span></div>
-                <p className="text-sm text-gray-600">Billed annually at $99. For the individual user.</p>
-                <p className="text-xs text-green-600 font-medium">Save 17% with annual billing (2 months free)</p>
+                <p className="text-sm text-gray-600 mt-1">Billed annually at $99. For the individual user.</p>
+                <p className="text-xs text-green-600 font-medium mt-1">Save 17% with annual billing (2 months free)</p>
               </CardHeader>
               <CardContent className="space-y-4">
                 <ul className="space-y-3">
-                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Full access to <strong>FLO</strong>, your EQ AI Coach.</li>
-                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Basic <strong>Mental Resilience Assessment</strong> (Initial).</li>
-                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Unlimited chat & support from FLO.</li>
-                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Core Red2Blue concept PDFs (Moment, Focus).</li>
+                  <li className="flex items-start text-base"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" /><span>Full access to <strong>FLO</strong>, your EQ AI Coach.</span></li>
+                  <li className="flex items-start text-base"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" /><span>Basic <strong>Mental Resilience Assessment</strong> (Initial).</span></li>
+                  <li className="flex items-start text-base"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" /><span>Unlimited chat & support from FLO.</span></li>
+                  <li className="flex items-start text-base"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" /><span>Core Red2Blue concept PDFs (Moment, Focus).</span></li>
                 </ul>
                 <Button variant="outline" className="w-full" onClick={() => {
                   window.scrollTo(0, 0);
@@ -314,22 +314,22 @@ export default function Landing() {
               <CardHeader className="pt-6">
                 <Badge variant="outline" className="w-fit mb-2 border-indigo-500 text-indigo-700">Digital Mastery</Badge>
                 <CardTitle className="text-2xl">Elite Digital Coaching</CardTitle>
-                <CardDescription>Complete mindset transformation with full methodology and advanced analytics.</CardDescription>
+                <CardDescription className="text-base">Complete mindset transformation with full methodology and advanced analytics.</CardDescription>
                 <div className="flex items-baseline space-x-2 mt-4">
                   <span className="text-3xl font-bold">$590</span>
                   <span className="text-lg font-normal text-gray-500">one-time</span>
                 </div>
-                <p className="text-sm text-indigo-600 font-medium">One-time payment, lifetime access to content. Plus $99/yr renewal after Year 1.</p>
+                <p className="text-sm text-indigo-600 font-medium mt-1">One-time payment, lifetime access to content. Plus $99/yr renewal after Year 1.</p>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="bg-indigo-50 p-3 rounded-lg mb-4">
                   <p className="text-sm font-medium text-indigo-800">Includes Everything in FLO Coach (Tier 1)</p>
                 </div>
                 <ul className="space-y-3">
-                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Complete <strong>Red2Blue Certification Track</strong>.</li>
-                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Advanced, personalized performance analytics.</li>
-                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Custom mental training programs (AI-driven).</li>
-                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Priority technical support channel.</li>
+                  <li className="flex items-start text-base"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" /><span>Complete <strong>Red2Blue Certification Track</strong>.</span></li>
+                  <li className="flex items-start text-base"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" /><span>Advanced, personalized performance analytics.</span></li>
+                  <li className="flex items-start text-base"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" /><span>Custom mental training programs (AI-driven).</span></li>
+                  <li className="flex items-start text-base"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" /><span>Priority technical support channel.</span></li>
                 </ul>
                 <Button className="w-full bg-indigo-600 hover:bg-indigo-700" onClick={() => {
                   setLocation('/checkout?tier=premium');
@@ -344,20 +344,20 @@ export default function Landing() {
               <CardHeader>
                 <Badge variant="outline" className="w-fit mb-2 border-purple-500 text-purple-700">Elite Partnership</Badge>
                 <CardTitle className="text-2xl">Master Human Coaching</CardTitle>
-                <CardDescription>Premium AI integration plus dedicated 1-on-1 human coaching for the fastest results.</CardDescription>
+                <CardDescription className="text-base">Premium AI integration plus dedicated 1-on-1 human coaching for the fastest results.</CardDescription>
                 <div className="text-3xl font-bold mt-4">$2,290<span className="text-lg font-normal text-gray-500"> one-time</span></div>
-                <p className="text-sm text-purple-600 font-medium">One-time payment, lifetime access to content. Plus $99/yr renewal after Year 1.</p>
+                <p className="text-sm text-purple-600 font-medium mt-1">One-time payment, lifetime access to content. Plus $99/yr renewal after Year 1.</p>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="bg-purple-50 p-3 rounded-lg mb-4">
                   <p className="text-sm font-medium text-purple-800">Includes Everything in Elite Digital (Tier 2)</p>
                 </div>
                 <ul className="space-y-3">
-                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Dedicated <strong>Master Red2Blue Coach</strong> matching.</li>
-                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Five <strong>1-on-1 Private F2F/Virtual</strong> sessions.</li>
-                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Exclusive <strong>VIP Support</strong> and direct communication.</li>
-                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Custom integration data pipeline.</li>
-                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Official Athlete Certification hard copy.</li>
+                  <li className="flex items-start text-base"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" /><span>Dedicated <strong>Master Red2Blue Coach</strong> matching.</span></li>
+                  <li className="flex items-start text-base"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" /><span>Five <strong>1-on-1 Private F2F/Virtual</strong> sessions.</span></li>
+                  <li className="flex items-start text-base"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" /><span>Exclusive <strong>VIP Support</strong> and direct communication.</span></li>
+                  <li className="flex items-start text-base"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" /><span>Custom integration data pipeline.</span></li>
+                  <li className="flex items-start text-base"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" /><span>Official Athlete Certification hard copy.</span></li>
                 </ul>
                 <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={() => {
                   setLocation('/checkout?tier=ultimate');
