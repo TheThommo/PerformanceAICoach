@@ -279,120 +279,117 @@ export default function Landing() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-            {/* Free Tier */}
+            {/* Tier 1: FLO Resilience Coach */}
             <Card className="border-2 border-gray-200">
               <CardHeader>
-                <CardTitle className="text-2xl">Free Access</CardTitle>
-                <CardDescription>Get started with basic mental training</CardDescription>
-                <div className="text-3xl font-bold">$0<span className="text-lg font-normal text-gray-500">/month</span></div>
-                <p className="text-sm text-gray-500">Billed annually</p>
+                <Badge variant="outline" className="w-fit mb-2">Universal Access</Badge>
+                <CardTitle className="text-2xl">FLO Resilience Coach</CardTitle>
+                <CardDescription>Foundational emotional intelligence training for daily mental toughness.</CardDescription>
+                <div className="text-3xl font-bold mt-4">$9.90<span className="text-lg font-normal text-gray-500">/mo</span></div>
+                <p className="text-sm text-gray-600">Billed annually at $99. For the individual user.</p>
+                <p className="text-xs text-green-600 font-medium">Save 17% with annual billing (2 months free)</p>
               </CardHeader>
               <CardContent className="space-y-4">
                 <ul className="space-y-3">
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Basic assessment</li>
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Limited chat with Flo</li>
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Master Your Moment PDF</li>
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Ability to Focus PDF</li>
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Mental Toughness PDF</li>
+                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Full access to <strong>FLO</strong>, your EQ AI Coach.</li>
+                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Basic <strong>Mental Resilience Assessment</strong> (Initial).</li>
+                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Unlimited chat & support from FLO.</li>
+                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Core Red2Blue concept PDFs (Moment, Focus).</li>
                 </ul>
                 <Button variant="outline" className="w-full" onClick={() => {
                   window.scrollTo(0, 0);
                   setSelectedTier('free');
                   setShowSignUp(true);
                 }}>
-                  Get Started Free
+                  Get Started
                 </Button>
               </CardContent>
             </Card>
 
-            {/* Premium Tier */}
-            <Card className="border-2 border-blue-500 relative transform scale-105">
-              <CardHeader>
-                <CardTitle className="text-2xl flex items-center">
-                  Premium Access
-                  <Star className="w-5 h-5 text-yellow-500 ml-2" />
-                </CardTitle>
-                <CardDescription>Complete mental performance transformation</CardDescription>
-                <div className="flex items-baseline space-x-2">
+            {/* Tier 2: Elite Digital Coaching - BEST VALUE */}
+            <Card className="border-4 border-indigo-500 relative transform scale-105 shadow-xl">
+              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <Badge className="bg-indigo-600 text-white px-4 py-1 text-sm font-bold">BEST VALUE</Badge>
+              </div>
+              <CardHeader className="pt-6">
+                <Badge variant="outline" className="w-fit mb-2 border-indigo-500 text-indigo-700">Digital Mastery</Badge>
+                <CardTitle className="text-2xl">Elite Digital Coaching</CardTitle>
+                <CardDescription>Complete mindset transformation with full methodology and advanced analytics.</CardDescription>
+                <div className="flex items-baseline space-x-2 mt-4">
                   <span className="text-3xl font-bold">$590</span>
                   <span className="text-lg font-normal text-gray-500">one-time</span>
                 </div>
-                <p className="text-sm text-blue-600 font-medium">Lifetime access - No recurring fees</p>
+                <p className="text-sm text-indigo-600 font-medium">One-time payment, lifetime access to content. Plus $99/yr renewal after Year 1.</p>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="bg-blue-50 p-3 rounded-lg mb-4">
-                  <p className="text-sm font-medium text-blue-800">Everything in Free plus:</p>
+                <div className="bg-indigo-50 p-3 rounded-lg mb-4">
+                  <p className="text-sm font-medium text-indigo-800">Includes Everything in FLO Coach (Tier 1)</p>
                 </div>
                 <ul className="space-y-3">
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Complete R2B methodology</li>
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Unlimited AI coaching</li>
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Advanced analytics</li>
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Personalized training plans</li>
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />All assessment tools</li>
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Priority support</li>
+                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Complete <strong>Red2Blue Certification Track</strong>.</li>
+                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Advanced, personalized performance analytics.</li>
+                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Custom mental training programs (AI-driven).</li>
+                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Priority technical support channel.</li>
                 </ul>
-                <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => {
+                <Button className="w-full bg-indigo-600 hover:bg-indigo-700" onClick={() => {
                   setLocation('/checkout?tier=premium');
                 }}>
-                  Get Premium Access
+                  Get Elite Digital
                 </Button>
-                <p className="text-xs text-center text-gray-500">One-time payment, lifetime access</p>
               </CardContent>
             </Card>
 
-            {/* Ultimate Tier */}
+            {/* Tier 3: Master Human Coaching */}
             <Card className="border-2 border-purple-500 relative">
-              <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <Badge className="bg-purple-600">Human Coaching</Badge>
-              </div>
               <CardHeader>
-                <CardTitle className="text-2xl flex items-center">
-                  Ultimate Access
-                  <Users className="w-5 h-5 text-purple-500 ml-2" />
-                </CardTitle>
-                <CardDescription>Premium AI + personal human coaching</CardDescription>
-                <div className="text-3xl font-bold">$2290<span className="text-lg font-normal text-gray-500"> one-time</span></div>
-                <p className="text-sm text-purple-600 font-medium">Lifetime access - No recurring fees</p>
+                <Badge variant="outline" className="w-fit mb-2 border-purple-500 text-purple-700">Elite Partnership</Badge>
+                <CardTitle className="text-2xl">Master Human Coaching</CardTitle>
+                <CardDescription>Premium AI integration plus dedicated 1-on-1 human coaching for the fastest results.</CardDescription>
+                <div className="text-3xl font-bold mt-4">$2,290<span className="text-lg font-normal text-gray-500"> one-time</span></div>
+                <p className="text-sm text-purple-600 font-medium">One-time payment, lifetime access to content. Plus $99/yr renewal after Year 1.</p>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="bg-purple-50 p-3 rounded-lg mb-4">
-                  <p className="text-sm font-medium text-purple-800">Everything in Premium plus:</p>
+                  <p className="text-sm font-medium text-purple-800">Includes Everything in Elite Digital (Tier 2)</p>
                 </div>
                 <ul className="space-y-3">
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />1-on-1 private sessions</li>
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Advanced coach matching</li>
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />Custom training programs</li>
-                  <li className="flex items-center"><Check className="w-5 h-5 text-green-500 mr-3" />VIP support channel</li>
+                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Dedicated <strong>Master Red2Blue Coach</strong> matching.</li>
+                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Five <strong>1-on-1 Private F2F/Virtual</strong> sessions.</li>
+                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Exclusive <strong>VIP Support</strong> and direct communication.</li>
+                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Custom integration data pipeline.</li>
+                  <li className="flex items-start"><Check className="w-5 h-5 text-green-500 mr-3 mt-0.5" />Official Athlete Certification hard copy.</li>
                 </ul>
                 <Button className="w-full bg-purple-600 hover:bg-purple-700" onClick={() => {
                   setLocation('/checkout?tier=ultimate');
                 }}>
-                  Get Ultimate Access
+                  Get Master Coaching
                 </Button>
-                <p className="text-xs text-center text-gray-500">One-time payment, lifetime access</p>
               </CardContent>
             </Card>
           </div>
 
-          {/* Value Proposition */}
-          <div className="mt-16 text-center">
-            <p className="text-lg text-gray-600 mb-4">
-              Join thousands of elite performers who've transformed their mental game
-            </p>
-            <div className="flex justify-center items-center space-x-8 text-gray-500">
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span>No contracts</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span>Cancel anytime</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                <span>30-day guarantee*</span>
-              </div>
-            </div>
+          {/* Enterprise CTA Block */}
+          <div className="mt-16 max-w-4xl mx-auto">
+            <Card className="border-2 border-gray-300 bg-gradient-to-br from-gray-50 to-white">
+              <CardContent className="text-center py-12 px-6">
+                <Users className="w-16 h-16 text-gray-600 mx-auto mb-6" />
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                  Need a Bespoke Solution for your Team or Organization?
+                </h3>
+                <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+                  If you are a company, school, or sports academy, please contact our Partnerships Team to design a custom, institution-wide licensing offering.
+                </p>
+                <Button 
+                  size="lg" 
+                  className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-3"
+                  onClick={() => {
+                    window.location.href = 'mailto:partnerships@cerosity.com?subject=Enterprise Inquiry';
+                  }}
+                >
+                  Contact Us for Enterprise
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
